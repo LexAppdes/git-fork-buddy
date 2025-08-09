@@ -11,7 +11,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-
 interface Project {
   id: string;
   title: string;
@@ -21,63 +20,68 @@ interface Project {
   endDate?: Date;
   status: "planning" | "in-progress" | "on-hold" | "completed";
 }
-
-const mockProjects: Project[] = [
-  {
-    id: "1",
-    title: "Website Redesign",
-    description: "Complete overhaul of company website with modern design",
-    area: "design",
-    startDate: new Date("2024-01-15"),
-    endDate: new Date("2024-03-15"),
-    status: "in-progress"
-  },
-  {
-    id: "2",
-    title: "Mobile App Development",
-    description: "Native iOS and Android app for customer portal",
-    area: "development",
-    startDate: new Date("2024-02-01"),
-    endDate: new Date("2024-06-30"),
-    status: "planning"
-  },
-  {
-    id: "3",
-    title: "Marketing Campaign Q1",
-    description: "Launch new product marketing campaign",
-    area: "marketing",
-    startDate: new Date("2024-01-01"),
-    endDate: new Date("2024-03-31"),
-    status: "in-progress"
-  },
-  {
-    id: "4",
-    title: "Office Renovation",
-    description: "Renovate office space for better collaboration",
-    area: "facilities",
-    startDate: new Date("2023-12-01"),
-    endDate: new Date("2024-01-31"),
-    status: "completed"
-  },
-  {
-    id: "5",
-    title: "Team Training Program",
-    description: "Implement comprehensive training for new technologies",
-    area: "hr",
-    startDate: new Date("2024-04-01"),
-    endDate: new Date("2024-05-15"),
-    status: "on-hold"
-  }
-];
-
-const projectAreas = [
-  { id: "design", name: "Design", color: "bg-primary" },
-  { id: "development", name: "Development", color: "bg-task-medium" },
-  { id: "marketing", name: "Marketing", color: "bg-task-urgent" },
-  { id: "facilities", name: "Facilities", color: "bg-task-low" },
-  { id: "hr", name: "Human Resources", color: "bg-destructive" }
-];
-
+const mockProjects: Project[] = [{
+  id: "1",
+  title: "Website Redesign",
+  description: "Complete overhaul of company website with modern design",
+  area: "design",
+  startDate: new Date("2024-01-15"),
+  endDate: new Date("2024-03-15"),
+  status: "in-progress"
+}, {
+  id: "2",
+  title: "Mobile App Development",
+  description: "Native iOS and Android app for customer portal",
+  area: "development",
+  startDate: new Date("2024-02-01"),
+  endDate: new Date("2024-06-30"),
+  status: "planning"
+}, {
+  id: "3",
+  title: "Marketing Campaign Q1",
+  description: "Launch new product marketing campaign",
+  area: "marketing",
+  startDate: new Date("2024-01-01"),
+  endDate: new Date("2024-03-31"),
+  status: "in-progress"
+}, {
+  id: "4",
+  title: "Office Renovation",
+  description: "Renovate office space for better collaboration",
+  area: "facilities",
+  startDate: new Date("2023-12-01"),
+  endDate: new Date("2024-01-31"),
+  status: "completed"
+}, {
+  id: "5",
+  title: "Team Training Program",
+  description: "Implement comprehensive training for new technologies",
+  area: "hr",
+  startDate: new Date("2024-04-01"),
+  endDate: new Date("2024-05-15"),
+  status: "on-hold"
+}];
+const projectAreas = [{
+  id: "design",
+  name: "Design",
+  color: "bg-primary"
+}, {
+  id: "development",
+  name: "Development",
+  color: "bg-task-medium"
+}, {
+  id: "marketing",
+  name: "Marketing",
+  color: "bg-task-urgent"
+}, {
+  id: "facilities",
+  name: "Facilities",
+  color: "bg-task-low"
+}, {
+  id: "hr",
+  name: "Human Resources",
+  color: "bg-destructive"
+}];
 const getStatusColor = (status: string) => {
   switch (status) {
     case "planning":
@@ -92,7 +96,6 @@ const getStatusColor = (status: string) => {
       return "bg-muted text-muted-foreground";
   }
 };
-
 const getStatusLabel = (status: string) => {
   switch (status) {
     case "planning":
@@ -107,7 +110,6 @@ const getStatusLabel = (status: string) => {
       return "Unknown";
   }
 };
-
 export function ProjectManagement() {
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
@@ -123,15 +125,12 @@ export function ProjectManagement() {
     endDate: undefined as Date | undefined,
     status: "planning" as Project["status"]
   });
-
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
     setIsProjectViewOpen(true);
   };
-
   const addProject = () => {
     if (!newProject.title.trim()) return;
-
     const project: Project = {
       id: Date.now().toString(),
       title: newProject.title,
@@ -141,7 +140,6 @@ export function ProjectManagement() {
       endDate: newProject.endDate,
       status: newProject.status
     };
-
     setProjects(prev => [...prev, project]);
     setNewProject({
       title: "",
@@ -153,14 +151,11 @@ export function ProjectManagement() {
     });
     setIsNewProjectDialogOpen(false);
   };
-
   const filterAndSortProjects = (projects: Project[]) => {
     let filteredProjects = projects;
-    
     if (filterByStatus !== "all") {
       filteredProjects = projects.filter(project => project.status === filterByStatus);
     }
-
     return [...filteredProjects].sort((a, b) => {
       if (sortBy === "status") {
         return a.status.localeCompare(b.status);
@@ -175,7 +170,6 @@ export function ProjectManagement() {
       return 0;
     });
   };
-
   const formatDateRange = (startDate?: Date, endDate?: Date) => {
     if (!startDate && !endDate) return "No dates set";
     if (startDate && endDate) {
@@ -186,9 +180,7 @@ export function ProjectManagement() {
     }
     return `Ends ${format(endDate!, "MMM d, yyyy")}`;
   };
-
-  return (
-    <div className="flex h-full bg-background">
+  return <div className="flex h-full bg-background">
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
@@ -217,7 +209,7 @@ export function ProjectManagement() {
                   </SelectContent>
                 </Select>
 
-                <Select value={sortBy} onValueChange={(value) => setSortBy(value as typeof sortBy)}>
+                <Select value={sortBy} onValueChange={value => setSortBy(value as typeof sortBy)}>
                   <SelectTrigger className="w-32">
                     <ArrowUpDown className="w-4 h-4 mr-2" />
                     <SelectValue placeholder="Sort by" />
@@ -245,37 +237,33 @@ export function ProjectManagement() {
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="title">Title</Label>
-                      <Input
-                        id="title"
-                        value={newProject.title}
-                        onChange={(e) => setNewProject(prev => ({ ...prev, title: e.target.value }))}
-                        placeholder="Enter project title"
-                      />
+                      <Input id="title" value={newProject.title} onChange={e => setNewProject(prev => ({
+                      ...prev,
+                      title: e.target.value
+                    }))} placeholder="Enter project title" />
                     </div>
                     
                     <div>
                       <Label htmlFor="description">Description</Label>
-                      <Textarea
-                        id="description"
-                        value={newProject.description}
-                        onChange={(e) => setNewProject(prev => ({ ...prev, description: e.target.value }))}
-                        placeholder="Project description"
-                        rows={3}
-                      />
+                      <Textarea id="description" value={newProject.description} onChange={e => setNewProject(prev => ({
+                      ...prev,
+                      description: e.target.value
+                    }))} placeholder="Project description" rows={3} />
                     </div>
 
                     <div>
                       <Label htmlFor="area">Area</Label>
-                      <Select value={newProject.area} onValueChange={(value) => setNewProject(prev => ({ ...prev, area: value }))}>
+                      <Select value={newProject.area} onValueChange={value => setNewProject(prev => ({
+                      ...prev,
+                      area: value
+                    }))}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select area" />
                         </SelectTrigger>
                         <SelectContent>
-                          {projectAreas.map(area => (
-                            <SelectItem key={area.id} value={area.id}>
+                          {projectAreas.map(area => <SelectItem key={area.id} value={area.id}>
                               {area.name}
-                            </SelectItem>
-                          ))}
+                            </SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
@@ -291,12 +279,10 @@ export function ProjectManagement() {
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0">
-                            <CalendarComponent
-                              mode="single"
-                              selected={newProject.startDate}
-                              onSelect={(date) => setNewProject(prev => ({ ...prev, startDate: date }))}
-                              className="p-3 pointer-events-auto"
-                            />
+                            <CalendarComponent mode="single" selected={newProject.startDate} onSelect={date => setNewProject(prev => ({
+                            ...prev,
+                            startDate: date
+                          }))} className="p-3 pointer-events-auto" />
                           </PopoverContent>
                         </Popover>
                       </div>
@@ -311,12 +297,10 @@ export function ProjectManagement() {
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0">
-                            <CalendarComponent
-                              mode="single"
-                              selected={newProject.endDate}
-                              onSelect={(date) => setNewProject(prev => ({ ...prev, endDate: date }))}
-                              className="p-3 pointer-events-auto"
-                            />
+                            <CalendarComponent mode="single" selected={newProject.endDate} onSelect={date => setNewProject(prev => ({
+                            ...prev,
+                            endDate: date
+                          }))} className="p-3 pointer-events-auto" />
                           </PopoverContent>
                         </Popover>
                       </div>
@@ -324,7 +308,10 @@ export function ProjectManagement() {
 
                     <div>
                       <Label htmlFor="status">Status</Label>
-                      <Select value={newProject.status} onValueChange={(value) => setNewProject(prev => ({ ...prev, status: value as Project["status"] }))}>
+                      <Select value={newProject.status} onValueChange={value => setNewProject(prev => ({
+                      ...prev,
+                      status: value as Project["status"]
+                    }))}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
@@ -355,20 +342,13 @@ export function ProjectManagement() {
         {/* Projects List */}
         <div className="flex-1 p-6">
           <div className="grid gap-4">
-            {filterAndSortProjects(projects).map(project => (
-              <div
-                key={project.id}
-                className="bg-card border border-border rounded-lg p-6 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
-                onClick={() => handleProjectClick(project)}
-              >
+            {filterAndSortProjects(projects).map(project => <div key={project.id} className="bg-card border border-border rounded-lg p-6 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer" onClick={() => handleProjectClick(project)}>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-start gap-3 mb-3">
                       <div className="flex-1">
                         <h3 className="font-semibold text-card-foreground text-lg">{project.title}</h3>
-                        {project.description && (
-                          <p className="text-muted-foreground mt-1">{project.description}</p>
-                        )}
+                        {project.description && <p className="text-muted-foreground mt-1">{project.description}</p>}
                       </div>
                       <Badge className={cn("text-xs", getStatusColor(project.status))}>
                         {getStatusLabel(project.status)}
@@ -377,7 +357,7 @@ export function ProjectManagement() {
                     
                     <div className="flex items-center gap-4 text-sm">
                       <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Area:</span>
+                        
                         <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
                           {projectAreas.find(a => a.id === project.area)?.name || project.area}
                         </span>
@@ -396,26 +376,22 @@ export function ProjectManagement() {
                     <MoreHorizontal className="w-4 h-4" />
                   </Button>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </div>
 
       {/* Project Details Dialog */}
-      {selectedProject && (
-        <Dialog open={isProjectViewOpen} onOpenChange={setIsProjectViewOpen}>
+      {selectedProject && <Dialog open={isProjectViewOpen} onOpenChange={setIsProjectViewOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="text-xl">{selectedProject.title}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              {selectedProject.description && (
-                <div>
+              {selectedProject.description && <div>
                   <Label className="text-sm font-medium text-muted-foreground">Description</Label>
                   <p className="mt-1 text-foreground">{selectedProject.description}</p>
-                </div>
-              )}
+                </div>}
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -440,8 +416,6 @@ export function ProjectManagement() {
               </div>
             </div>
           </DialogContent>
-        </Dialog>
-      )}
-    </div>
-  );
+        </Dialog>}
+    </div>;
 }
