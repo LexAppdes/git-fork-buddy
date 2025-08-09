@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { TaskManagement } from "@/components/TaskManagement";
+import { ProjectManagement } from "@/components/ProjectManagement";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("tasks");
@@ -27,6 +28,8 @@ const Index = () => {
         );
       case "tasks":
         return <TaskManagement />;
+      case "projects":
+        return <ProjectManagement />;
       default:
         return null;
     }
