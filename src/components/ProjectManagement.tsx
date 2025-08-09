@@ -201,8 +201,8 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Projects List */}
-        <div className="flex-1 p-6 bg-[#fafafa] border border-[#21222c]/0">
-          <div className="flex gap-4 overflow-x-auto">
+        <div className="flex-1 min-w-0 p-6 bg-[#fafafa] border border-[#21222c]/0">
+          <div className="flex w-full gap-4 overflow-x-auto">
             {filterAndSortProjects(projects).map(project => (
               <div
                 key={project.id}
