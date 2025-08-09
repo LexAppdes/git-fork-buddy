@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StickyNote, PenTool, CheckSquare, FolderOpen } from "lucide-react";
+import { StickyNote, PenTool, CheckSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AppSidebarProps {
@@ -11,7 +11,6 @@ const sidebarItems = [
   { id: "notes", label: "Notes", icon: StickyNote },
   { id: "whiteboards", label: "Whiteboards", icon: PenTool },
   { id: "tasks", label: "Tasks", icon: CheckSquare },
-  { id: "projects", label: "Projects", icon: FolderOpen },
 ];
 
 export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) {
