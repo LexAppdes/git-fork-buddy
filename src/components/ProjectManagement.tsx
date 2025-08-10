@@ -168,7 +168,7 @@ export function ProjectManagement({
       endDate: undefined,
       status: "planning"
     });
-    setIsNewProjectDialogOpen(false);
+    setDialogOpen(false);
   };
 
   const filterAndSortProjects = (projects: Project[]) => {
