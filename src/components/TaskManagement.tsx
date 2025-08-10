@@ -734,7 +734,17 @@ export function TaskManagement() {
               </Popover>
               <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="gap-2" size="sm">
+                  <Button
+                    className="gap-2"
+                    size="sm"
+                    onClick={() => {
+                      if (activeView === "projects") {
+                        setIsNewProjectDialogOpen(true);
+                      } else {
+                        setIsNewTaskDialogOpen(true);
+                      }
+                    }}
+                  >
                     <Plus className="w-4 h-4" />
                     {activeView === "projects" ? "New Project" : "New Task"}
                   </Button>
