@@ -109,9 +109,15 @@ const getStatusLabel = (status: string) => {
 
 interface ProjectManagementProps {
   selectedAreas?: string[];
+  isNewProjectDialogOpen?: boolean;
+  onNewProjectDialogChange?: (open: boolean) => void;
 }
 
-export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps) {
+export function ProjectManagement({
+  selectedAreas = [],
+  isNewProjectDialogOpen: externalDialogOpen,
+  onNewProjectDialogChange
+}: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
