@@ -735,7 +735,7 @@ export function TaskManagement() {
                 <DialogTrigger asChild>
                   <Button className="gap-2" size="sm">
                     <Plus className="w-4 h-4" />
-                    New Task
+                    {activeView === "projects" ? "New Project" : "New Task"}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
