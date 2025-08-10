@@ -197,50 +197,56 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
   };
 
   return (
-    <div className="h-full w-full bg-[#fafafa] p-4 border border-[#21222c]/0">
-      <div className="flex gap-4 overflow-x-auto overflow-y-hidden pb-4">
-        {filterAndSortProjects(projects).map(project => (
-          <div
-            key={project.id}
-            className="flex-none w-80 bg-card border border-border rounded-lg p-6 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
-            onClick={() => handleProjectClick(project)}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-start gap-3 mb-3">
+    <div className="flex h-full bg-background">
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Projects List */}
+        <div className="flex-1 p-6 bg-[#fafafa] border border-[#21222c]/0">
+          <div className="grid gap-4">
+            {filterAndSortProjects(projects).map(project => (
+              <div
+                key={project.id}
+                className="bg-card border border-border rounded-lg p-6 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
+                onClick={() => handleProjectClick(project)}
+              >
+                <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-card-foreground text-lg">{project.title}</h3>
-                    {project.description && (
-                      <p className="text-muted-foreground mt-1">{project.description}</p>
-                    )}
-                  </div>
-                  <Badge className={cn("text-xs", getStatusColor(project.status))}>
-                    {getStatusLabel(project.status)}
-                  </Badge>
-                </div>
-                
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
-                      {projectAreas.find(a => a.id === project.area)?.name || project.area}
-                    </span>
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-card-foreground text-lg">{project.title}</h3>
+                        {project.description && (
+                          <p className="text-muted-foreground mt-1">{project.description}</p>
+                        )}
+                      </div>
+                      <Badge className={cn("text-xs", getStatusColor(project.status))}>
+                        {getStatusLabel(project.status)}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
+                          {projectAreas.find(a => a.id === project.area)?.name || project.area}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">
+                          {formatDateRange(project.startDate, project.endDate)}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {formatDateRange(project.startDate, project.endDate)}
-                    </span>
-                  </div>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={e => e.stopPropagation()}>
+                    <MoreHorizontal className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
-              
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={e => e.stopPropagation()}>
-                <MoreHorizontal className="w-4 h-4" />
-              </Button>
-            </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
 
       {/* Project Details Dialog */}

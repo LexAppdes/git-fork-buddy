@@ -893,9 +893,9 @@ export function TaskManagement() {
       </div>
 
       {/* Main Task Content */}
-      <div className={cn("overflow-y-auto overflow-x-hidden bg-[#fafafa]", activeView === "areas" ? "h-[calc(100%-140px)]" : "p-6 h-[calc(100%-140px)]")}>
+      <div className={cn("overflow-auto bg-[#fafafa]", activeView === "areas" ? "h-[calc(100%-140px)]" : "p-6 h-[calc(100%-140px)]")}>
         {activeView === "projects" ? (
-          <div className="h-full min-w-0">
+          <div className="h-full -m-6">
             <ProjectManagement selectedAreas={selectedProjectAreas} />
           </div>
         ) : activeView === "areas" ? (
