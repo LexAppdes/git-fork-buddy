@@ -120,6 +120,16 @@ export function ProjectManagement({
 }: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
+
+  // Use external dialog state if provided
+  const dialogOpen = externalDialogOpen !== undefined ? externalDialogOpen : isNewProjectDialogOpen;
+  const setDialogOpen = (open: boolean) => {
+    if (onNewProjectDialogChange) {
+      onNewProjectDialogChange(open);
+    } else {
+      setIsNewProjectDialogOpen(open);
+    }
+  };
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
   const [filterByStatus, setFilterByStatus] = useState<string>("all");
