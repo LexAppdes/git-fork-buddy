@@ -204,7 +204,10 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
             {filterAndSortProjects(projects).map(project => (
               <div
                 key={project.id}
-                className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
+                className={cn(
+                  "bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer",
+                  selectedProject?.id === project.id && "ring-2 ring-primary bg-primary/5"
+                )}
                 onClick={() => handleProjectClick(project)}
               >
                 <div className="space-y-3">
@@ -214,18 +217,18 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
                       {getStatusLabel(project.status)}
                     </Badge>
                   </div>
-                  
+
                   {project.description && (
                     <p className="text-muted-foreground text-sm line-clamp-2">{project.description}</p>
                   )}
-                  
+
                   <div className="space-y-2 text-xs">
                     <div>
                       <span className="bg-muted text-muted-foreground px-2 py-1 rounded">
                         {projectAreas.find(a => a.id === project.area)?.name || project.area}
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3 text-muted-foreground shrink-0" />
                       <span className="text-muted-foreground truncate">
@@ -237,49 +240,58 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
               </div>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* Project Details Dialog */}
-      {selectedProject && (
-        <Dialog open={isProjectViewOpen} onOpenChange={setIsProjectViewOpen}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="text-xl">{selectedProject.title}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              {selectedProject.description && (
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Description</Label>
-                  <p className="mt-1 text-foreground">{selectedProject.description}</p>
+          {/* Project Details Section */}
+          {selectedProject && (
+            <div className="mt-8 bg-card border border-border rounded-lg p-6 shadow-soft">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-card-foreground">{selectedProject.title}</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedProject(null)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  ✕
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                {selectedProject.description && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Description</Label>
+                    <p className="mt-1 text-foreground">{selectedProject.description}</p>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Area</Label>
+                    <p className="mt-1 text-foreground">
+                      {projectAreas.find(a => a.id === selectedProject.area)?.name || selectedProject.area}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <div className="mt-1">
+                      <Badge className={cn(getStatusColor(selectedProject.status))}>
+                        {getStatusLabel(selectedProject.status)}
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
-              )}
-              
-              <div className="grid grid-cols-2 gap-4">
+
                 <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Area</Label>
+                  <Label className="text-sm font-medium text-muted-foreground">Timeline</Label>
                   <p className="mt-1 text-foreground">
-                    {projectAreas.find(a => a.id === selectedProject.area)?.name || selectedProject.area}
+                    {formatDateRange(selectedProject.startDate, selectedProject.endDate)}
                   </p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Status</Label>
-                  <Badge className={cn("mt-1", getStatusColor(selectedProject.status))}>
-                    {getStatusLabel(selectedProject.status)}
-                  </Badge>
-                </div>
-              </div>
-              
-              <div>
-                <Label className="text-sm font-medium text-muted-foreground">Timeline</Label>
-                <p className="mt-1 text-foreground">
-                  {formatDateRange(selectedProject.startDate, selectedProject.endDate)}
-                </p>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      )}
+          )}
+        </div>
+      </div>
     </div>
   );
 }
