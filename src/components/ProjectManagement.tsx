@@ -197,12 +197,12 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
   };
 
   return (
-    <div className="flex h-full bg-background overflow-hidden">
+    <div className="flex h-full bg-background">
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Projects List */}
-        <div className="flex-1 p-6 bg-[#fafafa] border border-[#21222c]/0">
-          <div className="flex gap-4 overflow-x-auto overflow-y-hidden pb-4 -mr-6 pr-6">
+        <div className="flex-1 p-6 bg-[#fafafa] border border-[#21222c]/0 overflow-hidden">
+          <div className="flex gap-4 overflow-x-auto overflow-y-hidden pb-4 w-full">
             {filterAndSortProjects(projects).map(project => (
               <div
                 key={project.id}
