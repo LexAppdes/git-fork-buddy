@@ -602,7 +602,7 @@ export function TaskManagement() {
         return tasks;
     }
   };
-  return <div className="h-full bg-[#fafafa]">
+  return <div className="bg-[#fafafa]">
       {/* Header with title */}
       <div className="bg-card">
         <div className="flex items-center justify-between px-6 py-[18px] pb-5 bg-white border-[#e2e2e2]">
