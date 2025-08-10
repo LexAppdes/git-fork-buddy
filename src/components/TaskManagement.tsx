@@ -907,7 +907,11 @@ export function TaskManagement() {
       <div className={cn("overflow-auto bg-[#fafafa]", activeView === "areas" ? "h-[calc(100%-140px)]" : "p-6 h-[calc(100%-140px)]")}>
         {activeView === "projects" ? (
           <div className="h-full -m-6">
-            <ProjectManagement selectedAreas={selectedProjectAreas} />
+            <ProjectManagement
+              selectedAreas={selectedProjectAreas}
+              isNewProjectDialogOpen={isNewProjectDialogOpen}
+              onNewProjectDialogChange={setIsNewProjectDialogOpen}
+            />
           </div>
         ) : activeView === "areas" ? (
           renderAreasView()
