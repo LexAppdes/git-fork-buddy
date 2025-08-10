@@ -202,46 +202,39 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
       <div className="flex-1 flex flex-col">
         {/* Projects List */}
         <div className="flex-1 p-6 bg-[#fafafa] border border-[#21222c]/0">
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filterAndSortProjects(projects).map(project => (
               <div
                 key={project.id}
-                className="bg-card border border-border rounded-lg p-6 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
+                className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
                 onClick={() => handleProjectClick(project)}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-card-foreground text-lg">{project.title}</h3>
-                        {project.description && (
-                          <p className="text-muted-foreground mt-1">{project.description}</p>
-                        )}
-                      </div>
-                      <Badge className={cn("text-xs", getStatusColor(project.status))}>
-                        {getStatusLabel(project.status)}
-                      </Badge>
-                    </div>
-                    
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
-                          {projectAreas.find(a => a.id === project.area)?.name || project.area}
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">
-                          {formatDateRange(project.startDate, project.endDate)}
-                        </span>
-                      </div>
-                    </div>
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
+                    <Badge className={cn("text-xs shrink-0", getStatusColor(project.status))}>
+                      {getStatusLabel(project.status)}
+                    </Badge>
                   </div>
                   
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={e => e.stopPropagation()}>
-                    <MoreHorizontal className="w-4 h-4" />
-                  </Button>
+                  {project.description && (
+                    <p className="text-muted-foreground text-sm line-clamp-2">{project.description}</p>
+                  )}
+                  
+                  <div className="space-y-2 text-xs">
+                    <div>
+                      <span className="bg-muted text-muted-foreground px-2 py-1 rounded">
+                        {projectAreas.find(a => a.id === project.area)?.name || project.area}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3 text-muted-foreground shrink-0" />
+                      <span className="text-muted-foreground truncate">
+                        {formatDateRange(project.startDate, project.endDate)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
