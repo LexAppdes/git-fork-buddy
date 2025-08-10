@@ -202,11 +202,11 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
       <div className="flex-1 flex flex-col">
         {/* Projects List */}
         <div className="flex-1 p-6 bg-[#fafafa] border border-[#21222c]/0">
-          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filterAndSortProjects(projects).map(project => (
               <div
                 key={project.id}
-                className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer min-w-[280px] flex-shrink-0"
+                className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
                 onClick={() => handleProjectClick(project)}
               >
                 <div className="space-y-3">
