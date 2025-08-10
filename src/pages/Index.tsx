@@ -38,7 +38,7 @@ const Index = () => {
         activeSection={activeSection} 
         onSectionChange={setActiveSection} 
       />
-      <div className="flex-1">
+      <div className="flex-1 bg-[#fafafa]">
         {renderContent()}
       </div>
     </div>

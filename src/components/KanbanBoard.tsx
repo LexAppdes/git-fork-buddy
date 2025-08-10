@@ -136,7 +136,7 @@ const KanbanColumn = ({
         return "border-t-border";
     }
   };
-  return <div className={cn("flex-1 min-w-0 bg-[#f3f3f3] rounded-lg border border-border border-t-4 transition-colors", getColumnColor(), isDragOver && "bg-muted/50")} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
+  return <div className={cn("flex-1 min-w-0 bg-[#f3f3f3] rounded-lg transition-colors", getColumnColor(), isDragOver && "bg-muted/50")} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-foreground">{timeframe}</h3>

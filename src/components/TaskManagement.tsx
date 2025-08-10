@@ -192,6 +192,7 @@ export function TaskManagement() {
   const [isAreasExpanded, setIsAreasExpanded] = useState(true);
   const [expandedAreas, setExpandedAreas] = useState<Record<string, boolean>>({});
   const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
+  const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskViewOpen, setIsTaskViewOpen] = useState(false);
   const [sortBy, setSortBy] = useState<"priority" | "date" | "none">("none");
@@ -602,7 +603,7 @@ export function TaskManagement() {
         return tasks;
     }
   };
-  return <div className="h-full bg-[#fafafa]">
+  return <div className="bg-[#fafafa]">
       {/* Header with title */}
       <div className="bg-card">
         <div className="flex items-center justify-between px-6 py-[18px] pb-5 bg-white border-[#e2e2e2]">
@@ -733,9 +734,19 @@ export function TaskManagement() {
               </Popover>
               <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="gap-2" size="sm">
+                  <Button
+                    className="gap-2"
+                    size="sm"
+                    onClick={() => {
+                      if (activeView === "projects") {
+                        setIsNewProjectDialogOpen(true);
+                      } else {
+                        setIsNewTaskDialogOpen(true);
+                      }
+                    }}
+                  >
                     <Plus className="w-4 h-4" />
-                    New Task
+                    {activeView === "projects" ? "New Project" : "New Task"}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
@@ -896,7 +907,11 @@ export function TaskManagement() {
       <div className={cn("overflow-auto bg-[#fafafa]", activeView === "areas" ? "h-[calc(100%-140px)]" : "p-6 h-[calc(100%-140px)]")}>
         {activeView === "projects" ? (
           <div className="h-full -m-6">
-            <ProjectManagement selectedAreas={selectedProjectAreas} />
+            <ProjectManagement
+              selectedAreas={selectedProjectAreas}
+              isNewProjectDialogOpen={isNewProjectDialogOpen}
+              onNewProjectDialogChange={setIsNewProjectDialogOpen}
+            />
           </div>
         ) : activeView === "areas" ? (
           renderAreasView()

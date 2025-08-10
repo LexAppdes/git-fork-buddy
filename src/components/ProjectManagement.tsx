@@ -110,13 +110,28 @@ const getStatusLabel = (status: string) => {
 
 interface ProjectManagementProps {
   selectedAreas?: string[];
+  isNewProjectDialogOpen?: boolean;
+  onNewProjectDialogChange?: (open: boolean) => void;
 }
 
-export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps) {
+export function ProjectManagement({
+  selectedAreas = [],
+  isNewProjectDialogOpen: externalDialogOpen,
+  onNewProjectDialogChange
+}: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
+
+  // Use external dialog state if provided
+  const dialogOpen = externalDialogOpen !== undefined ? externalDialogOpen : isNewProjectDialogOpen;
+  const setDialogOpen = (open: boolean) => {
+    if (onNewProjectDialogChange) {
+      onNewProjectDialogChange(open);
+    } else {
+      setIsNewProjectDialogOpen(open);
+    }
+  };
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isProjectViewOpen, setIsProjectViewOpen] = useState(false);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
   const [filterByStatus, setFilterByStatus] = useState<string>("all");
   const [newProject, setNewProject] = useState({
@@ -129,8 +144,7 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
   });
 
   const handleProjectClick = (project: Project) => {
-    setSelectedProject(project);
-    setIsProjectViewOpen(true);
+    setSelectedProject(selectedProject?.id === project.id ? null : project);
   };
 
   const addProject = () => {
@@ -155,7 +169,7 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
       endDate: undefined,
       status: "planning"
     });
-    setIsNewProjectDialogOpen(false);
+    setDialogOpen(false);
   };
 
   const filterAndSortProjects = (projects: Project[]) => {
@@ -197,16 +211,19 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
   };
 
   return (
-    <div className="flex h-full bg-background">
+    <div className="flex bg-background">
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Projects List */}
-        <div className="flex-1 p-6 bg-[#fafafa] border border-[#21222c]/0">
+        <div className="p-6 bg-[#fafafa] border border-[#21222c]/0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filterAndSortProjects(projects).map(project => (
               <div
                 key={project.id}
-                className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
+                className={cn(
+                  "bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer",
+                  selectedProject?.id === project.id && "ring-2 ring-primary bg-primary/5"
+                )}
                 onClick={() => handleProjectClick(project)}
               >
                 <div className="space-y-3">
@@ -216,18 +233,14 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
                       {getStatusLabel(project.status)}
                     </Badge>
                   </div>
-                  
-                  {project.description && (
-                    <p className="text-muted-foreground text-sm line-clamp-2">{project.description}</p>
-                  )}
-                  
+
                   <div className="space-y-2 text-xs">
                     <div>
                       <span className="bg-muted text-muted-foreground px-2 py-1 rounded">
                         {projectAreas.find(a => a.id === project.area)?.name || project.area}
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3 text-muted-foreground shrink-0" />
                       <span className="text-muted-foreground truncate">
@@ -239,49 +252,162 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
               </div>
             ))}
           </div>
+
+          {/* Project Details Section */}
+          {selectedProject && (
+            <div className="mt-8 bg-card border border-border rounded-lg p-6 shadow-soft">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-card-foreground">{selectedProject.title}</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedProject(null)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  ✕
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                {selectedProject.description && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Description</Label>
+                    <p className="mt-1 text-foreground">{selectedProject.description}</p>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Area</Label>
+                    <p className="mt-1 text-foreground">
+                      {projectAreas.find(a => a.id === selectedProject.area)?.name || selectedProject.area}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <div className="mt-1">
+                      <Badge className={cn(getStatusColor(selectedProject.status))}>
+                        {getStatusLabel(selectedProject.status)}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Timeline</Label>
+                  <p className="mt-1 text-foreground">
+                    {formatDateRange(selectedProject.startDate, selectedProject.endDate)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Project Details Dialog */}
-      {selectedProject && (
-        <Dialog open={isProjectViewOpen} onOpenChange={setIsProjectViewOpen}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="text-xl">{selectedProject.title}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              {selectedProject.description && (
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Description</Label>
-                  <p className="mt-1 text-foreground">{selectedProject.description}</p>
-                </div>
-              )}
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Area</Label>
-                  <p className="mt-1 text-foreground">
-                    {projectAreas.find(a => a.id === selectedProject.area)?.name || selectedProject.area}
-                  </p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Status</Label>
-                  <Badge className={cn("mt-1", getStatusColor(selectedProject.status))}>
-                    {getStatusLabel(selectedProject.status)}
-                  </Badge>
-                </div>
+      {/* New Project Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Create New Project</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                value={newProject.title}
+                onChange={(e) => setNewProject(prev => ({ ...prev, title: e.target.value }))}
+                placeholder="Enter project title"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={newProject.description}
+                onChange={(e) => setNewProject(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Enter project description"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="area">Area</Label>
+              <Select value={newProject.area} onValueChange={(value) => setNewProject(prev => ({ ...prev, area: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select area" />
+                </SelectTrigger>
+                <SelectContent>
+                  {projectAreas.map(area => (
+                    <SelectItem key={area.id} value={area.id}>{area.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label>Start Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="justify-start text-left font-normal">
+                      <Calendar className="mr-2 h-4 w-4" />
+                      {newProject.startDate ? format(newProject.startDate, "PPP") : "Pick start date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <CalendarComponent
+                      mode="single"
+                      selected={newProject.startDate}
+                      onSelect={(date) => setNewProject(prev => ({ ...prev, startDate: date }))}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
-              
-              <div>
-                <Label className="text-sm font-medium text-muted-foreground">Timeline</Label>
-                <p className="mt-1 text-foreground">
-                  {formatDateRange(selectedProject.startDate, selectedProject.endDate)}
-                </p>
+              <div className="grid gap-2">
+                <Label>End Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="justify-start text-left font-normal">
+                      <Calendar className="mr-2 h-4 w-4" />
+                      {newProject.endDate ? format(newProject.endDate, "PPP") : "Pick end date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <CalendarComponent
+                      mode="single"
+                      selected={newProject.endDate}
+                      onSelect={(date) => setNewProject(prev => ({ ...prev, endDate: date }))}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      )}
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select value={newProject.status} onValueChange={(value: Project["status"]) => setNewProject(prev => ({ ...prev, status: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="planning">Planning</SelectItem>
+                  <SelectItem value="in-progress">In Progress</SelectItem>
+                  <SelectItem value="on-hold">On Hold</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={addProject}>
+              Create Project
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
