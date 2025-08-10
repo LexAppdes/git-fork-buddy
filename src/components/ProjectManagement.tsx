@@ -199,14 +199,14 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
   return (
     <div className="flex h-full bg-background">
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Projects List */}
-        <div className="flex-1 min-w-0 p-6 bg-[#fafafa] border border-[#21222c]/0">
-          <div className="flex w-full gap-4 overflow-x-auto">
+        <div className="flex-1 p-6 bg-[#fafafa] border border-[#21222c]/0 overflow-hidden">
+          <div className="flex gap-4 overflow-x-auto pb-4">
             {filterAndSortProjects(projects).map(project => (
               <div
                 key={project.id}
-                className="flex-none w-[calc((100%-48px)/4)] min-w-[240px] bg-card border border-border rounded-lg p-6 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
+                className="flex-none w-80 bg-card border border-border rounded-lg p-6 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
                 onClick={() => handleProjectClick(project)}
               >
                 <div className="flex items-start justify-between">
