@@ -217,10 +217,6 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
                     </Badge>
                   </div>
 
-                  {project.description && (
-                    <p className="text-muted-foreground text-sm line-clamp-2">{project.description}</p>
-                  )}
-
                   <div className="space-y-2 text-xs">
                     <div>
                       <span className="bg-muted text-muted-foreground px-2 py-1 rounded">
