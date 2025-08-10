@@ -116,7 +116,6 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isProjectViewOpen, setIsProjectViewOpen] = useState(false);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
   const [filterByStatus, setFilterByStatus] = useState<string>("all");
   const [newProject, setNewProject] = useState({
@@ -129,8 +128,7 @@ export function ProjectManagement({ selectedAreas = [] }: ProjectManagementProps
   });
 
   const handleProjectClick = (project: Project) => {
-    setSelectedProject(project);
-    setIsProjectViewOpen(true);
+    setSelectedProject(selectedProject?.id === project.id ? null : project);
   };
 
   const addProject = () => {
