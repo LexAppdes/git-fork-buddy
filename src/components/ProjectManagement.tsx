@@ -246,7 +246,7 @@ export function ProjectManagement({
 
                   <div className="space-y-2 text-xs">
                     <div className="text-muted-foreground truncate">
-                      {formatDateRange(project.startDate, project.endDate)}
+                      {formatEndDate(project.startDate, project.endDate)}
                     </div>
                     <div className="flex items-center gap-1">
                     </div>
