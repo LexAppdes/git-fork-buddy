@@ -167,7 +167,7 @@ export function ProjectManagement({
       area: "",
       startDate: undefined,
       endDate: undefined,
-      status: "planning"
+      status: "lead"
     });
     setDialogOpen(false);
   };
