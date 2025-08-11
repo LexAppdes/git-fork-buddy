@@ -39,7 +39,7 @@ const mockProjects: Project[] = [
     area: "development",
     startDate: new Date("2024-02-01"),
     endDate: new Date("2024-06-30"),
-    status: "planning"
+    status: "lead"
   },
   {
     id: "3",
