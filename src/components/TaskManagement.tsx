@@ -609,14 +609,9 @@ export function TaskManagement() {
         <div className="flex items-center justify-between px-6 py-[18px] pb-5 bg-white border-[#e2e2e2]">
           <nav className="flex items-center gap-1 rounded-lg w-fit">
             {taskViews.map(view => {
-            const Icon = view.icon;
             const isActive = activeView === view.id;
             return <button key={view.id} onClick={() => setActiveView(view.id)} className={cn("flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200", isActive ? "bg-background text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground hover:bg-background/50")}>
-                  <Icon className="w-4 h-4" />
                   <span>{view.label}</span>
-                  <span className={cn("text-xs px-1.5 py-0.5 rounded-full min-w-[20px] text-center", isActive ? "bg-primary text-primary-foreground" : "bg-muted-foreground/20 text-muted-foreground")}>
-                    {view.count}
-                  </span>
                 </button>;
           })}
           </nav>
