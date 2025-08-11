@@ -66,7 +66,7 @@ const mockProjects: Project[] = [
     area: "hr",
     startDate: new Date("2024-04-01"),
     endDate: new Date("2024-05-15"),
-    status: "on-hold"
+    status: "archive"
   }
 ];
 
