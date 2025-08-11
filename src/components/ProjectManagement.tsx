@@ -80,14 +80,14 @@ const projectAreas = [
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "planning":
-      return "bg-muted text-muted-foreground";
-    case "in-progress":
-      return "bg-primary text-primary-foreground";
-    case "on-hold":
-      return "bg-amber-500 text-white";
-    case "completed":
-      return "bg-task-low text-white";
+    case "lead":
+      return "bg-red-500 text-white";
+    case "active":
+      return "bg-orange-500 text-white";
+    case "finished":
+      return "bg-green-500 text-white";
+    case "archive":
+      return "bg-gray-600 text-white";
     default:
       return "bg-muted text-muted-foreground";
   }
