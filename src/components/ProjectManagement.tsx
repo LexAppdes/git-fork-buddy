@@ -19,7 +19,7 @@ interface Project {
   area: string;
   startDate?: Date;
   endDate?: Date;
-  status: "planning" | "in-progress" | "on-hold" | "completed";
+  status: "lead" | "active" | "finished" | "archive";
 }
 
 const mockProjects: Project[] = [
