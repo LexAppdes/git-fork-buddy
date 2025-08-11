@@ -93,6 +93,21 @@ const getStatusColor = (status: string) => {
   }
 };
 
+const getStatusCircleColor = (status: string) => {
+  switch (status) {
+    case "lead":
+      return "bg-red-500";
+    case "active":
+      return "bg-orange-500";
+    case "finished":
+      return "bg-green-500";
+    case "archive":
+      return "bg-gray-600";
+    default:
+      return "bg-muted";
+  }
+};
+
 const getStatusLabel = (status: string) => {
   switch (status) {
     case "lead":
@@ -241,9 +256,10 @@ export function ProjectManagement({
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <Badge className={cn("text-xs shrink-0", getStatusColor(project.status))}>
-                      {getStatusLabel(project.status)}
-                    </Badge>
+                    <div 
+                      className={cn("w-3 h-3 rounded-full shrink-0", getStatusCircleColor(project.status))}
+                      title={getStatusLabel(project.status)}
+                    />
                   </div>
                   <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
 
