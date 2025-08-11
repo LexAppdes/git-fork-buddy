@@ -210,6 +210,16 @@ export function ProjectManagement({
     return `Ends ${format(endDate!, "MMM d, yyyy")}`;
   };
 
+  const formatEndDate = (startDate?: Date, endDate?: Date) => {
+    if (endDate) {
+      return format(endDate, "MMM d, yyyy");
+    }
+    if (startDate) {
+      return `Starts ${format(startDate, "MMM d, yyyy")}`;
+    }
+    return "No end date";
+  };
+
   return (
     <div className="flex bg-background">
       {/* Main Content */}
