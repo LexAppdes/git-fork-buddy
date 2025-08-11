@@ -95,14 +95,14 @@ const getStatusColor = (status: string) => {
 
 const getStatusLabel = (status: string) => {
   switch (status) {
-    case "planning":
-      return "Planning";
-    case "in-progress":
-      return "In Progress";
-    case "on-hold":
-      return "On Hold";
-    case "completed":
-      return "Completed";
+    case "lead":
+      return "Lead";
+    case "active":
+      return "Active";
+    case "finished":
+      return "Finished";
+    case "archive":
+      return "Archive";
     default:
       return "Unknown";
   }
