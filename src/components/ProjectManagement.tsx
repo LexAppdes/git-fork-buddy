@@ -19,7 +19,7 @@ interface Project {
   area: string;
   startDate?: Date;
   endDate?: Date;
-  status: "planning" | "in-progress" | "on-hold" | "completed";
+  status: "lead" | "active" | "finished" | "archive";
 }
 
 const mockProjects: Project[] = [
@@ -30,7 +30,7 @@ const mockProjects: Project[] = [
     area: "design",
     startDate: new Date("2024-01-15"),
     endDate: new Date("2024-03-15"),
-    status: "in-progress"
+    status: "active"
   },
   {
     id: "2",
@@ -39,7 +39,7 @@ const mockProjects: Project[] = [
     area: "development",
     startDate: new Date("2024-02-01"),
     endDate: new Date("2024-06-30"),
-    status: "planning"
+    status: "lead"
   },
   {
     id: "3",
@@ -48,7 +48,7 @@ const mockProjects: Project[] = [
     area: "marketing",
     startDate: new Date("2024-01-01"),
     endDate: new Date("2024-03-31"),
-    status: "in-progress"
+    status: "active"
   },
   {
     id: "4",
@@ -57,7 +57,7 @@ const mockProjects: Project[] = [
     area: "facilities",
     startDate: new Date("2023-12-01"),
     endDate: new Date("2024-01-31"),
-    status: "completed"
+    status: "finished"
   },
   {
     id: "5",
@@ -66,7 +66,7 @@ const mockProjects: Project[] = [
     area: "hr",
     startDate: new Date("2024-04-01"),
     endDate: new Date("2024-05-15"),
-    status: "on-hold"
+    status: "archive"
   }
 ];
 
@@ -80,14 +80,14 @@ const projectAreas = [
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "planning":
-      return "bg-muted text-muted-foreground";
-    case "in-progress":
-      return "bg-primary text-primary-foreground";
-    case "on-hold":
-      return "bg-amber-500 text-white";
-    case "completed":
-      return "bg-task-low text-white";
+    case "lead":
+      return "bg-red-500 text-white";
+    case "active":
+      return "bg-orange-500 text-white";
+    case "finished":
+      return "bg-green-500 text-white";
+    case "archive":
+      return "bg-gray-600 text-white";
     default:
       return "bg-muted text-muted-foreground";
   }
@@ -95,14 +95,14 @@ const getStatusColor = (status: string) => {
 
 const getStatusLabel = (status: string) => {
   switch (status) {
-    case "planning":
-      return "Planning";
-    case "in-progress":
-      return "In Progress";
-    case "on-hold":
-      return "On Hold";
-    case "completed":
-      return "Completed";
+    case "lead":
+      return "Lead";
+    case "active":
+      return "Active";
+    case "finished":
+      return "Finished";
+    case "archive":
+      return "Archive";
     default:
       return "Unknown";
   }
@@ -140,7 +140,7 @@ export function ProjectManagement({
     area: "",
     startDate: undefined as Date | undefined,
     endDate: undefined as Date | undefined,
-    status: "planning" as Project["status"]
+    status: "lead" as Project["status"]
   });
 
   const handleProjectClick = (project: Project) => {
@@ -167,7 +167,7 @@ export function ProjectManagement({
       area: "",
       startDate: undefined,
       endDate: undefined,
-      status: "planning"
+      status: "lead"
     });
     setDialogOpen(false);
   };
@@ -186,7 +186,10 @@ export function ProjectManagement({
 
     return [...filteredProjects].sort((a, b) => {
       if (sortBy === "status") {
-        return a.status.localeCompare(b.status);
+        const statusOrder = { lead: 0, active: 1, finished: 2, archive: 3 };
+        const aOrder = statusOrder[a.status as keyof typeof statusOrder] ?? 999;
+        const bOrder = statusOrder[b.status as keyof typeof statusOrder] ?? 999;
+        return aOrder - bOrder;
       } else if (sortBy === "date") {
         if (!a.startDate && !b.startDate) return 0;
         if (!a.startDate) return 1;
@@ -210,6 +213,16 @@ export function ProjectManagement({
     return `Ends ${format(endDate!, "MMM d, yyyy")}`;
   };
 
+  const formatEndDate = (startDate?: Date, endDate?: Date) => {
+    if (endDate) {
+      return format(endDate, "MMM d, yyyy");
+    }
+    if (startDate) {
+      return `Starts ${format(startDate, "MMM d, yyyy")}`;
+    }
+    return "No end date";
+  };
+
   return (
     <div className="flex bg-background">
       {/* Main Content */}
@@ -228,27 +241,23 @@ export function ProjectManagement({
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
                     <Badge className={cn("text-xs shrink-0", getStatusColor(project.status))}>
                       {getStatusLabel(project.status)}
                     </Badge>
                   </div>
+                  <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
 
                   <div className="space-y-2 text-xs">
-                    <div>
-                      <span className="bg-muted text-muted-foreground px-2 py-1 rounded">
-                        {projectAreas.find(a => a.id === project.area)?.name || project.area}
-                      </span>
+                    <div className="text-muted-foreground truncate">
+                      {formatEndDate(project.startDate, project.endDate)}
                     </div>
-
                     <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-muted-foreground shrink-0" />
-                      <span className="text-muted-foreground truncate">
-                        {formatDateRange(project.startDate, project.endDate)}
-                      </span>
                     </div>
                   </div>
                 </div>
+                <span className="bg-muted text-muted-foreground px-2 py-1 rounded">
+                  {projectAreas.find(a => a.id === project.area)?.name || project.area}
+                </span>
               </div>
             ))}
           </div>
@@ -390,10 +399,10 @@ export function ProjectManagement({
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="planning">Planning</SelectItem>
-                  <SelectItem value="in-progress">In Progress</SelectItem>
-                  <SelectItem value="on-hold">On Hold</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="lead">Lead</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="finished">Finished</SelectItem>
+                  <SelectItem value="archive">Archive</SelectItem>
                 </SelectContent>
               </Select>
             </div>

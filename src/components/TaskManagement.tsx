@@ -609,14 +609,9 @@ export function TaskManagement() {
         <div className="flex items-center justify-between px-6 py-[18px] pb-5 bg-white border-[#e2e2e2]">
           <nav className="flex items-center gap-1 rounded-lg w-fit">
             {taskViews.map(view => {
-            const Icon = view.icon;
             const isActive = activeView === view.id;
             return <button key={view.id} onClick={() => setActiveView(view.id)} className={cn("flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200", isActive ? "bg-background text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground hover:bg-background/50")}>
-                  <Icon className="w-4 h-4" />
                   <span>{view.label}</span>
-                  <span className={cn("text-xs px-1.5 py-0.5 rounded-full min-w-[20px] text-center", isActive ? "bg-primary text-primary-foreground" : "bg-muted-foreground/20 text-muted-foreground")}>
-                    {view.count}
-                  </span>
                 </button>;
           })}
           </nav>
@@ -732,169 +727,173 @@ export function TaskManagement() {
                   </div>
                 </PopoverContent>
               </Popover>
-              <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    className="gap-2"
-                    size="sm"
-                    onClick={() => {
-                      if (activeView === "projects") {
-                        setIsNewProjectDialogOpen(true);
-                      } else {
-                        setIsNewTaskDialogOpen(true);
-                      }
-                    }}
-                  >
-                    <Plus className="w-4 h-4" />
-                    {activeView === "projects" ? "New Project" : "New Task"}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Create New Task</DialogTitle>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="title">Title</Label>
-                      <Input
-                        id="title"
-                        value={newTask.title}
-                        onChange={(e) =>
-                          setNewTask((prev) => ({
-                            ...prev,
-                            title: e.target.value,
-                          }))
-                        }
-                        placeholder="Enter task title"
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="description">Description</Label>
-                      <Textarea
-                        id="description"
-                        value={newTask.description}
-                        onChange={(e) =>
-                          setNewTask((prev) => ({
-                            ...prev,
-                            description: e.target.value,
-                          }))
-                        }
-                        placeholder="Enter task description (optional)"
-                        rows={3}
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="priority">Priority</Label>
-                      <Select
-                        value={newTask.priority}
-                        onValueChange={(value) =>
-                          setNewTask((prev) => ({
-                            ...prev,
-                            priority: value as Task["priority"],
-                          }))
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select priority" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="low">Low</SelectItem>
-                          <SelectItem value="medium">Medium</SelectItem>
-                          <SelectItem value="urgent">Urgent</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="area">Area</Label>
-                      <Select
-                        value={newTask.area}
-                        onValueChange={(value) =>
-                          setNewTask((prev) => ({
-                            ...prev,
-                            area: value,
-                          }))
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select area" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {mockAreas.map((area) => (
-                            <SelectItem key={area.id} value={area.id}>
-                              {area.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="timeframe">Timeframe</Label>
-                      <Select
-                        value={newTask.timeframe}
-                        onValueChange={(value) =>
-                          setNewTask((prev) => ({
-                            ...prev,
-                            timeframe: value as Task["timeframe"],
-                          }))
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select timeframe" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="NOW">Now</SelectItem>
-                          <SelectItem value="NEXT">Next</SelectItem>
-                          <SelectItem value="LATER">Later</SelectItem>
-                          <SelectItem value="SOMEDAY">Someday</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="dueDate">Due Date</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !newTask.dueDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {newTask.dueDate ? (
-                              format(newTask.dueDate, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <CalendarComponent
-                            mode="single"
-                            selected={newTask.dueDate}
-                            onSelect={(date) =>
-                              setNewTask((prev) => ({
-                                ...prev,
-                                dueDate: date,
-                              }))
-                            }
-                            initialFocus
-                            className="p-3 pointer-events-auto"
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => setIsNewTaskDialogOpen(false)}>
-                      Cancel
+              {activeView === "projects" ? (
+                <Button
+                  className="gap-2"
+                  size="sm"
+                  onClick={() => setIsNewProjectDialogOpen(true)}
+                >
+                  <Plus className="w-4 h-4" />
+                  New Project
+                </Button>
+              ) : (
+                <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="gap-2"
+                      size="sm"
+                    >
+                      <Plus className="w-4 h-4" />
+                      New Task
                     </Button>
-                    <Button onClick={handleCreateTask} disabled={!newTask.title.trim()}>
-                      Create Task
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Create New Task</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="title">Title</Label>
+                        <Input
+                          id="title"
+                          value={newTask.title}
+                          onChange={(e) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              title: e.target.value,
+                            }))
+                          }
+                          placeholder="Enter task title"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                          id="description"
+                          value={newTask.description}
+                          onChange={(e) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              description: e.target.value,
+                            }))
+                          }
+                          placeholder="Enter task description (optional)"
+                          rows={3}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="priority">Priority</Label>
+                        <Select
+                          value={newTask.priority}
+                          onValueChange={(value) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              priority: value as Task["priority"],
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select priority" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">Low</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="urgent">Urgent</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="area">Area</Label>
+                        <Select
+                          value={newTask.area}
+                          onValueChange={(value) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              area: value,
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select area" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mockAreas.map((area) => (
+                              <SelectItem key={area.id} value={area.id}>
+                                {area.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="timeframe">Timeframe</Label>
+                        <Select
+                          value={newTask.timeframe}
+                          onValueChange={(value) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              timeframe: value as Task["timeframe"],
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select timeframe" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="NOW">Now</SelectItem>
+                            <SelectItem value="NEXT">Next</SelectItem>
+                            <SelectItem value="LATER">Later</SelectItem>
+                            <SelectItem value="SOMEDAY">Someday</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="dueDate">Due Date</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !newTask.dueDate && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {newTask.dueDate ? (
+                                format(newTask.dueDate, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <CalendarComponent
+                              mode="single"
+                              selected={newTask.dueDate}
+                              onSelect={(date) =>
+                                setNewTask((prev) => ({
+                                  ...prev,
+                                  dueDate: date,
+                                }))
+                              }
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <Button variant="outline" onClick={() => setIsNewTaskDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleCreateTask} disabled={!newTask.title.trim()}>
+                        Create Task
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
           </div>
         </div>
