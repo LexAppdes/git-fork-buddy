@@ -209,7 +209,7 @@ const formatTaskDate = (date: Date) => {
   return format(date, "MMM d");
 };
 export function TaskManagement() {
-  const [tasks, setTasks] = useState<Task[]>(mockTasks);
+  const [tasks, setTasks] = useState<Task[]>([...mockTasks]);
   const [activeView, setActiveView] = useState("today");
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [isAreasExpanded, setIsAreasExpanded] = useState(true);

@@ -137,7 +137,7 @@ export function ProjectManagement({
   isNewProjectDialogOpen: externalDialogOpen,
   onNewProjectDialogChange
 }: ProjectManagementProps) {
-  const [projects, setProjects] = useState<Project[]>(mockProjects);
+  const [projects, setProjects] = useState<Project[]>([...mockProjects]);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
 
   // Use external dialog state if provided
