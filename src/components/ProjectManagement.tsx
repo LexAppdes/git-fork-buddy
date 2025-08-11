@@ -27,7 +27,7 @@ const mockProjects: Project[] = [
     id: "1",
     title: "Website Redesign",
     description: "Complete overhaul of company website with modern design",
-    area: "design",
+    area: "work",
     startDate: new Date("2024-01-15"),
     endDate: new Date("2024-03-15"),
     status: "active"
@@ -36,34 +36,34 @@ const mockProjects: Project[] = [
     id: "2",
     title: "Mobile App Development",
     description: "Native iOS and Android app for customer portal",
-    area: "development",
+    area: "work",
     startDate: new Date("2024-02-01"),
     endDate: new Date("2024-06-30"),
     status: "lead"
   },
   {
     id: "3",
-    title: "Marketing Campaign Q1",
-    description: "Launch new product marketing campaign",
-    area: "marketing",
+    title: "Morning Fitness Routine",
+    description: "Establish a consistent morning exercise routine",
+    area: "health",
     startDate: new Date("2024-01-01"),
     endDate: new Date("2024-03-31"),
     status: "active"
   },
   {
     id: "4",
-    title: "Office Renovation",
-    description: "Renovate office space for better collaboration",
-    area: "facilities",
+    title: "Home Organization",
+    description: "Declutter and organize living spaces",
+    area: "order",
     startDate: new Date("2023-12-01"),
     endDate: new Date("2024-01-31"),
     status: "finished"
   },
   {
     id: "5",
-    title: "Team Training Program",
-    description: "Implement comprehensive training for new technologies",
-    area: "hr",
+    title: "Family Vacation Planning",
+    description: "Plan summer vacation with extended family",
+    area: "family",
     startDate: new Date("2024-04-01"),
     endDate: new Date("2024-05-15"),
     status: "archive"
@@ -71,11 +71,14 @@ const mockProjects: Project[] = [
 ];
 
 const projectAreas = [
-  { id: "design", name: "Design", color: "bg-primary" },
-  { id: "development", name: "Development", color: "bg-task-medium" },
-  { id: "marketing", name: "Marketing", color: "bg-task-urgent" },
-  { id: "facilities", name: "Facilities", color: "bg-task-low" },
-  { id: "hr", name: "Human Resources", color: "bg-destructive" }
+  { id: "work", name: "Work", color: "bg-primary" },
+  { id: "health", name: "Health", color: "bg-task-medium" },
+  { id: "self-care", name: "Self-care", color: "bg-task-low" },
+  { id: "psychology", name: "Psychology", color: "bg-destructive" },
+  { id: "fun", name: "Fun", color: "bg-task-urgent" },
+  { id: "family", name: "Family", color: "bg-green-500" },
+  { id: "chores", name: "Chores", color: "bg-yellow-500" },
+  { id: "order", name: "Order", color: "bg-purple-500" }
 ];
 
 const getStatusColor = (status: string) => {

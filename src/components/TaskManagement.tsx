@@ -100,15 +100,15 @@ const mockTasks: Task[] = [{
   priority: "low",
   completed: false,
   dueDate: today,
-  area: "personal",
+  area: "chores",
   timeframe: "NOW"
 }, {
   id: "9",
-  title: "Read React documentation",
+  title: "Read psychology book",
   priority: "medium",
   completed: false,
   dueDate: today,
-  area: "learning",
+  area: "psychology",
   timeframe: "NEXT"
 }, {
   id: "10",
@@ -131,7 +131,7 @@ const mockTasks: Task[] = [{
   title: "Buy groceries for dinner",
   priority: "low",
   completed: true,
-  area: "personal",
+  area: "chores",
   completedAt: today,
   timeframe: "NOW"
 }, {
@@ -144,10 +144,10 @@ const mockTasks: Task[] = [{
   timeframe: "NEXT"
 }, {
   id: "14",
-  title: "Book flight tickets",
+  title: "Plan family outing",
   priority: "urgent",
   completed: true,
-  area: "personal",
+  area: "family",
   completedAt: twoDaysAgo,
   timeframe: "LATER"
 }];
@@ -157,28 +157,51 @@ const mockAreas: Area[] = [{
   color: "bg-primary",
   taskCount: 8
 }, {
-  id: "personal",
-  name: "Personal",
+  id: "health",
+  name: "Health",
   color: "bg-task-medium",
   taskCount: 5
 }, {
-  id: "learning",
-  name: "Learning",
+  id: "self-care",
+  name: "Self-care",
   color: "bg-task-low",
   taskCount: 3
 }, {
-  id: "health",
-  name: "Health & Fitness",
+  id: "psychology",
+  name: "Psychology",
   color: "bg-destructive",
   taskCount: 2
+}, {
+  id: "fun",
+  name: "Fun",
+  color: "bg-task-urgent",
+  taskCount: 4
+}, {
+  id: "family",
+  name: "Family",
+  color: "bg-green-500",
+  taskCount: 3
+}, {
+  id: "chores",
+  name: "Chores",
+  color: "bg-yellow-500",
+  taskCount: 2
+}, {
+  id: "order",
+  name: "Order",
+  color: "bg-purple-500",
+  taskCount: 1
 }];
 
 const projectAreas = [
-  { id: "design", name: "Design", color: "bg-primary", taskCount: 1 },
-  { id: "development", name: "Development", color: "bg-task-medium", taskCount: 1 },
-  { id: "marketing", name: "Marketing", color: "bg-task-urgent", taskCount: 1 },
-  { id: "facilities", name: "Facilities", color: "bg-task-low", taskCount: 1 },
-  { id: "hr", name: "Human Resources", color: "bg-destructive", taskCount: 1 }
+  { id: "work", name: "Work", color: "bg-primary", taskCount: 1 },
+  { id: "health", name: "Health", color: "bg-task-medium", taskCount: 1 },
+  { id: "self-care", name: "Self-care", color: "bg-task-low", taskCount: 1 },
+  { id: "psychology", name: "Psychology", color: "bg-destructive", taskCount: 1 },
+  { id: "fun", name: "Fun", color: "bg-task-urgent", taskCount: 1 },
+  { id: "family", name: "Family", color: "bg-green-500", taskCount: 1 },
+  { id: "chores", name: "Chores", color: "bg-yellow-500", taskCount: 1 },
+  { id: "order", name: "Order", color: "bg-purple-500", taskCount: 1 }
 ];
 const formatTaskDate = (date: Date) => {
   if (isToday(date)) return "Today";
