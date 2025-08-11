@@ -420,9 +420,9 @@ export function TaskManagement() {
                                {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
                                    {formatTaskDate(task.dueDate)}
                                  </span>}
-                               {task.area && <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
-                                   {mockAreas.find(a => a.id === task.area)?.name}
-                                 </span>}
+                                {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
+                                    {mockAreas.find(a => a.id === task.area)?.name}
+                                  </span>}
                                <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
                                  {task.timeframe}
                                </span>
@@ -485,9 +485,9 @@ export function TaskManagement() {
                             </h4>
                             {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
                              <div className="flex items-center gap-2 mt-2">
-                               {task.area && <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
-                                   {mockAreas.find(a => a.id === task.area)?.name}
-                                 </span>}
+                                {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
+                                    {mockAreas.find(a => a.id === task.area)?.name}
+                                  </span>}
                                <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
                                  {task.timeframe}
                                </span>
@@ -518,9 +518,9 @@ export function TaskManagement() {
                    {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
                        {formatTaskDate(task.dueDate)}
                      </span>}
-                   {task.area && <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
-                       {mockAreas.find(a => a.id === task.area)?.name}
-                     </span>}
+                    {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
+                        {mockAreas.find(a => a.id === task.area)?.name}
+                      </span>}
                    <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
                      {task.timeframe}
                    </span>
@@ -657,9 +657,10 @@ export function TaskManagement() {
                           : [...prev, area.id]
                       )
                     }
-                    className="cursor-pointer hover:opacity-80 transition-opacity px-[10px] py-1"
+                    className="cursor-pointer hover:opacity-80 transition-opacity px-[10px] py-1 flex items-center gap-2"
                   >
-                    {area.name} ({area.taskCount})
+                    <div className={cn("w-2 h-2 rounded-full", area.color)} />
+                    {area.name}
                   </Badge>
                 ))}
               {activeView === "projects" &&
@@ -674,9 +675,10 @@ export function TaskManagement() {
                           : [...prev, area.id]
                       )
                     }
-                    className="cursor-pointer hover:opacity-80 transition-opacity px-[10px] py-1"
+                    className="cursor-pointer hover:opacity-80 transition-opacity px-[10px] py-1 flex items-center gap-2"
                   >
-                    {area.name} ({area.taskCount})
+                    <div className={cn("w-2 h-2 rounded-full", area.color)} />
+                    {area.name}
                   </Badge>
                 ))}
             </div>
@@ -1003,7 +1005,7 @@ export function TaskManagement() {
                   <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
                   <div className="flex items-center gap-2">
                     <div className={cn("w-3 h-3 rounded-full", mockAreas.find(a => a.id === selectedTask.area)?.color || "bg-muted")} />
-                    <span className="text-sm bg-muted text-muted-foreground px-3 py-1 rounded">
+                    <span className={cn("text-xs text-white px-3 py-1 rounded", mockAreas.find(a => a.id === selectedTask.area)?.color || "bg-muted")}>
                       {mockAreas.find(a => a.id === selectedTask.area)?.name}
                     </span>
                   </div>

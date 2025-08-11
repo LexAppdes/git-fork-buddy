@@ -80,7 +80,7 @@ const TaskCard = ({
               {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
                   {formatTaskDate(task.dueDate)}
                 </span>}
-              {task.area && <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
+              {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === task.area)?.color || "bg-muted")}>
                   {areas.find(a => a.id === task.area)?.name}
                 </span>}
             </div>

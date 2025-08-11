@@ -274,7 +274,7 @@ export function ProjectManagement({
                     </div>
                   </div>
                 </div>
-                <span className="bg-muted text-muted-foreground px-2 py-1 rounded">
+                <span className={cn("text-xs text-white px-2 py-1 rounded", projectAreas.find(a => a.id === project.area)?.color || "bg-muted")}>
                   {projectAreas.find(a => a.id === project.area)?.name || project.area}
                 </span>
               </div>
