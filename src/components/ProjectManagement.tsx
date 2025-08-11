@@ -228,27 +228,23 @@ export function ProjectManagement({
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
                     <Badge className={cn("text-xs shrink-0", getStatusColor(project.status))}>
                       {getStatusLabel(project.status)}
                     </Badge>
                   </div>
+                  <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
 
                   <div className="space-y-2 text-xs">
-                    <div>
-                      <span className="bg-muted text-muted-foreground px-2 py-1 rounded">
-                        {projectAreas.find(a => a.id === project.area)?.name || project.area}
-                      </span>
+                    <div className="text-muted-foreground truncate">
+                      {formatDateRange(project.startDate, project.endDate)}
                     </div>
-
                     <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-muted-foreground shrink-0" />
-                      <span className="text-muted-foreground truncate">
-                        {formatDateRange(project.startDate, project.endDate)}
-                      </span>
                     </div>
                   </div>
                 </div>
+                <span className="bg-muted text-muted-foreground px-2 py-1 rounded">
+                  {projectAreas.find(a => a.id === project.area)?.name || project.area}
+                </span>
               </div>
             ))}
           </div>
