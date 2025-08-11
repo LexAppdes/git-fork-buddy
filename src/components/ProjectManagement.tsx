@@ -186,7 +186,10 @@ export function ProjectManagement({
 
     return [...filteredProjects].sort((a, b) => {
       if (sortBy === "status") {
-        return a.status.localeCompare(b.status);
+        const statusOrder = { lead: 0, active: 1, finished: 2, archive: 3 };
+        const aOrder = statusOrder[a.status as keyof typeof statusOrder] ?? 999;
+        const bOrder = statusOrder[b.status as keyof typeof statusOrder] ?? 999;
+        return aOrder - bOrder;
       } else if (sortBy === "date") {
         if (!a.startDate && !b.startDate) return 0;
         if (!a.startDate) return 1;
