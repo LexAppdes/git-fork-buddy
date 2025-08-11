@@ -140,7 +140,7 @@ export function ProjectManagement({
     area: "",
     startDate: undefined as Date | undefined,
     endDate: undefined as Date | undefined,
-    status: "planning" as Project["status"]
+    status: "lead" as Project["status"]
   });
 
   const handleProjectClick = (project: Project) => {
