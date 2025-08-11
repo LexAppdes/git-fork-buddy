@@ -1,0 +1,1017 @@
+import { useState, useEffect } from "react";
+import { Calendar, Inbox, Clock, FolderOpen, ChevronDown, ChevronRight, Plus, MoreHorizontal, Filter, ArrowUpDown, CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format, isToday, isTomorrow, isAfter, startOfDay, isYesterday, differenceInDays } from "date-fns";
+import { KanbanBoard } from "@/components/KanbanBoard";
+import { Badge } from "@/components/ui/badge";
+import { ProjectManagement } from "@/components/ProjectManagement";
+interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  priority: "low" | "medium" | "urgent";
+  completed: boolean;
+  dueDate?: Date;
+  area?: string;
+  completedAt?: Date;
+  timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
+}
+interface Area {
+  id: string;
+  name: string;
+  color: string;
+  taskCount: number;
+}
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+const nextWeek = new Date(today);
+nextWeek.setDate(nextWeek.getDate() + 7);
+const yesterday = new Date(today);
+yesterday.setDate(yesterday.getDate() - 1);
+const twoDaysAgo = new Date(today);
+twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+const mockTasks: Task[] = [{
+  id: "1",
+  title: "Review quarterly reports",
+  priority: "urgent",
+  completed: false,
+  dueDate: today,
+  area: "work",
+  timeframe: "NOW"
+}, {
+  id: "2",
+  title: "Prepare presentation slides",
+  priority: "medium",
+  completed: false,
+  dueDate: tomorrow,
+  area: "work",
+  timeframe: "NEXT"
+}, {
+  id: "3",
+  title: "Call dentist for appointment",
+  priority: "low",
+  completed: false,
+  area: "personal",
+  timeframe: "LATER"
+}, {
+  id: "4",
+  title: "Plan weekend trip",
+  priority: "low",
+  completed: true,
+  area: "personal",
+  completedAt: yesterday,
+  timeframe: "SOMEDAY"
+}, {
+  id: "5",
+  title: "Update project documentation",
+  priority: "medium",
+  completed: false,
+  area: "work",
+  timeframe: "LATER"
+}, {
+  id: "6",
+  title: "Morning workout",
+  priority: "medium",
+  completed: false,
+  dueDate: today,
+  area: "health",
+  timeframe: "NOW"
+}, {
+  id: "7",
+  title: "Team standup meeting",
+  priority: "urgent",
+  completed: false,
+  dueDate: today,
+  area: "work",
+  timeframe: "NOW"
+}, {
+  id: "8",
+  title: "Grocery shopping",
+  priority: "low",
+  completed: false,
+  dueDate: today,
+  area: "personal",
+  timeframe: "NOW"
+}, {
+  id: "9",
+  title: "Read React documentation",
+  priority: "medium",
+  completed: false,
+  dueDate: today,
+  area: "learning",
+  timeframe: "NEXT"
+}, {
+  id: "10",
+  title: "Complete expense report",
+  priority: "urgent",
+  completed: false,
+  dueDate: nextWeek,
+  area: "work",
+  timeframe: "NEXT"
+}, {
+  id: "11",
+  title: "Weekly team meeting",
+  priority: "medium",
+  completed: true,
+  area: "work",
+  completedAt: today,
+  timeframe: "NOW"
+}, {
+  id: "12",
+  title: "Buy groceries for dinner",
+  priority: "low",
+  completed: true,
+  area: "personal",
+  completedAt: today,
+  timeframe: "NOW"
+}, {
+  id: "13",
+  title: "Review code changes",
+  priority: "medium",
+  completed: true,
+  area: "work",
+  completedAt: twoDaysAgo,
+  timeframe: "NEXT"
+}, {
+  id: "14",
+  title: "Book flight tickets",
+  priority: "urgent",
+  completed: true,
+  area: "personal",
+  completedAt: twoDaysAgo,
+  timeframe: "LATER"
+}];
+const mockAreas: Area[] = [{
+  id: "work",
+  name: "Work",
+  color: "bg-primary",
+  taskCount: 8
+}, {
+  id: "personal",
+  name: "Personal",
+  color: "bg-task-medium",
+  taskCount: 5
+}, {
+  id: "learning",
+  name: "Learning",
+  color: "bg-task-low",
+  taskCount: 3
+}, {
+  id: "health",
+  name: "Health & Fitness",
+  color: "bg-destructive",
+  taskCount: 2
+}];
+
+const projectAreas = [
+  { id: "design", name: "Design", color: "bg-primary", taskCount: 1 },
+  { id: "development", name: "Development", color: "bg-task-medium", taskCount: 1 },
+  { id: "marketing", name: "Marketing", color: "bg-task-urgent", taskCount: 1 },
+  { id: "facilities", name: "Facilities", color: "bg-task-low", taskCount: 1 },
+  { id: "hr", name: "Human Resources", color: "bg-destructive", taskCount: 1 }
+];
+const formatTaskDate = (date: Date) => {
+  if (isToday(date)) return "Today";
+  if (isTomorrow(date)) return "Tomorrow";
+  return format(date, "MMM d");
+};
+export function TaskManagement() {
+  const [tasks, setTasks] = useState<Task[]>(mockTasks);
+  const [activeView, setActiveView] = useState("today");
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  const [isAreasExpanded, setIsAreasExpanded] = useState(true);
+  const [expandedAreas, setExpandedAreas] = useState<Record<string, boolean>>({});
+  const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
+  const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [isTaskViewOpen, setIsTaskViewOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<"priority" | "date" | "none">("none");
+  const [showCompleted, setShowCompleted] = useState(false);
+  const [kanbanSelectedAreas, setKanbanSelectedAreas] = useState<string[]>([]);
+  const [selectedProjectAreas, setSelectedProjectAreas] = useState<string[]>([]);
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    priority: "medium" as Task["priority"],
+    dueDate: undefined as Date | undefined,
+    area: "",
+    timeframe: "NOW" as Task["timeframe"]
+  });
+  const handleTaskClick = (task: Task) => {
+    setSelectedTask(task);
+    setIsTaskViewOpen(true);
+  };
+  const toggleTask = (taskId: string) => {
+    setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
+      ...task,
+      completed: !task.completed,
+      completedAt: !task.completed ? new Date() : undefined
+    } : task));
+  };
+  const updateTaskTimeframe = (taskId: string, timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => {
+    setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
+      ...task,
+      timeframe
+    } : task));
+  };
+  const getPriorityLabel = (priority: string) => {
+    switch (priority) {
+      case "urgent":
+        return "Urgent";
+      case "medium":
+        return "Medium";
+      case "low":
+        return "Low";
+      default:
+        return "Unknown";
+    }
+  };
+  const getPriorityBadgeColor = (priority: string) => {
+    switch (priority) {
+      case "urgent":
+        return "bg-destructive text-destructive-foreground";
+      case "medium":
+        return "bg-amber-500 text-white";
+      case "low":
+        return "bg-muted text-muted-foreground";
+      default:
+        return "bg-muted text-muted-foreground";
+    }
+  };
+  const taskViews = [{
+    id: "today",
+    label: "Today",
+    icon: Calendar,
+    count: 6
+  }, {
+    id: "upcoming",
+    label: "Upcoming",
+    icon: Clock,
+    count: 7
+  }, {
+    id: "areas",
+    label: "by Area",
+    icon: FolderOpen,
+    count: 18
+  }, {
+    id: "projects",
+    label: "Projects",
+    icon: FolderOpen,
+    count: 14
+  }, {
+    id: "inbox",
+    label: "Inbox",
+    icon: Inbox,
+    count: 12
+  }, {
+    id: "completed",
+    label: "Completed",
+    icon: Calendar,
+    count: 5
+  }];
+
+  // Auto-select first area when switching to areas view
+  useEffect(() => {
+    if (activeView === "areas" && !selectedArea && mockAreas.length > 0) {
+      setSelectedArea(mockAreas[0].id);
+    }
+  }, [activeView, selectedArea]);
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "urgent":
+        return "border-l-task-urgent";
+      case "medium":
+        return "border-l-task-medium";
+      case "low":
+        return "border-l-task-low";
+      default:
+        return "border-l-border";
+    }
+  };
+  const filterAndSortTasks = (tasks: Task[]) => {
+    // Apply completion filter for all views except completed view
+    let filteredTasks = tasks;
+    if (activeView !== "completed" && !showCompleted) {
+      filteredTasks = tasks.filter(task => !task.completed);
+    }
+    return [...filteredTasks].sort((a, b) => {
+      // Primary sort: For all views except "completed", unchecked tasks come first
+      if (activeView !== "completed") {
+        if (a.completed !== b.completed) {
+          return a.completed ? 1 : -1; // unchecked first, checked last
+        }
+      }
+
+      // Secondary sort: Apply selected sorting option
+      if (sortBy === "priority") {
+        const priorityOrder = {
+          urgent: 3,
+          medium: 2,
+          low: 1
+        };
+        return priorityOrder[b.priority] - priorityOrder[a.priority];
+      } else if (sortBy === "date") {
+        if (!a.dueDate && !b.dueDate) return 0;
+        if (!a.dueDate) return 1;
+        if (!b.dueDate) return -1;
+        return a.dueDate.getTime() - b.dueDate.getTime();
+      }
+      return 0;
+    });
+  };
+  const getRelativeTimeGroup = (date: Date) => {
+    const now = new Date();
+    if (isYesterday(date)) return "yesterday";
+    if (isToday(date)) return "today";
+    if (isTomorrow(date)) return "tomorrow";
+    const daysDiff = differenceInDays(date, now);
+    if (daysDiff > 0 && daysDiff <= 7) return "next 7 days";
+    if (daysDiff > 7 && daysDiff <= 30) return "next 30 days";
+    if (daysDiff > 30) return "later";
+
+    // For past dates that aren't yesterday
+    return "yesterday";
+  };
+  const renderUpcomingView = () => {
+    const upcomingTasks = tasks.filter(task => task.dueDate && !isToday(task.dueDate));
+    const tasksByTimeGroup = upcomingTasks.reduce((acc, task) => {
+      if (!task.dueDate) return acc;
+      const group = getRelativeTimeGroup(task.dueDate);
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+      acc[group].push(task);
+      return acc;
+    }, {} as Record<string, Task[]>);
+    const groupOrder = ["yesterday", "today", "tomorrow", "next 7 days", "next 30 days", "later"];
+    const groupLabels = {
+      "yesterday": "Yesterday",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "next 7 days": "Next 7 Days",
+      "next 30 days": "Next 30 Days",
+      "later": "Later"
+    };
+    const toggleGroup = (groupId: string) => {
+      setExpandedAreas(prev => ({
+        ...prev,
+        [groupId]: !prev[groupId]
+      }));
+    };
+    return <div className="space-y-6">
+        {groupOrder.map(group => {
+        const tasks = tasksByTimeGroup[group];
+        if (!tasks || tasks.length === 0) return null;
+        const isExpanded = expandedAreas[group] !== false; // default to expanded
+
+        return <div key={group} className="space-y-3">
+              <button onClick={() => toggleGroup(group)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
+                {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {groupLabels[group as keyof typeof groupLabels]}
+                </h3>
+                <span className="text-sm text-muted-foreground">({tasks.length})</span>
+              </button>
+              
+              {isExpanded && <div className="space-y-3 animate-fade-in">
+                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 border-l-4 ml-6 cursor-pointer", getPriorityColor(task.priority), task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3 flex-1">
+                           <input type="checkbox" checked={task.completed} className="mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                          <div className="flex-1">
+                            <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
+                              {task.title}
+                            </h4>
+                            {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
+                             <div className="flex items-center gap-2 mt-2">
+                               {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
+                                   {formatTaskDate(task.dueDate)}
+                                 </span>}
+                               {task.area && <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
+                                   {mockAreas.find(a => a.id === task.area)?.name}
+                                 </span>}
+                               <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                                 {task.timeframe}
+                               </span>
+                             </div>
+                          </div>
+                        </div>
+                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={e => e.stopPropagation()}>
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>)}
+                </div>}
+            </div>;
+      })}
+      </div>;
+  };
+  const renderCompletedView = () => {
+    const completedTasks = tasks.filter(task => task.completed && task.completedAt);
+    const tasksByDate = completedTasks.reduce((acc, task) => {
+      if (!task.completedAt) return acc;
+      const dateKey = format(task.completedAt, "yyyy-MM-dd");
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(task);
+      return acc;
+    }, {} as Record<string, Task[]>);
+
+    // Sort dates newest first
+    const sortedDates = Object.keys(tasksByDate).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+    const toggleGroup = (dateKey: string) => {
+      setExpandedAreas(prev => ({
+        ...prev,
+        [dateKey]: !prev[dateKey]
+      }));
+    };
+    return <div className="space-y-6">
+        {sortedDates.map(dateKey => {
+        const tasks = tasksByDate[dateKey];
+        const date = new Date(dateKey);
+        const isExpanded = expandedAreas[dateKey] !== false; // default to expanded
+
+        return <div key={dateKey} className="space-y-3">
+              <button onClick={() => toggleGroup(dateKey)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
+                {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {format(date, "EEEE, MMMM d, yyyy")}
+                </h3>
+                <span className="text-sm text-muted-foreground">({tasks.length})</span>
+              </button>
+              
+              {isExpanded && <div className="space-y-3 animate-fade-in">
+                  {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 border-l-4 ml-6 cursor-pointer opacity-60", getPriorityColor(task.priority))} onClick={() => handleTaskClick(task)}>
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3 flex-1">
+                           <input type="checkbox" checked={task.completed} className="mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                          <div className="flex-1">
+                            <h4 className="font-medium text-card-foreground line-through">
+                              {task.title}
+                            </h4>
+                            {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
+                             <div className="flex items-center gap-2 mt-2">
+                               {task.area && <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
+                                   {mockAreas.find(a => a.id === task.area)?.name}
+                                 </span>}
+                               <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                                 {task.timeframe}
+                               </span>
+                             </div>
+                          </div>
+                        </div>
+                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={e => e.stopPropagation()}>
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>)}
+                </div>}
+            </div>;
+      })}
+      </div>;
+  };
+  const renderTaskList = (tasks: Task[]) => <div className="space-y-3">
+      {tasks.map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 border-l-4 cursor-pointer", getPriorityColor(task.priority), task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-3 flex-1">
+               <input type="checkbox" checked={task.completed} className="mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+              <div className="flex-1">
+                <h3 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
+                  {task.title}
+                </h3>
+                {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
+                 <div className="flex items-center gap-2 mt-2">
+                   {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
+                       {formatTaskDate(task.dueDate)}
+                     </span>}
+                   {task.area && <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
+                       {mockAreas.find(a => a.id === task.area)?.name}
+                     </span>}
+                   <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                     {task.timeframe}
+                   </span>
+                 </div>
+              </div>
+            </div>
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={e => e.stopPropagation()}>
+              <MoreHorizontal className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>)}
+    </div>;
+  const renderTodayView = () => {
+    const todayTasks = tasks.filter(task => task.dueDate && isToday(task.dueDate));
+    const tasksByArea = todayTasks.reduce((acc, task) => {
+      const areaId = task.area || 'no-area';
+      if (!acc[areaId]) {
+        acc[areaId] = [];
+      }
+      acc[areaId].push(task);
+      return acc;
+    }, {} as Record<string, Task[]>);
+    const toggleArea = (areaId: string) => {
+      setExpandedAreas(prev => ({
+        ...prev,
+        [areaId]: !prev[areaId]
+      }));
+    };
+    return <div className="space-y-6">
+        {Object.entries(tasksByArea).map(([areaId, tasks]) => {
+        const area = mockAreas.find(a => a.id === areaId);
+        const areaName = area?.name || 'Other';
+        const areaColor = area?.color || 'bg-muted';
+        const isExpanded = expandedAreas[areaId] !== false; // default to expanded
+
+        return <div key={areaId} className="space-y-3">
+              <button onClick={() => toggleArea(areaId)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
+                {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
+                <div className={cn("w-3 h-3 rounded-full", areaColor)} />
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{areaName}</h3>
+                <span className="text-sm text-muted-foreground">({tasks.length})</span>
+              </button>
+              
+              {isExpanded && <div className="space-y-3 animate-fade-in">
+                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 border-l-4 ml-6 cursor-pointer", getPriorityColor(task.priority), task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                       <div className="flex items-start justify-between">
+                         <div className="flex items-start gap-3 flex-1">
+                            <input type="checkbox" checked={task.completed} className="mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                           <div className="flex-1">
+                             <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
+                               {task.title}
+                             </h4>
+                             {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
+                           </div>
+                         </div>
+                         <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={e => e.stopPropagation()}>
+                           <MoreHorizontal className="w-4 h-4" />
+                         </Button>
+                       </div>
+                     </div>)}
+                </div>}
+            </div>;
+      })}
+      </div>;
+  };
+  const handleCreateTask = () => {
+    // For now, just reset the form and close dialog
+    // In a real app, this would save to a database
+    setNewTask({
+      title: "",
+      description: "",
+      priority: "medium",
+      dueDate: undefined,
+      area: "",
+      timeframe: "NOW"
+    });
+    setIsNewTaskDialogOpen(false);
+  };
+  const resetNewTaskForm = () => {
+    setNewTask({
+      title: "",
+      description: "",
+      priority: "medium",
+      dueDate: undefined,
+      area: "",
+      timeframe: "NOW"
+    });
+  };
+  const renderAreasView = () => <div className="h-full">
+      <KanbanBoard tasks={filterAndSortTasks(tasks)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} areas={mockAreas} selectedAreas={kanbanSelectedAreas} />
+    </div>;
+  const getFilteredTasks = () => {
+    switch (activeView) {
+      case "today":
+        return tasks.filter(task => task.dueDate && isToday(task.dueDate));
+      case "upcoming":
+        return tasks.filter(task => task.dueDate && !isToday(task.dueDate));
+      case "inbox":
+        return tasks.filter(task => !task.dueDate);
+      case "completed":
+        return tasks.filter(task => task.completed);
+      default:
+        return tasks;
+    }
+  };
+  return <div className="bg-[#fafafa]">
+      {/* Header with title */}
+      <div className="bg-card">
+        <div className="flex items-center justify-between px-6 py-[18px] pb-5 bg-white border-[#e2e2e2]">
+          <nav className="flex items-center gap-1 rounded-lg w-fit">
+            {taskViews.map(view => {
+            const isActive = activeView === view.id;
+            return <button key={view.id} onClick={() => setActiveView(view.id)} className={cn("flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200", isActive ? "bg-background text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground hover:bg-background/50")}>
+                  <span>{view.label}</span>
+                </button>;
+          })}
+          </nav>
+        </div>
+        
+        {/* Navigation tabs */}
+        <div className="px-6 py-3 bg-[#fafafa] border-[#21222c]/0">
+          <div className="flex items-center justify-between">
+            {/* Left: Tags (Areas) */}
+            <div className="flex flex-wrap items-center gap-2">
+              {activeView === "areas" &&
+                mockAreas.map((area) => (
+                  <Badge
+                    key={area.id}
+                    variant={kanbanSelectedAreas.includes(area.id) ? "default" : "outline"}
+                    onClick={() =>
+                      setKanbanSelectedAreas((prev) =>
+                        prev.includes(area.id)
+                          ? prev.filter((id) => id !== area.id)
+                          : [...prev, area.id]
+                      )
+                    }
+                    className="cursor-pointer hover:opacity-80 transition-opacity px-[10px] py-1"
+                  >
+                    {area.name} ({area.taskCount})
+                  </Badge>
+                ))}
+              {activeView === "projects" &&
+                projectAreas.map((area) => (
+                  <Badge
+                    key={area.id}
+                    variant={selectedProjectAreas.includes(area.id) ? "default" : "outline"}
+                    onClick={() =>
+                      setSelectedProjectAreas((prev) =>
+                        prev.includes(area.id)
+                          ? prev.filter((id) => id !== area.id)
+                          : [...prev, area.id]
+                      )
+                    }
+                    className="cursor-pointer hover:opacity-80 transition-opacity px-[10px] py-1"
+                  >
+                    {area.name} ({area.taskCount})
+                  </Badge>
+                ))}
+            </div>
+
+            {/* Right: Controls */}
+            <div className="flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                    <Filter className="w-4 h-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-0" align="end">
+                  <div className="p-2">
+                    <div className="text-xs font-medium text-muted-foreground mb-2 px-2">Filter</div>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2 px-2">
+                        <Checkbox
+                          id="show-completed"
+                          checked={showCompleted}
+                          onCheckedChange={(checked) =>
+                            setShowCompleted(checked as boolean)
+                          }
+                        />
+                        <Label
+                          htmlFor="show-completed"
+                          className="text-sm font-normal cursor-pointer"
+                        >
+                          Show completed
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                    <ArrowUpDown className="w-4 h-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-0" align="end">
+                  <div className="p-2">
+                    <div className="text-xs font-medium text-muted-foreground mb-2 px-2">Sort by</div>
+                    <div className="space-y-1">
+                      <Button
+                        variant={sortBy === "none" ? "secondary" : "ghost"}
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => setSortBy("none")}
+                      >
+                        None
+                      </Button>
+                      <Button
+                        variant={sortBy === "priority" ? "secondary" : "ghost"}
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => setSortBy("priority")}
+                      >
+                        Priority
+                      </Button>
+                      <Button
+                        variant={sortBy === "date" ? "secondary" : "ghost"}
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => setSortBy("date")}
+                      >
+                        Date
+                      </Button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              {activeView === "projects" ? (
+                <Button
+                  className="gap-2"
+                  size="sm"
+                  onClick={() => setIsNewProjectDialogOpen(true)}
+                >
+                  <Plus className="w-4 h-4" />
+                  New Project
+                </Button>
+              ) : (
+                <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="gap-2"
+                      size="sm"
+                    >
+                      <Plus className="w-4 h-4" />
+                      New Task
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Create New Task</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="title">Title</Label>
+                        <Input
+                          id="title"
+                          value={newTask.title}
+                          onChange={(e) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              title: e.target.value,
+                            }))
+                          }
+                          placeholder="Enter task title"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                          id="description"
+                          value={newTask.description}
+                          onChange={(e) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              description: e.target.value,
+                            }))
+                          }
+                          placeholder="Enter task description (optional)"
+                          rows={3}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="priority">Priority</Label>
+                        <Select
+                          value={newTask.priority}
+                          onValueChange={(value) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              priority: value as Task["priority"],
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select priority" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">Low</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="urgent">Urgent</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="area">Area</Label>
+                        <Select
+                          value={newTask.area}
+                          onValueChange={(value) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              area: value,
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select area" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mockAreas.map((area) => (
+                              <SelectItem key={area.id} value={area.id}>
+                                {area.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="timeframe">Timeframe</Label>
+                        <Select
+                          value={newTask.timeframe}
+                          onValueChange={(value) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              timeframe: value as Task["timeframe"],
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select timeframe" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="NOW">Now</SelectItem>
+                            <SelectItem value="NEXT">Next</SelectItem>
+                            <SelectItem value="LATER">Later</SelectItem>
+                            <SelectItem value="SOMEDAY">Someday</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="dueDate">Due Date</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !newTask.dueDate && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {newTask.dueDate ? (
+                                format(newTask.dueDate, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <CalendarComponent
+                              mode="single"
+                              selected={newTask.dueDate}
+                              onSelect={(date) =>
+                                setNewTask((prev) => ({
+                                  ...prev,
+                                  dueDate: date,
+                                }))
+                              }
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <Button variant="outline" onClick={() => setIsNewTaskDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleCreateTask} disabled={!newTask.title.trim()}>
+                        Create Task
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Areas navigation for "tasks by area" view */}
+        {activeView === "areas"}
+      </div>
+
+      {/* Main Task Content */}
+      <div className={cn("overflow-auto bg-[#fafafa]", activeView === "areas" ? "h-[calc(100%-140px)]" : "p-6 h-[calc(100%-140px)]")}>
+        {activeView === "projects" ? (
+          <div className="h-full -m-6">
+            <ProjectManagement
+              selectedAreas={selectedProjectAreas}
+              isNewProjectDialogOpen={isNewProjectDialogOpen}
+              onNewProjectDialogChange={setIsNewProjectDialogOpen}
+            />
+          </div>
+        ) : activeView === "areas" ? (
+          renderAreasView()
+        ) : (
+          <div className="max-w-4xl mx-auto">
+            {activeView === "today" ? renderTodayView() : activeView === "upcoming" ? renderUpcomingView() : activeView === "completed" ? renderCompletedView() : renderTaskList(filterAndSortTasks(getFilteredTasks()))}
+          </div>
+        )}
+      </div>
+
+      {/* Task Detail Dialog */}
+      <Dialog open={isTaskViewOpen} onOpenChange={setIsTaskViewOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              {selectedTask && <>
+                  <div className={cn("w-1 h-6 rounded-full", selectedTask.priority === "urgent" ? "bg-destructive" : selectedTask.priority === "medium" ? "bg-amber-500" : "bg-muted")} />
+                  <span className={cn(selectedTask.completed && "line-through")}>
+                    {selectedTask.title}
+                  </span>
+                </>}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedTask && <div className="space-y-6 py-4">
+              {/* Status and Priority */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                   <input type="checkbox" checked={selectedTask.completed} className="w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(selectedTask.id)} />
+                  <span className="text-sm font-medium">
+                    {selectedTask.completed ? "Completed" : "Pending"}
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Priority:</span>
+                  <span className={cn("text-xs px-2 py-1 rounded-full font-medium", getPriorityBadgeColor(selectedTask.priority))}>
+                    {getPriorityLabel(selectedTask.priority)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              {selectedTask.description && <div>
+                  <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
+                  <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
+                    {selectedTask.description}
+                  </p>
+                </div>}
+
+              {/* Due Date */}
+              {selectedTask.dueDate && <div>
+                  <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
+                  <div className="flex items-center gap-2">
+                    <CalendarIcon className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm bg-accent text-accent-foreground px-3 py-1 rounded">
+                      {format(selectedTask.dueDate, "EEEE, MMMM d, yyyy")}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      ({formatTaskDate(selectedTask.dueDate)})
+                    </span>
+                  </div>
+                </div>}
+
+              {/* Area */}
+              {selectedTask.area && <div>
+                  <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
+                  <div className="flex items-center gap-2">
+                    <div className={cn("w-3 h-3 rounded-full", mockAreas.find(a => a.id === selectedTask.area)?.color || "bg-muted")} />
+                    <span className="text-sm bg-muted text-muted-foreground px-3 py-1 rounded">
+                      {mockAreas.find(a => a.id === selectedTask.area)?.name}
+                    </span>
+                  </div>
+                </div>}
+
+              {/* Timeframe */}
+              <div>
+                <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
+                <span className="text-sm bg-secondary text-secondary-foreground px-3 py-1 rounded">
+                  {selectedTask.timeframe}
+                </span>
+              </div>
+
+              {/* Task ID */}
+              <div>
+                <h4 className="text-sm font-medium text-foreground mb-2">Task ID</h4>
+                <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
+                  {selectedTask.id}
+                </code>
+              </div>
+            </div>}
+
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={() => setIsTaskViewOpen(false)}>
+              Close
+            </Button>
+            <Button onClick={() => setIsTaskViewOpen(false)}>
+              Edit Task
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>;
+}
