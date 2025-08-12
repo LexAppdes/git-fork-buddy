@@ -2,7 +2,9 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+
 
 interface Task {
   id: string;
@@ -24,6 +26,7 @@ interface KanbanBoardProps {
     taskId: string,
     timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY"
   ) => void;
+  onUpdateTaskDueDate?: (taskId: string, date: Date | undefined) => void;
   areas: Array<{
     id: string;
     name: string;
@@ -36,13 +39,13 @@ interface KanbanBoardProps {
 const getPriorityCheckboxColor = (priority: string) => {
   switch (priority) {
     case "urgent":
-      return "accent-task-urgent";
+      return "priority-checkbox checkbox-urgent";
     case "medium":
-      return "accent-task-medium";
+      return "priority-checkbox checkbox-medium";
     case "low":
-      return "accent-task-low";
+      return "priority-checkbox checkbox-low";
     default:
-      return "accent-primary";
+      return "priority-checkbox checkbox-medium";
   }
 };
 
@@ -58,15 +61,64 @@ const formatTaskDate = (date: Date) => {
   });
 };
 
+const formatSimpleDate = (date: Date) => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = String(date.getFullYear()).slice(-2);
+  return `${day}.${month}.${year}`;
+};
+
+const ClickableDueDate = ({ 
+  date, 
+  taskId, 
+  onDateChange, 
+  className = "text-xs text-muted-foreground" 
+}: { 
+  date: Date; 
+  taskId: string; 
+  onDateChange?: (taskId: string, date: Date | undefined) => void;
+  className?: string;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  if (!onDateChange) {
+    return <span className={className}>{formatSimpleDate(date)}</span>;
+  }
+  
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <span className={cn("cursor-pointer hover:text-foreground transition-colors", className)}>
+          {formatSimpleDate(date)}
+        </span>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <CalendarComponent
+          mode="single"
+          selected={date}
+          onSelect={(selectedDate) => {
+            onDateChange(taskId, selectedDate);
+            setIsOpen(false);
+          }}
+          initialFocus
+          className="p-3"
+        />
+      </PopoverContent>
+    </Popover>
+  );
+};
+
 const TaskCard = ({
   task,
   onTaskClick,
   onToggleTask,
+  onUpdateTaskDueDate,
   areas
 }: {
   task: Task;
   onTaskClick: (task: Task) => void;
   onToggleTask: (taskId: string) => void;
+  onUpdateTaskDueDate?: (taskId: string, date: Date | undefined) => void;
   areas: any[];
 }) => {
   const handleDragStart = (e: React.DragEvent) => {
@@ -98,9 +150,11 @@ const TaskCard = ({
             )}
             <div className="flex items-center gap-1 mt-2 flex-wrap">
               {task.dueDate && (
-                <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
-                  {formatTaskDate(task.dueDate)}
-                </span>
+                <ClickableDueDate 
+                  date={task.dueDate} 
+                  taskId={task.id} 
+                  onDateChange={onUpdateTaskDueDate}
+                />
               )}
               {task.area && (
                 <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === task.area)?.color || "bg-muted")}>
@@ -110,9 +164,6 @@ const TaskCard = ({
             </div>
           </div>
         </div>
-        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground h-6 w-6 p-0" onClick={e => e.stopPropagation()}>
-          <MoreHorizontal className="w-3 h-3" />
-        </Button>
       </div>
     </div>
   );
@@ -124,6 +175,7 @@ const KanbanColumn = ({
   onTaskClick,
   onToggleTask,
   onUpdateTaskTimeframe,
+  onUpdateTaskDueDate,
   areas
 }: {
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
@@ -131,6 +183,7 @@ const KanbanColumn = ({
   onTaskClick: (task: Task) => void;
   onToggleTask: (taskId: string) => void;
   onUpdateTaskTimeframe: (taskId: string, timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => void;
+  onUpdateTaskDueDate?: (taskId: string, date: Date | undefined) => void;
   areas: any[];
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -188,6 +241,7 @@ const KanbanColumn = ({
               task={task} 
               onTaskClick={onTaskClick} 
               onToggleTask={onToggleTask} 
+              onUpdateTaskDueDate={onUpdateTaskDueDate}
               areas={areas} 
             />
           ))}
@@ -202,6 +256,7 @@ export function KanbanBoard({
   onTaskClick,
   onToggleTask,
   onUpdateTaskTimeframe,
+  onUpdateTaskDueDate,
   areas,
   selectedAreas: controlledSelectedAreas,
 }: KanbanBoardProps) {
@@ -265,6 +320,7 @@ export function KanbanBoard({
             onTaskClick={onTaskClick} 
             onToggleTask={onToggleTask} 
             onUpdateTaskTimeframe={onUpdateTaskTimeframe} 
+            onUpdateTaskDueDate={onUpdateTaskDueDate}
             areas={areas} 
           />
         ))}
