@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, Inbox, Clock, FolderOpen, ChevronDown, ChevronRight, Plus, Filter, ArrowUpDown, CalendarIcon } from "lucide-react";
+import { Calendar, Inbox, Clock, FolderOpen, ChevronDown, ChevronRight, Plus, Filter, ArrowUpDown, CalendarIcon, Folder } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
