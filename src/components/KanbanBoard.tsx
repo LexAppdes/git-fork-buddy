@@ -161,7 +161,7 @@ const TaskCard = ({
           onClick={e => e.stopPropagation()}
         />
         <div className="flex-1">
-          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed !== null && "line-through", isTaskOverdue(task) && "text-red-500")}>
+          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed !== null && "line-through")}>
             {task.title}
           </h4>
           {task.description && (
@@ -177,6 +177,7 @@ const TaskCard = ({
                 date={task.dueDate}
                 taskId={task.id}
                 onDateChange={onUpdateTaskDueDate}
+                className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
               />
             )}
           </div>
