@@ -881,9 +881,23 @@ export function TaskManagement() {
                     {task.title}
                   </h3>
                 <div className="flex items-center gap-2 ml-2">
-                  {task.project && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
-                    {mockProjects.find(p => p.id === task.project)?.title}
-                  </span>}
+                  {task.project ? (
+                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                      {mockProjects.find(p => p.id === task.project)?.title}
+                    </span>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0 hover:bg-muted"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTaskClick(task);
+                      }}
+                    >
+                      <Folder className="w-3 h-3 text-muted-foreground" />
+                    </Button>
+                  )}
                   {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
                       <ClickableDueDate
                         date={task.dueDate}
