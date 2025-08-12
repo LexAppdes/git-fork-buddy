@@ -1432,26 +1432,20 @@ export function TaskManagement() {
               {/* Timeframe */}
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
-                {isEditing ? (
-                  <Select
-                    value={editingTask.timeframe}
-                    onValueChange={(value) => updateEditingTask({ timeframe: value as Task["timeframe"] })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="NOW">Now</SelectItem>
-                      <SelectItem value="NEXT">Next</SelectItem>
-                      <SelectItem value="LATER">Later</SelectItem>
-                      <SelectItem value="SOMEDAY">Someday</SelectItem>
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <span className="text-sm bg-secondary text-secondary-foreground px-3 py-1 rounded">
-                    {editingTask.timeframe}
-                  </span>
-                )}
+                <Select
+                  value={editingTask.timeframe}
+                  onValueChange={(value) => updateEditingTask({ timeframe: value as Task["timeframe"] })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="NOW">Now</SelectItem>
+                    <SelectItem value="NEXT">Next</SelectItem>
+                    <SelectItem value="LATER">Later</SelectItem>
+                    <SelectItem value="SOMEDAY">Someday</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Created Date */}
