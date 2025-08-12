@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { format, isToday, isTomorrow, isAfter, startOfDay, isYesterday, differenceInDays } from "date-fns";
+import { format, isToday, isTomorrow, isAfter, startOfDay, endOfDay, isYesterday, differenceInDays } from "date-fns";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { Badge } from "@/components/ui/badge";
 import { ProjectManagement } from "@/components/ProjectManagement";
@@ -150,6 +150,15 @@ const mockTasks: Task[] = [{
   area: "family",
   completedAt: twoDaysAgo,
   timeframe: "LATER"
+}, {
+  id: "15",
+  title: "Submit monthly report",
+  priority: "medium",
+  completed: true,
+  dueDate: yesterday,
+  area: "work",
+  completedAt: yesterday,
+  timeframe: "NOW"
 }];
 const mockAreas: Area[] = [{
   id: "work",
@@ -399,7 +408,19 @@ export function TaskManagement() {
   const filterAndSortTasks = (tasks: Task[]) => {
     // Apply completion filter for all views except completed view
     let filteredTasks = tasks;
-    if (activeView !== "completed" && !showCompleted) {
+    if (activeView === "today" && showCompleted) {
+      // In Today view, when showing completed tasks, only show those completed today
+      filteredTasks = tasks.filter(task =>
+        (!task.completed && task.dueDate && task.dueDate <= endOfDay(new Date())) ||
+        (task.completed && task.completedAt && isToday(task.completedAt))
+      );
+    } else if (activeView === "upcoming" && showCompleted) {
+      // In Upcoming view, when showing completed tasks, only show those completed today or later
+      filteredTasks = tasks.filter(task =>
+        !task.completed ||
+        (task.completed && task.completedAt && task.completedAt >= startOfDay(new Date()))
+      );
+    } else if (activeView !== "completed" && !showCompleted) {
       filteredTasks = tasks.filter(task => !task.completed);
     }
     return [...filteredTasks].sort((a, b) => {
@@ -441,7 +462,19 @@ export function TaskManagement() {
     return "yesterday";
   };
   const renderUpcomingView = () => {
-    const upcomingTasks = tasks.filter(task => task.dueDate && !isToday(task.dueDate));
+    // Get all tasks with due dates (including today and future), then apply completion filtering
+    let upcomingTasks = tasks.filter(task => task.dueDate);
+
+    // Apply completion filter specifically for upcoming view
+    if (!showCompleted) {
+      upcomingTasks = upcomingTasks.filter(task => !task.completed);
+    } else {
+      // When showing completed, only show those completed today or later
+      upcomingTasks = upcomingTasks.filter(task =>
+        !task.completed ||
+        (task.completed && task.completedAt && task.completedAt >= startOfDay(new Date()))
+      );
+    }
     const tasksByTimeGroup = upcomingTasks.reduce((acc, task) => {
       if (!task.dueDate) return acc;
       const group = getRelativeTimeGroup(task.dueDate);
@@ -482,7 +515,7 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-0 animate-fade-in">
-                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                   {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-start gap-3">
                         <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
@@ -608,7 +641,7 @@ export function TaskManagement() {
         </div>)}
     </div>;
   const renderTodayView = () => {
-    const todayTasks = tasks.filter(task => task.dueDate && isToday(task.dueDate));
+    const todayTasks = tasks.filter(task => task.dueDate && task.dueDate <= endOfDay(new Date()));
     const tasksByArea = todayTasks.reduce((acc, task) => {
       const areaId = task.area || 'no-area';
       if (!acc[areaId]) {
@@ -693,7 +726,7 @@ export function TaskManagement() {
   const getFilteredTasks = () => {
     switch (activeView) {
       case "today":
-        return tasks.filter(task => task.dueDate && isToday(task.dueDate));
+        return tasks.filter(task => task.dueDate && task.dueDate <= endOfDay(new Date()));
       case "upcoming":
         return tasks.filter(task => task.dueDate && !isToday(task.dueDate));
       case "inbox":
