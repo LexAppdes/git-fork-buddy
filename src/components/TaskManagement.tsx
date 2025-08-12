@@ -403,6 +403,7 @@ export function TaskManagement() {
     priority: "medium" as Task["priority"],
     dueDate: undefined as Date | undefined,
     area: "",
+    project: "",
     timeframe: "NOW" as Task["timeframe"]
   });
   const handleTaskClick = (task: Task) => {
