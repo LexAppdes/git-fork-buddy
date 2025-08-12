@@ -254,7 +254,11 @@ const ClickableDueDate = ({
           {formatFunction(date)}
         </span>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent
+        className="w-auto p-0"
+        align="start"
+        onClick={(e) => e.stopPropagation()}
+      >
         <CalendarComponent
           mode="single"
           selected={date}
