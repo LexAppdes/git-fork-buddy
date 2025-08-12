@@ -175,7 +175,7 @@ const TaskCard = ({
           )}
         </div>
       </div>
-      {(task.dueDate || task.area) && (
+      {(task.dueDate || task.area || task.project) && (
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             {task.dueDate && (
