@@ -258,6 +258,14 @@ const mockAreas: Area[] = [{
   taskCount: 1
 }];
 
+const mockProjects = [
+  { id: "1", title: "Website Redesign", area: "work" },
+  { id: "2", title: "Mobile App Development", area: "work" },
+  { id: "3", title: "Morning Fitness Routine", area: "health" },
+  { id: "4", title: "Home Organization", area: "order" },
+  { id: "5", title: "Family Vacation Planning", area: "family" }
+];
+
 const projectAreas = [
   { id: "work", name: "Work", color: "bg-primary", taskCount: 1 },
   { id: "health", name: "Health", color: "bg-emerald-500", taskCount: 1 },
