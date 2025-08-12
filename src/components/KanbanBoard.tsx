@@ -212,21 +212,30 @@ const TaskCard = ({
                     {projects?.find(p => p.id === task.project)?.title || 'Project'}
                   </span>
                 ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-5 w-5 p-0 hover:bg-muted"
-                    onClick={(e) => {
-                      e.stopPropagation();
+                  <Select
+                    value="none"
+                    onValueChange={(value) => {
                       if (onProjectAssignment) {
-                        onProjectAssignment(task);
-                      } else {
-                        onTaskClick(task);
+                        // Call the project assignment with the task and new project value
+                        onProjectAssignment(task, value);
                       }
                     }}
                   >
-                    <Folder className="w-3 h-3 text-muted-foreground" />
-                  </Button>
+                    <SelectTrigger
+                      className="h-5 w-5 p-0 border-none bg-transparent hover:bg-muted rounded"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Folder className="w-3 h-3 text-muted-foreground" />
+                    </SelectTrigger>
+                    <SelectContent onClick={(e) => e.stopPropagation()}>
+                      <SelectItem value="none">No project</SelectItem>
+                      {projects?.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>
+                          {project.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
               </div>
             </div>
