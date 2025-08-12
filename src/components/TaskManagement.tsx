@@ -1035,7 +1035,10 @@ export function TaskManagement() {
   };
   const handleCreateTask = () => {
     if (!newTask.title.trim()) return;
-    
+
+    const projectId = newTask.project || undefined;
+    const areaId = getAreaFromProject(projectId);
+
     const task: Task = {
       id: Date.now().toString(), // Simple ID generation
       title: newTask.title.trim(),
@@ -1043,8 +1046,8 @@ export function TaskManagement() {
       priority: newTask.priority,
       completed: null,
       dueDate: newTask.dueDate,
-      area: newTask.area || undefined,
-      project: newTask.project || undefined,
+      area: areaId,
+      project: projectId,
       created: new Date(),
       timeframe: newTask.timeframe
     };
