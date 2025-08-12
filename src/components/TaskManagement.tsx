@@ -995,7 +995,7 @@ export function TaskManagement() {
                          <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                          <div className="flex-1">
                            <div className="flex items-center justify-between">
-                             <h4 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
+                             <h4 className={cn("text-card-foreground", task.completed !== null && "line-through")}>
                                {task.title}
                              </h4>
                              <div className="flex items-center gap-2">
