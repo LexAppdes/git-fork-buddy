@@ -156,7 +156,7 @@ const TaskCard = ({
         <input
           type="checkbox"
           checked={task.completed !== null}
-          className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))}
+          className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))}
           onChange={() => onToggleTask(task.id)}
           onClick={e => e.stopPropagation()}
         />
