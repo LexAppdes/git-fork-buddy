@@ -706,7 +706,7 @@ export function TaskManagement() {
                               {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                                   {mockAreas.find(a => a.id === task.area)?.name}
                                 </span>}
-                              <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                              <span className={cn("text-xs px-2 py-1 rounded font-medium uppercase", getTimeframeColor(task.timeframe))}>
                                 {task.timeframe}
                               </span>
                             </div>
@@ -828,7 +828,7 @@ export function TaskManagement() {
                   {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                       {mockAreas.find(a => a.id === task.area)?.name}
                     </span>}
-                  <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                  <span className={cn("text-xs px-2 py-1 rounded font-medium uppercase", getTimeframeColor(task.timeframe))}>
                     {task.timeframe}
                   </span>
                 </div>
