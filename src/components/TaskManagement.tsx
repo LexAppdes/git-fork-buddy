@@ -932,6 +932,24 @@ export function TaskManagement() {
                     {area.name}
                   </Badge>
                 ))}
+              {activeView === "goals" &&
+                projectAreas.map((area) => (
+                  <Badge
+                    key={area.id}
+                    variant={selectedProjectAreas.includes(area.id) ? "default" : "outline"}
+                    onClick={() =>
+                      setSelectedProjectAreas((prev) =>
+                        prev.includes(area.id)
+                          ? prev.filter((id) => id !== area.id)
+                          : [...prev, area.id]
+                      )
+                    }
+                    className="cursor-pointer hover:opacity-80 transition-opacity px-[10px] py-1 flex items-center gap-2"
+                  >
+                    <div className={cn("w-2 h-2 rounded-full", area.color)} />
+                    {area.name}
+                  </Badge>
+                ))}
             </div>
 
             {/* Right: Controls */}
