@@ -1608,7 +1608,14 @@ export function TaskManagement() {
                 <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
                 <Select
                   value={editingTask.project || "none"}
-                  onValueChange={(value) => updateEditingTask({ project: value === "none" ? undefined : value })}
+                  onValueChange={(value) => {
+                    const projectId = value === "none" ? undefined : value;
+                    const areaId = getAreaFromProject(projectId);
+                    updateEditingTask({
+                      project: projectId,
+                      area: areaId
+                    });
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select project" />
