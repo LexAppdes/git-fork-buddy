@@ -1602,26 +1602,6 @@ export function TaskManagement() {
                 </Popover>
               </div>
 
-              {/* Area */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
-                <Select
-                  value={editingTask.area || "none"}
-                  onValueChange={(value) => updateEditingTask({ area: value === "none" ? undefined : value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select area" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">No area</SelectItem>
-                    {mockAreas.map((area) => (
-                      <SelectItem key={area.id} value={area.id}>
-                        {area.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
 
               {/* Project */}
               <div>
