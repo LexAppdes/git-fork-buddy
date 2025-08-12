@@ -381,7 +381,34 @@ export function TaskManagement() {
   });
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
+    setEditingTask({...task});
     setIsTaskViewOpen(true);
+    setIsEditing(false);
+  };
+
+  const handleStartEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTask(selectedTask ? {...selectedTask} : null);
+    setIsEditing(false);
+  };
+
+  const handleSaveEdit = () => {
+    if (editingTask) {
+      setTasks(prevTasks => prevTasks.map(task =>
+        task.id === editingTask.id ? editingTask : task
+      ));
+      setSelectedTask(editingTask);
+      setIsEditing(false);
+    }
+  };
+
+  const updateEditingTask = (updates: Partial<Task>) => {
+    if (editingTask) {
+      setEditingTask({...editingTask, ...updates});
+    }
   };
   const toggleTask = (taskId: string) => {
     setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
