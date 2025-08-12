@@ -413,9 +413,22 @@ export function TaskManagement() {
     setIsEditing(true); // Start in edit mode
   };
 
+  const getAreaFromProject = (projectId?: string) => {
+    if (!projectId) return undefined;
+    const project = mockProjects.find(p => p.id === projectId);
+    return project?.area;
+  };
+
   const handleProjectAssignment = (task: Task, newProjectId: string) => {
+    const projectId = newProjectId === "none" ? undefined : newProjectId;
+    const areaId = getAreaFromProject(projectId);
+
     setTasks(prevTasks => prevTasks.map(t =>
-      t.id === task.id ? { ...t, project: newProjectId === "none" ? undefined : newProjectId } : t
+      t.id === task.id ? {
+        ...t,
+        project: projectId,
+        area: areaId
+      } : t
     ));
   };
 
