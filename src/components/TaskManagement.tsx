@@ -584,7 +584,7 @@ export function TaskManagement() {
                         <input type="checkbox" checked={task.completed !== null} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                                                   <div className="flex-1">
                             <div className="flex items-center justify-between">
-                              <h4 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through", isTaskOverdue(task) && "text-red-500")}>
+                              <h4 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
                                 {task.title}
                               </h4>
                               <div className="flex items-center gap-2 ml-2">
@@ -592,6 +592,7 @@ export function TaskManagement() {
                                 date={task.dueDate}
                                 taskId={task.id}
                                 onDateChange={updateTaskDueDate}
+                                className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
                               />}
                               {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                                   {mockAreas.find(a => a.id === task.area)?.name}
@@ -705,9 +706,9 @@ export function TaskManagement() {
         </div>)}
     </div>;
   const renderTodayView = () => {
-    const todayTasks = tasks.filter(task => task.dueDate && task.dueDate <= endOfDay(new Date()));
+    const todayTasks = tasks.filter(task => task.dueDate && task.dueDate <= endOfDay(new Date()) && task.area);
     const tasksByArea = todayTasks.reduce((acc, task) => {
-      const areaId = task.area || 'no-area';
+      const areaId = task.area!;
       if (!acc[areaId]) {
         acc[areaId] = [];
       }
@@ -723,9 +724,11 @@ export function TaskManagement() {
     return <div className="space-y-6">
         {Object.entries(tasksByArea).map(([areaId, tasks]) => {
         const area = mockAreas.find(a => a.id === areaId);
-        const areaName = area?.name || 'Other';
-        const areaColor = area?.color || 'bg-muted';
+        const areaName = area?.name;
+        const areaColor = area?.color;
         const isExpanded = expandedAreas[areaId] !== false; // default to expanded
+
+        if (!area) return null;
 
         return <div key={areaId} className="space-y-0">
               <button onClick={() => toggleArea(areaId)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
@@ -741,15 +744,15 @@ export function TaskManagement() {
                          <input type="checkbox" checked={task.completed !== null} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                          <div className="flex-1">
                            <div className="flex items-center justify-between">
-                                                                                                                   <h4 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through", isTaskOverdue(task) && "text-red-500")}>
+                                                                                                                   <h4 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
                                {task.title}
                              </h4>
-                             {task.dueDate && <ClickableDueDate 
-                               date={task.dueDate} 
-                               taskId={task.id} 
+                             {task.dueDate && <ClickableDueDate
+                               date={task.dueDate}
+                               taskId={task.id}
                                onDateChange={updateTaskDueDate}
                                formatFunction={formatTodayViewDate}
-                               className="text-xs text-muted-foreground font-medium"
+                               className={cn("text-xs text-muted-foreground font-medium", isTaskOverdue(task) && "text-red-500")}
                              />}
                            </div>
                            {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
