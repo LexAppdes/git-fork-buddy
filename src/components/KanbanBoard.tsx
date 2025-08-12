@@ -161,9 +161,15 @@ const TaskCard = ({
           onClick={e => e.stopPropagation()}
         />
         <div className="flex-1">
-          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed !== null && "line-through")}>
-            {task.title}
-          </h4>
+          <div className="flex items-center gap-2 mb-1">
+            <h4 className={cn("font-medium text-card-foreground text-sm", task.completed !== null && "line-through")}>
+              {task.title}
+            </h4>
+            {task.project && <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
+              {/* We'll need to pass projects to this component or find another way to get project names */}
+              Project
+            </span>}
+          </div>
           {task.description && (
             <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
           )}
