@@ -177,7 +177,7 @@ const TaskCard = ({
           onClick={e => e.stopPropagation()}
         />
         <div className="flex-1">
-          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed !== null && "line-through")}>
+          <h4 className={cn("text-card-foreground text-sm", task.completed !== null && "line-through")}>
             {task.title}
           </h4>
           {task.description && (
