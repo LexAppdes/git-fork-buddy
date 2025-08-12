@@ -68,31 +68,45 @@ const formatSimpleDate = (date: Date) => {
   return `${day}.${month}.${year}`;
 };
 
-const ClickableDueDate = ({ 
-  date, 
-  taskId, 
-  onDateChange, 
-  className = "text-xs text-muted-foreground" 
-}: { 
-  date: Date; 
-  taskId: string; 
+const ClickableDueDate = ({
+  date,
+  taskId,
+  onDateChange,
+  className = "text-xs text-muted-foreground"
+}: {
+  date: Date;
+  taskId: string;
   onDateChange?: (taskId: string, date: Date | undefined) => void;
   className?: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onDateChange) {
+      setIsOpen(true);
+    }
+  };
+
   if (!onDateChange) {
     return <span className={className}>{formatSimpleDate(date)}</span>;
   }
-  
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <span className={cn("cursor-pointer hover:text-foreground transition-colors", className)}>
+        <span
+          className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
+          onClick={handleClick}
+        >
           {formatSimpleDate(date)}
         </span>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent
+        className="w-auto p-0"
+        align="start"
+        onClick={(e) => e.stopPropagation()}
+      >
         <CalendarComponent
           mode="single"
           selected={date}
@@ -126,36 +140,38 @@ const TaskCard = ({
   };
 
   return (
-    <div 
-      className={cn("bg-card border border-border rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", task.completed && "opacity-60")} 
-      onClick={() => onTaskClick(task)} 
-      draggable 
+    <div
+      className={cn("bg-card rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", task.completed && "opacity-60")}
+      onClick={() => onTaskClick(task)}
+      draggable
       onDragStart={handleDragStart}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-3 flex-1">
-          <input 
-            type="checkbox" 
-            checked={task.completed} 
-            className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))} 
-            onChange={() => onToggleTask(task.id)} 
-            onClick={e => e.stopPropagation()} 
-          />
-          <div className="flex-1">
-            <h4 className={cn("font-medium text-card-foreground text-sm", task.completed && "line-through")}>
-              {task.title}
-            </h4>
-            {task.description && (
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
-            )}
-            <div className="flex items-center gap-1 mt-2 flex-wrap">
+      <div className="flex items-start gap-3">
+        <input
+          type="checkbox"
+          checked={task.completed}
+          className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))}
+          onChange={() => onToggleTask(task.id)}
+          onClick={e => e.stopPropagation()}
+        />
+        <div className="flex-1">
+          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed && "line-through")}>
+            {task.title}
+          </h4>
+          {task.description && (
+            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
+          )}
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center">
               {task.dueDate && (
-                <ClickableDueDate 
-                  date={task.dueDate} 
-                  taskId={task.id} 
+                <ClickableDueDate
+                  date={task.dueDate}
+                  taskId={task.id}
                   onDateChange={onUpdateTaskDueDate}
                 />
               )}
+            </div>
+            <div className="flex items-center">
               {task.area && (
                 <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === task.area)?.color || "bg-muted")}>
                   {areas.find(a => a.id === task.area)?.name}
