@@ -56,6 +56,7 @@ const mockTasks: Task[] = [{
   completed: null,
   dueDate: today,
   area: "work",
+  project: "1", // Website Redesign
   created: fiveDaysAgo,
   timeframe: "NOW"
 }, {
@@ -65,6 +66,7 @@ const mockTasks: Task[] = [{
   completed: null,
   dueDate: tomorrow,
   area: "work",
+  project: "2", // Mobile App Development
   created: threeDaysAgo,
   timeframe: "NEXT"
 }, {
