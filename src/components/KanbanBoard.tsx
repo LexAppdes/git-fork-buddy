@@ -162,6 +162,12 @@ const TaskCard = ({
     e.dataTransfer.setData("text/plain", task.id);
   };
 
+  const getAreaFromProject = (projectId?: string) => {
+    if (!projectId) return undefined;
+    const project = projects?.find(p => p.id === projectId);
+    return project?.area;
+  };
+
   return (
     <div
       className={cn("bg-card rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", task.completed !== null && "opacity-60")}
