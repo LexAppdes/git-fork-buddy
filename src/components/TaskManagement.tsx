@@ -716,15 +716,13 @@ export function TaskManagement() {
                         <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-medium text-card-foreground line-through">
-                                {task.title}
-                              </h4>
+                            <h4 className="font-medium text-card-foreground line-through">
+                              {task.title}
+                            </h4>
+                            <div className="flex items-center gap-2 ml-2">
                               {task.project && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
                                 {mockProjects.find(p => p.id === task.project)?.title}
                               </span>}
-                            </div>
-                            <div className="flex items-center gap-2 ml-2">
                               {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                                   {mockAreas.find(a => a.id === task.area)?.name}
                                 </span>}
