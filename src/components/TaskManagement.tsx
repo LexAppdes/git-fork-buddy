@@ -413,6 +413,14 @@ export function TaskManagement() {
     setIsEditing(true); // Start in edit mode
   };
 
+  const handleProjectAssignment = (task: Task) => {
+    setSelectedTask(task);
+    setEditingTask({...task});
+    setIsTaskViewOpen(true);
+    setIsEditing(true); // Start in edit mode
+    // Focus will be on project selection in the dialog
+  };
+
   const handleDialogClose = () => {
     // Auto-save changes when closing
     if (editingTask) {
