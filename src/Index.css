@@ -117,3 +117,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  /* Priority checkbox styling */
+  .priority-checkbox {
+    @apply border-2 transition-all duration-200;
+  }
+
+  .checkbox-urgent {
+    @apply border-red-500;
+  }
+
+  .checkbox-urgent:checked {
+    @apply bg-red-500 border-red-500;
+  }
+
+  .checkbox-medium {
+    @apply border-amber-500;
+  }
+
+  .checkbox-medium:checked {
+    @apply bg-amber-500 border-amber-500;
+  }
+
+  .checkbox-low {
+    @apply border-green-500;
+  }
+
+  .checkbox-low:checked {
+    @apply bg-green-500 border-green-500;
+  }
+}
