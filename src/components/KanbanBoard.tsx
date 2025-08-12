@@ -204,12 +204,12 @@ const TaskCard = ({
               />
             </div>
           )}
-          {(task.area || task.project) && (
+          {(getAreaFromProject(task.project) || task.project) && (
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                {task.area && (
-                  <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === task.area)?.color || "bg-muted")}>
-                    {areas.find(a => a.id === task.area)?.name}
+                {getAreaFromProject(task.project) && (
+                  <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === getAreaFromProject(task.project))?.color || "bg-muted")}>
+                    {areas.find(a => a.id === getAreaFromProject(task.project))?.name}
                   </span>
                 )}
               </div>
