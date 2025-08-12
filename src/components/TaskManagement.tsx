@@ -1520,25 +1520,9 @@ export function TaskManagement() {
             </div>}
 
           <div className="flex justify-end gap-2 pt-4 border-t">
-            {isEditing ? (
-              <>
-                <Button variant="outline" onClick={handleCancelEdit}>
-                  Cancel
-                </Button>
-                <Button onClick={handleSaveEdit}>
-                  Save Changes
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="outline" onClick={() => setIsTaskViewOpen(false)}>
-                  Close
-                </Button>
-                <Button onClick={handleStartEdit}>
-                  Edit Task
-                </Button>
-              </>
-            )}
+            <Button onClick={handleDialogClose}>
+              Close
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
