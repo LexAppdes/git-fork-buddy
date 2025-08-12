@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal } from "lucide-react";
+
 interface Task {
   id: string;
   title: string;
@@ -14,6 +15,7 @@ interface Task {
   completedAt?: Date;
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
 }
+
 interface KanbanBoardProps {
   tasks: Task[];
   onTaskClick: (task: Task) => void;
@@ -30,18 +32,20 @@ interface KanbanBoardProps {
   }>;
   selectedAreas?: string[];
 }
-const getPriorityColor = (priority: string) => {
+
+const getPriorityCheckboxColor = (priority: string) => {
   switch (priority) {
     case "urgent":
-      return "border-l-red-500";
+      return "accent-task-urgent";
     case "medium":
-      return "border-l-amber-500";
+      return "accent-task-medium";
     case "low":
-      return "border-l-green-500";
+      return "accent-task-low";
     default:
-      return "border-l-border";
+      return "accent-primary";
   }
 };
+
 const formatTaskDate = (date: Date) => {
   const today = new Date();
   if (date.toDateString() === today.toDateString()) return "Today";
@@ -53,6 +57,7 @@ const formatTaskDate = (date: Date) => {
     day: 'numeric'
   });
 };
+
 const TaskCard = ({
   task,
   onTaskClick,
@@ -67,22 +72,41 @@ const TaskCard = ({
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("text/plain", task.id);
   };
-  return <div className={cn("bg-card border border-border rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 cursor-pointer mb-2", getPriorityColor(task.priority), task.completed && "opacity-60")} onClick={() => onTaskClick(task)} draggable onDragStart={handleDragStart}>
+
+  return (
+    <div 
+      className={cn("bg-card border border-border rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", task.completed && "opacity-60")} 
+      onClick={() => onTaskClick(task)} 
+      draggable 
+      onDragStart={handleDragStart}
+    >
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3 flex-1">
-          <input type="checkbox" checked={task.completed} className="mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => onToggleTask(task.id)} onClick={e => e.stopPropagation()} />
+          <input 
+            type="checkbox" 
+            checked={task.completed} 
+            className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))} 
+            onChange={() => onToggleTask(task.id)} 
+            onClick={e => e.stopPropagation()} 
+          />
           <div className="flex-1">
             <h4 className={cn("font-medium text-card-foreground text-sm", task.completed && "line-through")}>
               {task.title}
             </h4>
-            {task.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>}
+            {task.description && (
+              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
+            )}
             <div className="flex items-center gap-1 mt-2 flex-wrap">
-              {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
+              {task.dueDate && (
+                <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
                   {formatTaskDate(task.dueDate)}
-                </span>}
-              {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === task.area)?.color || "bg-muted")}>
+                </span>
+              )}
+              {task.area && (
+                <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === task.area)?.color || "bg-muted")}>
                   {areas.find(a => a.id === task.area)?.name}
-                </span>}
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -90,8 +114,10 @@ const TaskCard = ({
           <MoreHorizontal className="w-3 h-3" />
         </Button>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 const KanbanColumn = ({
   timeframe,
   tasks,
@@ -108,20 +134,24 @@ const KanbanColumn = ({
   areas: any[];
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
   };
+
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
   };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
     const taskId = e.dataTransfer.getData("text/plain");
     onUpdateTaskTimeframe(taskId, timeframe);
   };
+
   const getColumnColor = () => {
     switch (timeframe) {
       case "NOW":
@@ -136,7 +166,14 @@ const KanbanColumn = ({
         return "border-t-border";
     }
   };
-  return <div className={cn("flex-1 min-w-0 bg-[#f3f3f3] rounded-lg transition-colors", getColumnColor(), isDragOver && "bg-muted/50")} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
+
+  return (
+    <div 
+      className={cn("flex-1 min-w-0 bg-[#f3f3f3] rounded-lg transition-colors", getColumnColor(), isDragOver && "bg-muted/50")} 
+      onDragOver={handleDragOver} 
+      onDragLeave={handleDragLeave} 
+      onDrop={handleDrop}
+    >
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-foreground">{timeframe}</h3>
@@ -145,11 +182,21 @@ const KanbanColumn = ({
           </span>
         </div>
         <div className="space-y-2">
-          {tasks.map(task => <TaskCard key={task.id} task={task} onTaskClick={onTaskClick} onToggleTask={onToggleTask} areas={areas} />)}
+          {tasks.map(task => (
+            <TaskCard 
+              key={task.id} 
+              task={task} 
+              onTaskClick={onTaskClick} 
+              onToggleTask={onToggleTask} 
+              areas={areas} 
+            />
+          ))}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export function KanbanBoard({
   tasks,
   onTaskClick,
@@ -180,10 +227,17 @@ export function KanbanBoard({
     acc[task.timeframe].push(task);
     return acc;
   }, {} as Record<string, Task[]>);
+
   const toggleArea = (areaId: string) => {
-    setSelectedAreas(prev => prev.includes(areaId) ? prev.filter(id => id !== areaId) : [...prev, areaId]);
+    setSelectedAreas(prev => 
+      prev.includes(areaId) 
+        ? prev.filter(id => id !== areaId) 
+        : [...prev, areaId]
+    );
   };
-  return <div className="h-full w-full bg-[#fafafa] p-4 border border-[#21222c]/0">
+
+  return (
+    <div className="h-full w-full bg-[#fafafa] p-4 border border-[#21222c]/0">
       {/* Tags - aligned left in top controls */}
       {controlledSelectedAreas === undefined && (
         <div className="mb-4">
@@ -203,7 +257,18 @@ export function KanbanBoard({
       )}
 
       <div className="flex gap-4 h-full">
-        {timeframes.map(timeframe => <KanbanColumn key={timeframe} timeframe={timeframe} tasks={tasksByTimeframe[timeframe] || []} onTaskClick={onTaskClick} onToggleTask={onToggleTask} onUpdateTaskTimeframe={onUpdateTaskTimeframe} areas={areas} />)}
+        {timeframes.map(timeframe => (
+          <KanbanColumn 
+            key={timeframe} 
+            timeframe={timeframe} 
+            tasks={tasksByTimeframe[timeframe] || []} 
+            onTaskClick={onTaskClick} 
+            onToggleTask={onToggleTask} 
+            onUpdateTaskTimeframe={onUpdateTaskTimeframe} 
+            areas={areas} 
+          />
+        ))}
       </div>
-    </div>;
+    </div>
+  );
 }

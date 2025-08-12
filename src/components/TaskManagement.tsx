@@ -310,16 +310,16 @@ export function TaskManagement() {
       setSelectedArea(mockAreas[0].id);
     }
   }, [activeView, selectedArea]);
-  const getPriorityColor = (priority: string) => {
+  const getPriorityCheckboxColor = (priority: string) => {
     switch (priority) {
       case "urgent":
-        return "border-l-task-urgent";
+        return "accent-task-urgent";
       case "medium":
-        return "border-l-task-medium";
+        return "accent-task-medium";
       case "low":
-        return "border-l-task-low";
+        return "accent-task-low";
       default:
-        return "border-l-border";
+        return "accent-primary";
     }
   };
   const filterAndSortTasks = (tasks: Task[]) => {
@@ -408,10 +408,10 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-3 animate-fade-in">
-                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 border-l-4 ml-6 cursor-pointer", getPriorityColor(task.priority), task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3 flex-1">
-                           <input type="checkbox" checked={task.completed} className="mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                           <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                           <div className="flex-1">
                             <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
                               {task.title}
@@ -476,10 +476,10 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-3 animate-fade-in">
-                  {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 border-l-4 ml-6 cursor-pointer opacity-60", getPriorityColor(task.priority))} onClick={() => handleTaskClick(task)}>
+                  {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 ml-6 cursor-pointer opacity-60")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3 flex-1">
-                           <input type="checkbox" checked={task.completed} className="mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                           <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                           <div className="flex-1">
                             <h4 className="font-medium text-card-foreground line-through">
                               {task.title}
@@ -506,10 +506,10 @@ export function TaskManagement() {
       </div>;
   };
   const renderTaskList = (tasks: Task[]) => <div className="space-y-3">
-      {tasks.map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 border-l-4 cursor-pointer", getPriorityColor(task.priority), task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+      {tasks.map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3 flex-1">
-               <input type="checkbox" checked={task.completed} className="mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+               <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
               <div className="flex-1">
                 <h3 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
                   {task.title}
@@ -566,10 +566,10 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-3 animate-fade-in">
-                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 border-l-4 ml-6 cursor-pointer", getPriorityColor(task.priority), task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
                        <div className="flex items-start justify-between">
                          <div className="flex items-start gap-3 flex-1">
-                            <input type="checkbox" checked={task.completed} className="mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                            <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                            <div className="flex-1">
                              <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
                                {task.title}
@@ -1062,7 +1062,7 @@ export function TaskManagement() {
               {/* Status and Priority */}
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                   <input type="checkbox" checked={selectedTask.completed} className="w-4 h-4 text-primary rounded border-border focus:ring-primary" onChange={() => toggleTask(selectedTask.id)} />
+                   <input type="checkbox" checked={selectedTask.completed} className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(selectedTask.priority))} onChange={() => toggleTask(selectedTask.id)} />
                   <span className="text-sm font-medium">
                     {selectedTask.completed ? "Completed" : "Pending"}
                   </span>
