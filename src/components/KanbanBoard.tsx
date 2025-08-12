@@ -338,6 +338,7 @@ export function KanbanBoard({
   areas,
   selectedAreas: controlledSelectedAreas,
   projects,
+  onProjectAssignment,
 }: KanbanBoardProps) {
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const timeframes = ["NOW", "NEXT", "LATER", "SOMEDAY"] as const;
