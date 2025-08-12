@@ -229,7 +229,7 @@ const TaskCard = ({
                     }}
                   >
                     <SelectTrigger
-                      className="h-5 w-5 p-0 border-none bg-transparent hover:bg-muted rounded [&>svg]:hidden flex items-center justify-center"
+                      className="h-5 w-5 p-0 border-none bg-transparent hover:bg-muted rounded flex items-center justify-center [&_svg:last-child]:hidden"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <Folder className="w-3 h-3 text-muted-foreground" />
