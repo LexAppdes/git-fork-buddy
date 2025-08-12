@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { isBefore, startOfDay } from "date-fns";
 
 
 interface Task {
@@ -66,6 +67,11 @@ const formatSimpleDate = (date: Date) => {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = String(date.getFullYear()).slice(-2);
   return `${day}.${month}.${year}`;
+};
+
+const isTaskOverdue = (task: Task) => {
+  if (!task.dueDate || task.completed) return false;
+  return isBefore(task.dueDate, startOfDay(new Date()));
 };
 
 const ClickableDueDate = ({
@@ -155,7 +161,7 @@ const TaskCard = ({
           onClick={e => e.stopPropagation()}
         />
         <div className="flex-1">
-          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed && "line-through")}>
+          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed && "line-through", isTaskOverdue(task) && "text-red-500")}>
             {task.title}
           </h4>
           {task.description && (

@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { format, isToday, isTomorrow, isAfter, startOfDay, endOfDay, isYesterday, differenceInDays } from "date-fns";
+import { format, isToday, isTomorrow, isAfter, startOfDay, endOfDay, isYesterday, differenceInDays, isBefore } from "date-fns";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { Badge } from "@/components/ui/badge";
 import { ProjectManagement } from "@/components/ProjectManagement";
@@ -159,6 +159,22 @@ const mockTasks: Task[] = [{
   area: "work",
   completedAt: yesterday,
   timeframe: "NOW"
+}, {
+  id: "16",
+  title: "Overdue task from yesterday",
+  priority: "urgent",
+  completed: false,
+  dueDate: yesterday,
+  area: "work",
+  timeframe: "NOW"
+}, {
+  id: "17",
+  title: "Very overdue task",
+  priority: "medium",
+  completed: false,
+  dueDate: twoDaysAgo,
+  area: "personal",
+  timeframe: "NOW"
 }];
 const mockAreas: Area[] = [{
   id: "work",
@@ -231,6 +247,11 @@ const formatTodayViewDate = (date: Date) => {
 
 const formatSimpleDate = (date: Date) => {
   return format(date, "dd.MM.yy");
+};
+
+const isTaskOverdue = (task: Task) => {
+  if (!task.dueDate || task.completed) return false;
+  return isBefore(task.dueDate, startOfDay(new Date()));
 };
 
 const ClickableDueDate = ({
@@ -520,7 +541,7 @@ export function TaskManagement() {
                         <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
+                            <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through", isTaskOverdue(task) && "text-red-500")}>
                               {task.title}
                             </h4>
                             <div className="flex items-center gap-2 ml-2">
@@ -677,9 +698,9 @@ export function TaskManagement() {
                          <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                          <div className="flex-1">
                            <div className="flex items-center justify-between">
-                             <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
-                               {task.title}
-                             </h4>
+                                                         <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through", isTaskOverdue(task) && "text-red-500")}>
+                              {task.title}
+                            </h4>
                              {task.dueDate && <ClickableDueDate 
                                date={task.dueDate} 
                                taskId={task.id} 
