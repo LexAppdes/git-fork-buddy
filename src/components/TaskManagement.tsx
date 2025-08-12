@@ -650,7 +650,7 @@ export function TaskManagement() {
                                                   <div className="flex-1">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <h4 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
+                                <h4 className={cn("text-card-foreground", task.completed !== null && "line-through")}>
                                   {task.title}
                                 </h4>
                               </div>
@@ -660,17 +660,25 @@ export function TaskManagement() {
                                     {mockProjects.find(p => p.id === task.project)?.title}
                                   </span>
                                 ) : (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-6 w-6 p-0 hover:bg-muted"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleProjectAssignment(task);
-                                    }}
+                                  <Select
+                                    value="none"
+                                    onValueChange={(value) => handleProjectAssignment(task, value)}
                                   >
-                                    <Folder className="w-3 h-3 text-muted-foreground" />
-                                  </Button>
+                                    <SelectTrigger
+                                      className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Folder className="w-3 h-3 text-muted-foreground" />
+                                    </SelectTrigger>
+                                    <SelectContent onClick={(e) => e.stopPropagation()}>
+                                      <SelectItem value="none">No project</SelectItem>
+                                      {mockProjects.map((project) => (
+                                        <SelectItem key={project.id} value={project.id}>
+                                          {project.title}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
                                 )}
                                 {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                                     {mockAreas.find(a => a.id === task.area)?.name}
