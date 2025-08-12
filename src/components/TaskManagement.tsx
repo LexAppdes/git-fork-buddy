@@ -1379,44 +1379,33 @@ export function TaskManagement() {
               {/* Due Date */}
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
-                {isEditing ? (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !editingTask.dueDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {editingTask.dueDate ? (
-                          format(editingTask.dueDate, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <CalendarComponent
-                        mode="single"
-                        selected={editingTask.dueDate}
-                        onSelect={(date) => updateEditingTask({ dueDate: date })}
-                        initialFocus
-                        className="p-3"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                ) : editingTask.dueDate ? (
-                  <div className="flex items-center gap-2">
-                    <CalendarIcon className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm bg-accent text-accent-foreground px-3 py-1 rounded">
-                      {format(editingTask.dueDate, "EEEE, MMMM d, yyyy")}
-                    </span>
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">No due date</p>
-                )}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !editingTask.dueDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {editingTask.dueDate ? (
+                        format(editingTask.dueDate, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarComponent
+                      mode="single"
+                      selected={editingTask.dueDate}
+                      onSelect={(date) => updateEditingTask({ dueDate: date })}
+                      initialFocus
+                      className="p-3"
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               {/* Area */}
