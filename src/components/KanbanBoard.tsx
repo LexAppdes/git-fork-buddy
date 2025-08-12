@@ -277,13 +277,14 @@ const KanbanColumn = ({
         </div>
         <div className="space-y-2">
           {tasks.map(task => (
-            <TaskCard 
-              key={task.id} 
-              task={task} 
-              onTaskClick={onTaskClick} 
-              onToggleTask={onToggleTask} 
+            <TaskCard
+              key={task.id}
+              task={task}
+              onTaskClick={onTaskClick}
+              onToggleTask={onToggleTask}
               onUpdateTaskDueDate={onUpdateTaskDueDate}
-              areas={areas} 
+              areas={areas}
+              projects={projects}
             />
           ))}
         </div>
