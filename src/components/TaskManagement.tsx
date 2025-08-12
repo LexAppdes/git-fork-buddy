@@ -362,6 +362,8 @@ export function TaskManagement() {
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskViewOpen, setIsTaskViewOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState<"priority" | "date" | "none">("none");
   const [showCompleted, setShowCompleted] = useState(false);
   const [kanbanSelectedAreas, setKanbanSelectedAreas] = useState<string[]>([]);
