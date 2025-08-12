@@ -19,10 +19,10 @@ interface Task {
   title: string;
   description?: string;
   priority: "low" | "medium" | "urgent";
-  completed: boolean;
+  completed: Date | null; // null = not completed, Date = completion timestamp
   dueDate?: Date;
   area?: string;
-  completedAt?: Date;
+  created: Date; // automatically set when task is created
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
 }
 interface Area {
@@ -40,158 +40,180 @@ const yesterday = new Date(today);
 yesterday.setDate(yesterday.getDate() - 1);
 const twoDaysAgo = new Date(today);
 twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+// Helper dates for created timestamps
+const oneWeekAgo = new Date(today);
+oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+const threeDaysAgo = new Date(today);
+threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+const fiveDaysAgo = new Date(today);
+fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
 const mockTasks: Task[] = [{
   id: "1",
   title: "Review quarterly reports",
   priority: "urgent",
-  completed: false,
+  completed: null,
   dueDate: today,
   area: "work",
+  created: fiveDaysAgo,
   timeframe: "NOW"
 }, {
   id: "2",
   title: "Prepare presentation slides",
   priority: "medium",
-  completed: false,
+  completed: null,
   dueDate: tomorrow,
   area: "work",
+  created: threeDaysAgo,
   timeframe: "NEXT"
 }, {
   id: "3",
   title: "Call dentist for appointment",
   priority: "low",
-  completed: false,
+  completed: null,
   area: "personal",
+  created: oneWeekAgo,
   timeframe: "LATER"
 }, {
   id: "4",
   title: "Plan weekend trip",
   priority: "low",
-  completed: true,
+  completed: yesterday,
   area: "personal",
-  completedAt: yesterday,
+  created: oneWeekAgo,
   timeframe: "SOMEDAY"
 }, {
   id: "5",
   title: "Update project documentation",
   priority: "medium",
-  completed: false,
+  completed: null,
   area: "work",
+  created: fiveDaysAgo,
   timeframe: "LATER"
 }, {
   id: "6",
   title: "Morning workout",
   priority: "medium",
-  completed: false,
+  completed: null,
   dueDate: today,
   area: "health",
+  created: today,
   timeframe: "NOW"
 }, {
   id: "7",
   title: "Team standup meeting",
   priority: "urgent",
-  completed: false,
+  completed: null,
   dueDate: today,
   area: "work",
+  created: today,
   timeframe: "NOW"
 }, {
   id: "8",
   title: "Grocery shopping",
   priority: "low",
-  completed: false,
+  completed: null,
   dueDate: today,
   area: "chores",
+  created: yesterday,
   timeframe: "NOW"
 }, {
   id: "9",
   title: "Read psychology book",
   priority: "medium",
-  completed: false,
+  completed: null,
   dueDate: today,
   area: "psychology",
+  created: threeDaysAgo,
   timeframe: "NEXT"
 }, {
   id: "10",
   title: "Complete expense report",
   priority: "urgent",
-  completed: false,
+  completed: null,
   dueDate: nextWeek,
   area: "work",
+  created: fiveDaysAgo,
   timeframe: "NEXT"
 }, {
   id: "11",
   title: "Weekly team meeting",
   priority: "medium",
-  completed: true,
+  completed: today,
   area: "work",
-  completedAt: today,
+  created: yesterday,
   timeframe: "NOW"
 }, {
   id: "12",
   title: "Buy groceries for dinner",
   priority: "low",
-  completed: true,
+  completed: today,
   area: "chores",
-  completedAt: today,
+  created: today,
   timeframe: "NOW"
 }, {
   id: "13",
   title: "Review code changes",
   priority: "medium",
-  completed: true,
+  completed: twoDaysAgo,
   area: "work",
-  completedAt: twoDaysAgo,
+  created: threeDaysAgo,
   timeframe: "NEXT"
 }, {
   id: "14",
   title: "Plan family outing",
   priority: "urgent",
-  completed: true,
+  completed: twoDaysAgo,
   area: "family",
-  completedAt: twoDaysAgo,
+  created: oneWeekAgo,
   timeframe: "LATER"
 }, {
   id: "15",
   title: "Submit monthly report",
   priority: "medium",
-  completed: true,
+  completed: yesterday,
   dueDate: yesterday,
   area: "work",
-  completedAt: yesterday,
+  created: fiveDaysAgo,
   timeframe: "NOW"
 }, {
   id: "16",
   title: "Overdue task from yesterday",
   priority: "urgent",
-  completed: false,
+  completed: null,
   dueDate: yesterday,
   area: "work",
+  created: twoDaysAgo,
   timeframe: "NOW"
 }, {
   id: "17",
   title: "Very overdue task",
   priority: "medium",
-  completed: false,
+  completed: null,
   dueDate: twoDaysAgo,
   area: "personal",
+  created: fiveDaysAgo,
   timeframe: "NOW"
 }, {
   id: "18",
   title: "Random idea to explore",
   priority: "low",
-  completed: false,
+  completed: null,
+  created: yesterday,
   timeframe: "SOMEDAY"
 }, {
   id: "19",
   title: "Unorganized task",
   priority: "medium",
-  completed: false,
+  completed: null,
+  created: today,
   timeframe: "LATER"
 }, {
   id: "20",
   title: "Quick note to self",
   priority: "low",
-  completed: false,
+  completed: null,
+  created: threeDaysAgo,
   timeframe: "SOMEDAY"
 }];
 const mockAreas: Area[] = [{
@@ -268,8 +290,12 @@ const formatSimpleDate = (date: Date) => {
 };
 
 const isTaskOverdue = (task: Task) => {
-  if (!task.dueDate || task.completed) return false;
+  if (!task.dueDate || task.completed !== null) return false;
   return isBefore(task.dueDate, startOfDay(new Date()));
+};
+
+const formatDateTime = (date: Date) => {
+  return format(date, "dd.MM.yyyy HH:mm");
 };
 
 const ClickableDueDate = ({
@@ -353,8 +379,7 @@ export function TaskManagement() {
   const toggleTask = (taskId: string) => {
     setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
       ...task,
-      completed: !task.completed,
-      completedAt: !task.completed ? new Date() : undefined
+      completed: task.completed === null ? new Date() : null
     } : task));
   };
   const updateTaskTimeframe = (taskId: string, timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => {
@@ -450,17 +475,17 @@ export function TaskManagement() {
     if (activeView === "today" && showCompleted) {
       // In Today view, when showing completed tasks, only show those completed today
       filteredTasks = tasks.filter(task =>
-        (!task.completed && task.dueDate && task.dueDate <= endOfDay(new Date())) ||
-        (task.completed && task.completedAt && isToday(task.completedAt))
+        (task.completed === null && task.dueDate && task.dueDate <= endOfDay(new Date())) ||
+        (task.completed !== null && isToday(task.completed))
       );
-    } else if (activeView === "upcoming" && showCompleted) {
-      // In Upcoming view, when showing completed tasks, only show those completed today or later
-      filteredTasks = tasks.filter(task =>
-        !task.completed ||
-        (task.completed && task.completedAt && task.completedAt >= startOfDay(new Date()))
+          } else if (activeView === "upcoming" && showCompleted) {
+        // In Upcoming view, when showing completed tasks, only show those completed today or later
+        filteredTasks = tasks.filter(task =>
+        task.completed === null ||
+        (task.completed !== null && task.completed >= startOfDay(new Date()))
       );
-    } else if (activeView !== "completed" && !showCompleted) {
-      filteredTasks = tasks.filter(task => !task.completed);
+          } else if (activeView !== "completed" && !showCompleted) {
+        filteredTasks = tasks.filter(task => task.completed === null);
     }
     return [...filteredTasks].sort((a, b) => {
       // Primary sort: For all views except "completed", unchecked tasks come first
@@ -506,12 +531,12 @@ export function TaskManagement() {
 
     // Apply completion filter specifically for upcoming view
     if (!showCompleted) {
-      upcomingTasks = upcomingTasks.filter(task => !task.completed);
+      upcomingTasks = upcomingTasks.filter(task => task.completed === null);
     } else {
       // When showing completed, only show those completed today or later
       upcomingTasks = upcomingTasks.filter(task =>
-        !task.completed ||
-        (task.completed && task.completedAt && task.completedAt >= startOfDay(new Date()))
+        task.completed === null ||
+        (task.completed !== null && task.completed >= startOfDay(new Date()))
       );
     }
     const tasksByTimeGroup = upcomingTasks.reduce((acc, task) => {
@@ -554,15 +579,15 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-0 animate-fade-in">
-                   {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                   {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-start gap-3">
-                        <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through", isTaskOverdue(task) && "text-red-500")}>
-                              {task.title}
-                            </h4>
-                            <div className="flex items-center gap-2 ml-2">
+                        <input type="checkbox" checked={task.completed !== null} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                                                  <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <h4 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through", isTaskOverdue(task) && "text-red-500")}>
+                                {task.title}
+                              </h4>
+                              <div className="flex items-center gap-2 ml-2">
                               {task.dueDate && <ClickableDueDate
                                 date={task.dueDate}
                                 taskId={task.id}
@@ -586,10 +611,10 @@ export function TaskManagement() {
       </div>;
   };
   const renderCompletedView = () => {
-    const completedTasks = tasks.filter(task => task.completed && task.completedAt);
+    const completedTasks = tasks.filter(task => task.completed !== null);
     const tasksByDate = completedTasks.reduce((acc, task) => {
-      if (!task.completedAt) return acc;
-      const dateKey = format(task.completedAt, "yyyy-MM-dd");
+      if (!task.completed) return acc;
+      const dateKey = format(task.completed, "yyyy-MM-dd");
       if (!acc[dateKey]) {
         acc[dateKey] = [];
       }
@@ -623,7 +648,7 @@ export function TaskManagement() {
               {isExpanded && <div className="space-y-0 animate-fade-in">
                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer opacity-60")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-start gap-3">
-                        <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                        <input type="checkbox" checked={task.completed !== null} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
                             <h4 className="font-medium text-card-foreground line-through">
@@ -648,14 +673,14 @@ export function TaskManagement() {
       </div>;
   };
   const renderTaskList = (tasks: Task[]) => <div className="space-y-0">
-      {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+      {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
           <div className="flex items-start gap-3">
-            <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+            <input type="checkbox" checked={task.completed !== null} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <h3 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
-                  {task.title}
-                </h3>
+                                  <h3 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
+                    {task.title}
+                  </h3>
                 <div className="flex items-center gap-2 ml-2">
                   {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
                       <ClickableDueDate
@@ -711,14 +736,14 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-0 animate-fade-in">
-                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
                        <div className="flex items-start gap-3">
-                         <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                         <input type="checkbox" checked={task.completed !== null} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                          <div className="flex-1">
                            <div className="flex items-center justify-between">
-                                                         <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through", isTaskOverdue(task) && "text-red-500")}>
-                              {task.title}
-                            </h4>
+                                                                                                                   <h4 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through", isTaskOverdue(task) && "text-red-500")}>
+                               {task.title}
+                             </h4>
                              {task.dueDate && <ClickableDueDate 
                                date={task.dueDate} 
                                taskId={task.id} 
@@ -737,8 +762,21 @@ export function TaskManagement() {
       </div>;
   };
   const handleCreateTask = () => {
-    // For now, just reset the form and close dialog
-    // In a real app, this would save to a database
+    if (!newTask.title.trim()) return;
+    
+    const task: Task = {
+      id: Date.now().toString(), // Simple ID generation
+      title: newTask.title.trim(),
+      description: newTask.description.trim() || undefined,
+      priority: newTask.priority,
+      completed: null,
+      dueDate: newTask.dueDate,
+      area: newTask.area || undefined,
+      created: new Date(),
+      timeframe: newTask.timeframe
+    };
+    
+    setTasks(prevTasks => [...prevTasks, task]);
     setNewTask({
       title: "",
       description: "",
@@ -771,7 +809,7 @@ export function TaskManagement() {
       case "inbox":
         return tasks.filter(task => !task.dueDate && !task.area);
       case "completed":
-        return tasks.filter(task => task.completed);
+        return tasks.filter(task => task.completed !== null);
       default:
         return tasks;
     }
@@ -1174,7 +1212,7 @@ export function TaskManagement() {
             <DialogTitle className="flex items-center gap-3">
               {selectedTask && <>
                   <div className={cn("w-1 h-6 rounded-full", selectedTask.priority === "urgent" ? "bg-destructive" : selectedTask.priority === "medium" ? "bg-amber-500" : "bg-muted")} />
-                  <span className={cn(selectedTask.completed && "line-through")}>
+                  <span className={cn(selectedTask.completed !== null && "line-through")}>
                     {selectedTask.title}
                   </span>
                 </>}
@@ -1185,9 +1223,9 @@ export function TaskManagement() {
               {/* Status and Priority */}
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
-                   <input type="checkbox" checked={selectedTask.completed} className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(selectedTask.priority))} onChange={() => toggleTask(selectedTask.id)} />
+                   <input type="checkbox" checked={selectedTask.completed !== null} className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(selectedTask.priority))} onChange={() => toggleTask(selectedTask.id)} />
                   <span className="text-sm font-medium">
-                    {selectedTask.completed ? "Completed" : "Pending"}
+                    {selectedTask.completed !== null ? "Completed" : "Pending"}
                   </span>
                 </div>
                 
@@ -1239,6 +1277,22 @@ export function TaskManagement() {
                   {selectedTask.timeframe}
                 </span>
               </div>
+
+              {/* Created Date */}
+              <div>
+                <h4 className="text-sm font-medium text-foreground mb-2">Created</h4>
+                <span className="text-sm text-muted-foreground">
+                  {formatDateTime(selectedTask.created)}
+                </span>
+              </div>
+
+              {/* Completed Date */}
+              {selectedTask.completed !== null && <div>
+                <h4 className="text-sm font-medium text-foreground mb-2">Completed</h4>
+                <span className="text-sm text-muted-foreground">
+                  {formatDateTime(selectedTask.completed)}
+                </span>
+              </div>}
 
               {/* Task ID */}
               <div>
