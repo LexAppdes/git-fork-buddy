@@ -742,9 +742,46 @@ export function TaskManagement() {
                   {task.title}
                 </h3>
                 <div className="flex items-center gap-2 ml-2">
-                  <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                    {task.timeframe}
-                  </span>
+                  <Select
+                    value={task.timeframe}
+                    onValueChange={(value) => updateTaskTimeframe(task.id, value as Task["timeframe"])}
+                  >
+                    <SelectTrigger className="w-20 h-7 text-xs bg-secondary text-secondary-foreground border-none">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent onClick={(e) => e.stopPropagation()}>
+                      <SelectItem value="NOW">Now</SelectItem>
+                      <SelectItem value="NEXT">Next</SelectItem>
+                      <SelectItem value="LATER">Later</SelectItem>
+                      <SelectItem value="SOMEDAY">Someday</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0 hover:bg-muted"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <CalendarIcon className="w-3 h-3 text-muted-foreground" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto p-0"
+                      align="end"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <CalendarComponent
+                        mode="single"
+                        selected={task.dueDate}
+                        onSelect={(date) => updateTaskDueDate(task.id, date)}
+                        initialFocus
+                        className="p-3"
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
               {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
