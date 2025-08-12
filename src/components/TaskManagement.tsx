@@ -1368,18 +1368,12 @@ export function TaskManagement() {
               {/* Description */}
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
-                {isEditing ? (
-                  <Textarea
-                    value={editingTask.description || ""}
-                    onChange={(e) => updateEditingTask({ description: e.target.value })}
-                    placeholder="Enter task description"
-                    rows={3}
-                  />
-                ) : (
-                  <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-                    {editingTask.description || "No description"}
-                  </p>
-                )}
+                <Textarea
+                  value={editingTask.description || ""}
+                  onChange={(e) => updateEditingTask({ description: e.target.value })}
+                  placeholder="Enter task description"
+                  rows={3}
+                />
               </div>
 
               {/* Due Date */}
