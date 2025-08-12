@@ -666,6 +666,9 @@ export function TaskManagement() {
                                     <Folder className="w-3 h-3 text-muted-foreground" />
                                   </Button>
                                 )}
+                                {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
+                                    {mockAreas.find(a => a.id === task.area)?.name}
+                                  </span>}
                                 {task.dueDate && <ClickableDueDate
                                   date={task.dueDate}
                                   taskId={task.id}
@@ -673,9 +676,6 @@ export function TaskManagement() {
                                   formatFunction={(date) => format(date, "dd.MM")}
                                   className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
                                 />}
-                                {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
-                                    {mockAreas.find(a => a.id === task.area)?.name}
-                                  </span>}
                               </div>
                           </div>
                         </div>
