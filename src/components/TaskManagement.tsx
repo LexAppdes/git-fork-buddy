@@ -675,9 +675,28 @@ export function TaskManagement() {
       </div>;
   };
   const renderInboxView = () => {
-    const inboxTasks = tasks.filter(task => !task.dueDate && !task.area);
-    // Sort by created date, newest first
-    const sortedTasks = [...inboxTasks].sort((a, b) => b.created.getTime() - a.created.getTime());
+    let inboxTasks = tasks.filter(task => !task.dueDate && !task.area);
+
+    // Apply completion filter
+    if (showCompleted) {
+      // In Inbox view, when showing completed tasks, only show those completed today
+      inboxTasks = inboxTasks.filter(task =>
+        task.completed === null ||
+        (task.completed !== null && isToday(task.completed))
+      );
+    } else {
+      inboxTasks = inboxTasks.filter(task => task.completed === null);
+    }
+
+    // Sort by created date, newest first, with uncompleted tasks first
+    const sortedTasks = [...inboxTasks].sort((a, b) => {
+      // Primary sort: uncompleted tasks first
+      if (a.completed !== b.completed) {
+        return a.completed ? 1 : -1;
+      }
+      // Secondary sort: by created date, newest first
+      return b.created.getTime() - a.created.getTime();
+    });
 
     return <div className="space-y-0">
       {sortedTasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
