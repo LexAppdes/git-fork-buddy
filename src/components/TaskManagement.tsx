@@ -647,20 +647,22 @@ export function TaskManagement() {
                                 <h4 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
                                   {task.title}
                                 </h4>
-                                {task.project && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
-                                  {mockProjects.find(p => p.id === task.project)?.title}
-                                </span>}
                                 {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                                     {mockAreas.find(a => a.id === task.area)?.name}
                                   </span>}
                               </div>
-                              {task.dueDate && <ClickableDueDate
-                                date={task.dueDate}
-                                taskId={task.id}
-                                onDateChange={updateTaskDueDate}
-                                formatFunction={(date) => format(date, "dd.MM")}
-                                className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
-                              />}
+                              <div className="flex items-center gap-2">
+                                {task.project && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                                  {mockProjects.find(p => p.id === task.project)?.title}
+                                </span>}
+                                {task.dueDate && <ClickableDueDate
+                                  date={task.dueDate}
+                                  taskId={task.id}
+                                  onDateChange={updateTaskDueDate}
+                                  formatFunction={(date) => format(date, "dd.MM")}
+                                  className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
+                                />}
+                              </div>
                           </div>
                         </div>
                       </div>
