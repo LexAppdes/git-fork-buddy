@@ -907,7 +907,7 @@ export function TaskManagement() {
             <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                                  <h3 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
+                                  <h3 className={cn("text-card-foreground", task.completed !== null && "line-through")}>
                     {task.title}
                   </h3>
                 <div className="flex items-center gap-2 ml-2">
@@ -916,17 +916,25 @@ export function TaskManagement() {
                       {mockProjects.find(p => p.id === task.project)?.title}
                     </span>
                   ) : (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0 hover:bg-muted"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleTaskClick(task);
-                      }}
+                    <Select
+                      value="none"
+                      onValueChange={(value) => handleProjectAssignment(task, value)}
                     >
-                      <Folder className="w-3 h-3 text-muted-foreground" />
-                    </Button>
+                      <SelectTrigger
+                        className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Folder className="w-3 h-3 text-muted-foreground" />
+                      </SelectTrigger>
+                      <SelectContent onClick={(e) => e.stopPropagation()}>
+                        <SelectItem value="none">No project</SelectItem>
+                        {mockProjects.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            {project.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   )}
                   {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
                       <ClickableDueDate
