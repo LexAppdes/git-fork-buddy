@@ -413,12 +413,10 @@ export function TaskManagement() {
     setIsEditing(true); // Start in edit mode
   };
 
-  const handleProjectAssignment = (task: Task) => {
-    setSelectedTask(task);
-    setEditingTask({...task});
-    setIsTaskViewOpen(true);
-    setIsEditing(true); // Start in edit mode
-    // Focus will be on project selection in the dialog
+  const handleProjectAssignment = (task: Task, newProjectId: string) => {
+    setTasks(prevTasks => prevTasks.map(t =>
+      t.id === task.id ? { ...t, project: newProjectId === "none" ? undefined : newProjectId } : t
+    ));
   };
 
   const handleDialogClose = () => {
