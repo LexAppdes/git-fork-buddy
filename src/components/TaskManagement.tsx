@@ -462,7 +462,19 @@ export function TaskManagement() {
     return "yesterday";
   };
   const renderUpcomingView = () => {
-    const upcomingTasks = tasks.filter(task => task.dueDate && !isToday(task.dueDate));
+    // Get all tasks with due dates (excluding today), then apply completion filtering
+    let upcomingTasks = tasks.filter(task => task.dueDate && !isToday(task.dueDate));
+
+    // Apply completion filter specifically for upcoming view
+    if (!showCompleted) {
+      upcomingTasks = upcomingTasks.filter(task => !task.completed);
+    } else {
+      // When showing completed, only show those completed today or later
+      upcomingTasks = upcomingTasks.filter(task =>
+        !task.completed ||
+        (task.completed && task.completedAt && task.completedAt >= startOfDay(new Date()))
+      );
+    }
     const tasksByTimeGroup = upcomingTasks.reduce((acc, task) => {
       if (!task.dueDate) return acc;
       const group = getRelativeTimeGroup(task.dueDate);
