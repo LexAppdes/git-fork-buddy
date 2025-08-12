@@ -150,6 +150,15 @@ const mockTasks: Task[] = [{
   area: "family",
   completedAt: twoDaysAgo,
   timeframe: "LATER"
+}, {
+  id: "15",
+  title: "Submit monthly report",
+  priority: "medium",
+  completed: true,
+  dueDate: yesterday,
+  area: "work",
+  completedAt: yesterday,
+  timeframe: "NOW"
 }];
 const mockAreas: Area[] = [{
   id: "work",
