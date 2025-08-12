@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { format, isToday, isTomorrow, isAfter, startOfDay, isYesterday, differenceInDays } from "date-fns";
+import { format, isToday, isTomorrow, isAfter, startOfDay, endOfDay, isYesterday, differenceInDays } from "date-fns";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { Badge } from "@/components/ui/badge";
 import { ProjectManagement } from "@/components/ProjectManagement";
