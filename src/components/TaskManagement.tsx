@@ -1317,7 +1317,7 @@ export function TaskManagement() {
       </div>
 
       {/* Task Detail Dialog */}
-      <Dialog open={isTaskViewOpen} onOpenChange={setIsTaskViewOpen}>
+      <Dialog open={isTaskViewOpen} onOpenChange={(open) => open ? setIsTaskViewOpen(true) : handleDialogClose()}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
