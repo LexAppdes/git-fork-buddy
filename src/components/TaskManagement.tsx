@@ -294,6 +294,21 @@ const formatCompletedTime = (date: Date) => {
   return format(date, "HH:mm");
 };
 
+const getTimeframeColor = (timeframe: string) => {
+  switch (timeframe) {
+    case "NOW":
+      return "bg-red-500 text-white";
+    case "NEXT":
+      return "bg-amber-500 text-white";
+    case "LATER":
+      return "bg-blue-500 text-white";
+    case "SOMEDAY":
+      return "bg-green-500 text-white";
+    default:
+      return "bg-secondary text-secondary-foreground";
+  }
+};
+
 const isTaskOverdue = (task: Task) => {
   if (!task.dueDate || task.completed !== null) return false;
   return isBefore(task.dueDate, startOfDay(new Date()));
