@@ -1272,6 +1272,29 @@ export function TaskManagement() {
                         </Select>
                       </div>
                       <div className="grid gap-2">
+                        <Label htmlFor="project">Project</Label>
+                        <Select
+                          value={newTask.project}
+                          onValueChange={(value) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              project: value,
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select project" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mockProjects.map((project) => (
+                              <SelectItem key={project.id} value={project.id}>
+                                {project.title}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
                         <Label htmlFor="timeframe">Timeframe</Label>
                         <Select
                           value={newTask.timeframe}
