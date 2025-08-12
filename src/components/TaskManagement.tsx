@@ -642,7 +642,7 @@ export function TaskManagement() {
               <button onClick={() => toggleGroup(dateKey)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
                 <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                  {format(date, "EEEE, MMMM d, yyyy")}
+                  {format(date, "EEE dd.MM.yyyy")}
                 </h3>
                 <span className="text-sm text-muted-foreground">({tasks.length})</span>
               </button>
