@@ -688,18 +688,24 @@ export function TaskManagement() {
               <Popover>
                 <PopoverTrigger asChild>
                   <div
-                    onMouseEnter={(e) => {
-                      const button = e.currentTarget.querySelector('button');
-                      if (button) button.click();
-                    }}
-                    onMouseLeave={(e) => {
-                      const relatedTarget = e.relatedTarget as Element;
-                      if (!relatedTarget?.closest('[data-radix-popper-content-wrapper]')) {
-                        setTimeout(() => {
-                          const button = e.currentTarget.querySelector('button');
-                          if (button) button.click();
-                        }, 100);
+                    onMouseEnter={() => {
+                      const trigger = document.querySelector('[data-state="closed"]');
+                      if (trigger) {
+                        const button = trigger.querySelector('button');
+                        if (button) button.click();
                       }
+                    }}
+                    onMouseLeave={() => {
+                      setTimeout(() => {
+                        const content = document.querySelector('[data-radix-popper-content-wrapper]:hover');
+                        if (!content) {
+                          const openTrigger = document.querySelector('[data-state="open"]');
+                          if (openTrigger) {
+                            const button = openTrigger.querySelector('button');
+                            if (button) button.click();
+                          }
+                        }
+                      }, 150);
                     }}
                   >
                     <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
@@ -710,13 +716,14 @@ export function TaskManagement() {
                 <PopoverContent 
                   className="w-48 p-0" 
                   align="end"
-                  onMouseEnter={(e) => e.stopPropagation()}
-                  onMouseLeave={(e) => {
-                    const trigger = document.querySelector('[data-state="open"]');
-                    if (trigger) {
-                      const button = trigger.querySelector('button');
-                      if (button) button.click();
-                    }
+                  onMouseLeave={() => {
+                    setTimeout(() => {
+                      const trigger = document.querySelector('[data-state="open"]');
+                      if (trigger) {
+                        const button = trigger.querySelector('button');
+                        if (button) button.click();
+                      }
+                    }, 150);
                   }}
                 >
                   <div className="p-2">
@@ -744,18 +751,24 @@ export function TaskManagement() {
               <Popover>
                 <PopoverTrigger asChild>
                   <div
-                    onMouseEnter={(e) => {
-                      const button = e.currentTarget.querySelector('button');
-                      if (button) button.click();
-                    }}
-                    onMouseLeave={(e) => {
-                      const relatedTarget = e.relatedTarget as Element;
-                      if (!relatedTarget?.closest('[data-radix-popper-content-wrapper]')) {
-                        setTimeout(() => {
-                          const button = e.currentTarget.querySelector('button');
-                          if (button) button.click();
-                        }, 100);
+                    onMouseEnter={() => {
+                      const trigger = document.querySelector('[data-state="closed"]');
+                      if (trigger) {
+                        const button = trigger.querySelector('button');
+                        if (button) button.click();
                       }
+                    }}
+                    onMouseLeave={() => {
+                      setTimeout(() => {
+                        const content = document.querySelector('[data-radix-popper-content-wrapper]:hover');
+                        if (!content) {
+                          const openTrigger = document.querySelector('[data-state="open"]');
+                          if (openTrigger) {
+                            const button = openTrigger.querySelector('button');
+                            if (button) button.click();
+                          }
+                        }
+                      }, 150);
                     }}
                   >
                     <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
@@ -766,13 +779,14 @@ export function TaskManagement() {
                 <PopoverContent 
                   className="w-48 p-0" 
                   align="end"
-                  onMouseEnter={(e) => e.stopPropagation()}
-                  onMouseLeave={(e) => {
-                    const trigger = document.querySelector('[data-state="open"]');
-                    if (trigger) {
-                      const button = trigger.querySelector('button');
-                      if (button) button.click();
-                    }
+                  onMouseLeave={() => {
+                    setTimeout(() => {
+                      const trigger = document.querySelector('[data-state="open"]');
+                      if (trigger) {
+                        const button = trigger.querySelector('button');
+                        if (button) button.click();
+                      }
+                    }, 150);
                   }}
                 >
                   <div className="p-2">
