@@ -1232,7 +1232,7 @@ export function TaskManagement() {
           renderAreasView()
         ) : (
           <div className="max-w-4xl mx-auto">
-            {activeView === "today" ? renderTodayView() : activeView === "upcoming" ? renderUpcomingView() : activeView === "completed" ? renderCompletedView() : renderTaskList(filterAndSortTasks(getFilteredTasks()))}
+            {activeView === "today" ? renderTodayView() : activeView === "upcoming" ? renderUpcomingView() : activeView === "completed" ? renderCompletedView() : activeView === "inbox" ? renderInboxView() : renderTaskList(filterAndSortTasks(getFilteredTasks()))}
           </div>
         )}
       </div>
