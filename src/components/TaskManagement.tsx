@@ -515,7 +515,7 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-0 animate-fade-in">
-                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                   {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-start gap-3">
                         <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
