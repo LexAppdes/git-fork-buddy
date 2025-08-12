@@ -1411,33 +1411,22 @@ export function TaskManagement() {
               {/* Area */}
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
-                {isEditing ? (
-                  <Select
-                    value={editingTask.area || "none"}
-                    onValueChange={(value) => updateEditingTask({ area: value === "none" ? undefined : value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select area" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">No area</SelectItem>
-                      {mockAreas.map((area) => (
-                        <SelectItem key={area.id} value={area.id}>
-                          {area.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : editingTask.area ? (
-                  <div className="flex items-center gap-2">
-                    <div className={cn("w-3 h-3 rounded-full", mockAreas.find(a => a.id === editingTask.area)?.color || "bg-muted")} />
-                    <span className={cn("text-xs text-white px-3 py-1 rounded", mockAreas.find(a => a.id === editingTask.area)?.color || "bg-muted")}>
-                      {mockAreas.find(a => a.id === editingTask.area)?.name}
-                    </span>
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">No area</p>
-                )}
+                <Select
+                  value={editingTask.area || "none"}
+                  onValueChange={(value) => updateEditingTask({ area: value === "none" ? undefined : value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select area" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No area</SelectItem>
+                    {mockAreas.map((area) => (
+                      <SelectItem key={area.id} value={area.id}>
+                        {area.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Timeframe */}
