@@ -620,18 +620,16 @@ export function TaskManagement() {
                                 {task.title}
                               </h4>
                               <div className="flex items-center gap-2 ml-2">
+                              {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
+                                  {mockAreas.find(a => a.id === task.area)?.name}
+                                </span>}
                               {task.dueDate && <ClickableDueDate
                                 date={task.dueDate}
                                 taskId={task.id}
                                 onDateChange={updateTaskDueDate}
+                                formatFunction={(date) => format(date, "dd.MM")}
                                 className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
                               />}
-                              {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
-                                  {mockAreas.find(a => a.id === task.area)?.name}
-                                </span>}
-                              <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                                {task.timeframe}
-                              </span>
                             </div>
                           </div>
                         </div>
