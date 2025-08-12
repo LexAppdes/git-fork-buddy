@@ -368,15 +368,16 @@ export function KanbanBoard({
 
       <div className="flex gap-4 h-full">
         {timeframes.map(timeframe => (
-          <KanbanColumn 
-            key={timeframe} 
-            timeframe={timeframe} 
-            tasks={tasksByTimeframe[timeframe] || []} 
-            onTaskClick={onTaskClick} 
-            onToggleTask={onToggleTask} 
-            onUpdateTaskTimeframe={onUpdateTaskTimeframe} 
+          <KanbanColumn
+            key={timeframe}
+            timeframe={timeframe}
+            tasks={tasksByTimeframe[timeframe] || []}
+            onTaskClick={onTaskClick}
+            onToggleTask={onToggleTask}
+            onUpdateTaskTimeframe={onUpdateTaskTimeframe}
             onUpdateTaskDueDate={onUpdateTaskDueDate}
-            areas={areas} 
+            areas={areas}
+            projects={projects}
           />
         ))}
       </div>
