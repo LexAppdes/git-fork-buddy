@@ -773,15 +773,13 @@ export function TaskManagement() {
             <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <h3 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
-                    {task.title}
-                  </h3>
+                <h3 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
+                  {task.title}
+                </h3>
+                <div className="flex items-center gap-2 ml-2">
                   {task.project && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
                     {mockProjects.find(p => p.id === task.project)?.title}
                   </span>}
-                </div>
-                <div className="flex items-center gap-2 ml-2">
                   <Select
                     value={task.timeframe}
                     onValueChange={(value) => updateTaskTimeframe(task.id, value as Task["timeframe"])}
