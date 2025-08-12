@@ -138,13 +138,19 @@ const TaskCard = ({
   onTaskClick,
   onToggleTask,
   onUpdateTaskDueDate,
-  areas
+  areas,
+  projects
 }: {
   task: Task;
   onTaskClick: (task: Task) => void;
   onToggleTask: (taskId: string) => void;
   onUpdateTaskDueDate?: (taskId: string, date: Date | undefined) => void;
   areas: any[];
+  projects?: Array<{
+    id: string;
+    title: string;
+    area: string;
+  }>;
 }) => {
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("text/plain", task.id);
