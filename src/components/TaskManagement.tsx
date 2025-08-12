@@ -383,26 +383,19 @@ export function TaskManagement() {
     setSelectedTask(task);
     setEditingTask({...task});
     setIsTaskViewOpen(true);
-    setIsEditing(false);
+    setIsEditing(true); // Start in edit mode
   };
 
-  const handleStartEdit = () => {
-    setIsEditing(true);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingTask(selectedTask ? {...selectedTask} : null);
-    setIsEditing(false);
-  };
-
-  const handleSaveEdit = () => {
+  const handleDialogClose = () => {
+    // Auto-save changes when closing
     if (editingTask) {
       setTasks(prevTasks => prevTasks.map(task =>
         task.id === editingTask.id ? editingTask : task
       ));
       setSelectedTask(editingTask);
-      setIsEditing(false);
     }
+    setIsTaskViewOpen(false);
+    setIsEditing(false);
   };
 
   const updateEditingTask = (updates: Partial<Task>) => {
