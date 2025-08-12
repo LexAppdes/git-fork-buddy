@@ -286,6 +286,10 @@ const formatSimpleDate = (date: Date) => {
   return format(date, "dd.MM.yy");
 };
 
+const formatCreatedDate = (date: Date) => {
+  return format(date, "dd.MM");
+};
+
 const isTaskOverdue = (task: Task) => {
   if (!task.dueDate || task.completed !== null) return false;
   return isBefore(task.dueDate, startOfDay(new Date()));
