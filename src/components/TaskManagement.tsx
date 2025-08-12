@@ -942,6 +942,7 @@ export function TaskManagement() {
       priority: "medium",
       dueDate: undefined,
       area: "",
+      project: "",
       timeframe: "NOW"
     });
   };
