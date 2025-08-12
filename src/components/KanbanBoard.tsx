@@ -142,7 +142,8 @@ const TaskCard = ({
   onToggleTask,
   onUpdateTaskDueDate,
   areas,
-  projects
+  projects,
+  onProjectAssignment
 }: {
   task: Task;
   onTaskClick: (task: Task) => void;
@@ -154,6 +155,7 @@ const TaskCard = ({
     title: string;
     area: string;
   }>;
+  onProjectAssignment?: (task: Task) => void;
 }) => {
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("text/plain", task.id);
