@@ -678,7 +678,7 @@ export function TaskManagement() {
                                     onValueChange={(value) => handleProjectAssignment(task, value)}
                                   >
                                     <SelectTrigger
-                                      className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded"
+                                      className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded [&>svg]:hidden flex items-center justify-center"
                                       onClick={(e) => e.stopPropagation()}
                                     >
                                       <Folder className="w-3 h-3 text-muted-foreground" />
