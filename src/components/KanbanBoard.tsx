@@ -403,6 +403,7 @@ export function KanbanBoard({
             onUpdateTaskDueDate={onUpdateTaskDueDate}
             areas={areas}
             projects={projects}
+            onProjectAssignment={onProjectAssignment}
           />
         ))}
       </div>
