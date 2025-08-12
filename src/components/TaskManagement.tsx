@@ -668,7 +668,7 @@ export function TaskManagement() {
                                     className="h-6 w-6 p-0 hover:bg-muted"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      handleTaskClick(task);
+                                      handleProjectAssignment(task);
                                     }}
                                   >
                                     <Folder className="w-3 h-3 text-muted-foreground" />
