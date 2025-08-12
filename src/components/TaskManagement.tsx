@@ -402,7 +402,6 @@ export function TaskManagement() {
     description: "",
     priority: "medium" as Task["priority"],
     dueDate: undefined as Date | undefined,
-    area: "",
     project: "",
     timeframe: "NOW" as Task["timeframe"]
   });
