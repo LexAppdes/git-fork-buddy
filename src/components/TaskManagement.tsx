@@ -918,10 +918,11 @@ export function TaskManagement() {
       completed: null,
       dueDate: newTask.dueDate,
       area: newTask.area || undefined,
+      project: newTask.project || undefined,
       created: new Date(),
       timeframe: newTask.timeframe
     };
-    
+
     setTasks(prevTasks => [...prevTasks, task]);
     setNewTask({
       title: "",
@@ -929,6 +930,7 @@ export function TaskManagement() {
       priority: "medium",
       dueDate: undefined,
       area: "",
+      project: "",
       timeframe: "NOW"
     });
     setIsNewTaskDialogOpen(false);
