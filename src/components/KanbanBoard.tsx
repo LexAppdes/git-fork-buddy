@@ -177,8 +177,7 @@ const TaskCard = ({
               {task.title}
             </h4>
             {task.project && <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
-              {/* We'll need to pass projects to this component or find another way to get project names */}
-              Project
+              {projects?.find(p => p.id === task.project)?.title || 'Project'}
             </span>}
           </div>
           {task.description && (
