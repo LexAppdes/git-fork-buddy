@@ -1628,6 +1628,20 @@ export function TaskManagement() {
                 </Select>
               </div>
 
+              {/* Area (read-only, derived from project) */}
+              <div>
+                <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
+                <div className="flex items-center gap-2">
+                  {getAreaFromProject(editingTask.project) ? (
+                    <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.color || "bg-muted")}>
+                      {mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.name}
+                    </span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">No area (no project assigned)</span>
+                  )}
+                </div>
+              </div>
+
               {/* Timeframe */}
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
