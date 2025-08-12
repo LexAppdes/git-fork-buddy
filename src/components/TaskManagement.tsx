@@ -672,8 +672,8 @@ export function TaskManagement() {
   };
   const renderTaskList = (tasks: Task[]) => <div className="space-y-0">
       {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
-          <div className="flex items-start gap-3">
-            <input type="checkbox" checked={task.completed !== null} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+          <div className="flex items-center gap-3">
+            <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
             <div className="flex-1">
               <div className="flex items-center justify-between">
                                   <h3 className={cn("font-medium text-card-foreground", task.completed !== null && "line-through")}>
