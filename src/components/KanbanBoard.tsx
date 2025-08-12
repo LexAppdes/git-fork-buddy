@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { isBefore, startOfDay } from "date-fns";
+import { Folder } from "lucide-react";
 
 
 interface Task {
@@ -15,6 +17,7 @@ interface Task {
   completed: Date | null; // null = not completed, Date = completion timestamp
   dueDate?: Date;
   area?: string;
+  project?: string;
   created: Date; // automatically set when task is created
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
 }
@@ -35,6 +38,12 @@ interface KanbanBoardProps {
     taskCount: number;
   }>;
   selectedAreas?: string[];
+  projects?: Array<{
+    id: string;
+    title: string;
+    area: string;
+  }>;
+  onProjectAssignment?: (task: Task, projectId: string) => void;
 }
 
 const getPriorityCheckboxColor = (priority: string) => {
@@ -133,16 +142,30 @@ const TaskCard = ({
   onTaskClick,
   onToggleTask,
   onUpdateTaskDueDate,
-  areas
+  areas,
+  projects,
+  onProjectAssignment
 }: {
   task: Task;
   onTaskClick: (task: Task) => void;
   onToggleTask: (taskId: string) => void;
   onUpdateTaskDueDate?: (taskId: string, date: Date | undefined) => void;
   areas: any[];
+  projects?: Array<{
+    id: string;
+    title: string;
+    area: string;
+  }>;
+  onProjectAssignment?: (task: Task, projectId: string) => void;
 }) => {
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("text/plain", task.id);
+  };
+
+  const getAreaFromProject = (projectId?: string) => {
+    if (!projectId) return undefined;
+    const project = projects?.find(p => p.id === projectId);
+    return project?.area;
   };
 
   return (
@@ -156,12 +179,12 @@ const TaskCard = ({
         <input
           type="checkbox"
           checked={task.completed !== null}
-          className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))}
+          className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))}
           onChange={() => onToggleTask(task.id)}
           onClick={e => e.stopPropagation()}
         />
         <div className="flex-1">
-          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed !== null && "line-through", isTaskOverdue(task) && "text-red-500")}>
+          <h4 className={cn("text-card-foreground text-sm", task.completed !== null && "line-through")}>
             {task.title}
           </h4>
           {task.description && (
@@ -169,24 +192,61 @@ const TaskCard = ({
           )}
         </div>
       </div>
-      {(task.dueDate || task.area) && (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            {task.dueDate && (
+      {(task.dueDate || task.area || task.project) && (
+        <div className="space-y-2">
+          {task.dueDate && (
+            <div className="flex items-center">
               <ClickableDueDate
                 date={task.dueDate}
                 taskId={task.id}
                 onDateChange={onUpdateTaskDueDate}
+                className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
               />
-            )}
-          </div>
-          <div className="flex items-center">
-            {task.area && (
-              <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === task.area)?.color || "bg-muted")}>
-                {areas.find(a => a.id === task.area)?.name}
-              </span>
-            )}
-          </div>
+            </div>
+          )}
+          {(getAreaFromProject(task.project) || task.project) && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                {getAreaFromProject(task.project) && (
+                  <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === getAreaFromProject(task.project))?.color || "bg-muted")}>
+                    {areas.find(a => a.id === getAreaFromProject(task.project))?.name}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center">
+                {task.project ? (
+                  <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
+                    {projects?.find(p => p.id === task.project)?.title || 'Project'}
+                  </span>
+                ) : (
+                  <Select
+                    value="none"
+                    onValueChange={(value) => {
+                      if (onProjectAssignment) {
+                        // Call the project assignment with the task and new project value
+                        onProjectAssignment(task, value);
+                      }
+                    }}
+                  >
+                    <SelectTrigger
+                      className="h-5 w-5 p-0 border-none bg-transparent hover:bg-muted rounded flex items-center justify-center [&_svg:last-child]:hidden"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Folder className="w-3 h-3 text-muted-foreground" />
+                    </SelectTrigger>
+                    <SelectContent onClick={(e) => e.stopPropagation()}>
+                      <SelectItem value="none">No project</SelectItem>
+                      {projects?.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>
+                          {project.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -200,7 +260,9 @@ const KanbanColumn = ({
   onToggleTask,
   onUpdateTaskTimeframe,
   onUpdateTaskDueDate,
-  areas
+  areas,
+  projects,
+  onProjectAssignment
 }: {
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
   tasks: Task[];
@@ -209,6 +271,12 @@ const KanbanColumn = ({
   onUpdateTaskTimeframe: (taskId: string, timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => void;
   onUpdateTaskDueDate?: (taskId: string, date: Date | undefined) => void;
   areas: any[];
+  projects?: Array<{
+    id: string;
+    title: string;
+    area: string;
+  }>;
+  onProjectAssignment?: (task: Task, projectId: string) => void;
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -260,13 +328,15 @@ const KanbanColumn = ({
         </div>
         <div className="space-y-2">
           {tasks.map(task => (
-            <TaskCard 
-              key={task.id} 
-              task={task} 
-              onTaskClick={onTaskClick} 
-              onToggleTask={onToggleTask} 
+            <TaskCard
+              key={task.id}
+              task={task}
+              onTaskClick={onTaskClick}
+              onToggleTask={onToggleTask}
               onUpdateTaskDueDate={onUpdateTaskDueDate}
-              areas={areas} 
+              areas={areas}
+              projects={projects}
+              onProjectAssignment={onProjectAssignment}
             />
           ))}
         </div>
@@ -283,6 +353,8 @@ export function KanbanBoard({
   onUpdateTaskDueDate,
   areas,
   selectedAreas: controlledSelectedAreas,
+  projects,
+  onProjectAssignment,
 }: KanbanBoardProps) {
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const timeframes = ["NOW", "NEXT", "LATER", "SOMEDAY"] as const;
@@ -337,15 +409,17 @@ export function KanbanBoard({
 
       <div className="flex gap-4 h-full">
         {timeframes.map(timeframe => (
-          <KanbanColumn 
-            key={timeframe} 
-            timeframe={timeframe} 
-            tasks={tasksByTimeframe[timeframe] || []} 
-            onTaskClick={onTaskClick} 
-            onToggleTask={onToggleTask} 
-            onUpdateTaskTimeframe={onUpdateTaskTimeframe} 
+          <KanbanColumn
+            key={timeframe}
+            timeframe={timeframe}
+            tasks={tasksByTimeframe[timeframe] || []}
+            onTaskClick={onTaskClick}
+            onToggleTask={onToggleTask}
+            onUpdateTaskTimeframe={onUpdateTaskTimeframe}
             onUpdateTaskDueDate={onUpdateTaskDueDate}
-            areas={areas} 
+            areas={areas}
+            projects={projects}
+            onProjectAssignment={onProjectAssignment}
           />
         ))}
       </div>
