@@ -128,12 +128,14 @@ const getStatusLabel = (status: string) => {
 
 interface ProjectManagementProps {
   selectedAreas?: string[];
+  selectedStatuses?: string[];
   isNewProjectDialogOpen?: boolean;
   onNewProjectDialogChange?: (open: boolean) => void;
 }
 
 export function ProjectManagement({
   selectedAreas = [],
+  selectedStatuses = [],
   isNewProjectDialogOpen: externalDialogOpen,
   onNewProjectDialogChange
 }: ProjectManagementProps) {
@@ -151,7 +153,6 @@ export function ProjectManagement({
   };
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
-  const [filterByStatus, setFilterByStatus] = useState<string>("all");
   const [newProject, setNewProject] = useState({
     title: "",
     description: "",
@@ -193,8 +194,9 @@ export function ProjectManagement({
   const filterAndSortProjects = (projects: Project[]) => {
     let filteredProjects = projects;
 
-    if (filterByStatus !== "all") {
-      filteredProjects = filteredProjects.filter(project => project.status === filterByStatus);
+    // Filter by selected statuses if any are selected
+    if (selectedStatuses.length > 0) {
+      filteredProjects = filteredProjects.filter(project => selectedStatuses.includes(project.status));
     }
 
     // Filter by selected areas if any are selected

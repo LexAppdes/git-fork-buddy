@@ -222,6 +222,7 @@ export function TaskManagement() {
   const [showCompleted, setShowCompleted] = useState(false);
   const [kanbanSelectedAreas, setKanbanSelectedAreas] = useState<string[]>([]);
   const [selectedProjectAreas, setSelectedProjectAreas] = useState<string[]>([]);
+  const [selectedProjectStatuses, setSelectedProjectStatuses] = useState<string[]>([]);
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -726,26 +727,54 @@ export function TaskManagement() {
                     }, 150);
                   }}
                 >
-                  <div className="p-2">
-                    <div className="text-xs font-medium text-muted-foreground mb-2 px-2">Filter</div>
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2 px-2">
-                        <Checkbox
-                          id="show-completed"
-                          checked={showCompleted}
-                          onCheckedChange={(checked) =>
-                            setShowCompleted(checked as boolean)
-                          }
-                        />
-                        <Label
-                          htmlFor="show-completed"
-                          className="text-sm font-normal cursor-pointer"
-                        >
-                          Show completed
-                        </Label>
-                      </div>
-                    </div>
-                  </div>
+                   <div className="p-2">
+                     <div className="text-xs font-medium text-muted-foreground mb-2 px-2">Filter</div>
+                     <div className="space-y-2">
+                       {activeView === "projects" ? (
+                         // Project status filters
+                         <>
+                           {["lead", "active", "finished", "archive"].map((status) => (
+                             <div key={status} className="flex items-center space-x-2 px-2">
+                               <Checkbox
+                                 id={`status-${status}`}
+                                 checked={selectedProjectStatuses.includes(status)}
+                                 onCheckedChange={(checked) => {
+                                   if (checked) {
+                                     setSelectedProjectStatuses(prev => [...prev, status]);
+                                   } else {
+                                     setSelectedProjectStatuses(prev => prev.filter(s => s !== status));
+                                   }
+                                 }}
+                               />
+                               <Label
+                                 htmlFor={`status-${status}`}
+                                 className="text-sm font-normal cursor-pointer capitalize"
+                               >
+                                 {status}
+                               </Label>
+                             </div>
+                           ))}
+                         </>
+                       ) : (
+                         // Task completion filter
+                         <div className="flex items-center space-x-2 px-2">
+                           <Checkbox
+                             id="show-completed"
+                             checked={showCompleted}
+                             onCheckedChange={(checked) =>
+                               setShowCompleted(checked as boolean)
+                             }
+                           />
+                           <Label
+                             htmlFor="show-completed"
+                             className="text-sm font-normal cursor-pointer"
+                           >
+                             Show completed
+                           </Label>
+                         </div>
+                       )}
+                     </div>
+                   </div>
                 </PopoverContent>
               </Popover>
               <Popover>
@@ -1001,6 +1030,7 @@ export function TaskManagement() {
           <div className="h-full -m-6">
             <ProjectManagement
               selectedAreas={selectedProjectAreas}
+              selectedStatuses={selectedProjectStatuses}
               isNewProjectDialogOpen={isNewProjectDialogOpen}
               onNewProjectDialogChange={setIsNewProjectDialogOpen}
             />
