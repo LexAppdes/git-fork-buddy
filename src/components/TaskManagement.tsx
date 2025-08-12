@@ -401,6 +401,11 @@ export function TaskManagement() {
     let filteredTasks = tasks;
     if (activeView !== "completed" && !showCompleted) {
       filteredTasks = tasks.filter(task => !task.completed);
+    } else if (activeView === "today" && showCompleted) {
+      // In Today view, when showing completed tasks, only show those completed today
+      filteredTasks = tasks.filter(task =>
+        !task.completed || (task.completed && task.completedAt && isToday(task.completedAt))
+      );
     }
     return [...filteredTasks].sort((a, b) => {
       // Primary sort: For all views except "completed", unchecked tasks come first
