@@ -224,25 +224,33 @@ const formatSimpleDate = (date: Date) => {
   return format(date, "dd.MM.yy");
 };
 
-const ClickableDueDate = ({ 
-  date, 
-  taskId, 
-  onDateChange, 
-  formatFunction = formatSimpleDate, 
-  className = "text-xs text-muted-foreground" 
-}: { 
-  date: Date; 
-  taskId: string; 
+const ClickableDueDate = ({
+  date,
+  taskId,
+  onDateChange,
+  formatFunction = formatSimpleDate,
+  className = "text-xs text-muted-foreground"
+}: {
+  date: Date;
+  taskId: string;
   onDateChange: (taskId: string, date: Date | undefined) => void;
   formatFunction?: (date: Date) => string;
   className?: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsOpen(true);
+  };
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <span className={cn("cursor-pointer hover:text-foreground transition-colors", className)}>
+        <span
+          className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
+          onClick={handleClick}
+        >
           {formatFunction(date)}
         </span>
       </PopoverTrigger>
