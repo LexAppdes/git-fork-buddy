@@ -445,6 +445,11 @@ export function TaskManagement() {
     icon: FolderOpen,
     count: 14
   }, {
+    id: "goals",
+    label: "Goals",
+    icon: FolderOpen,
+    count: 8
+  }, {
     id: "inbox",
     label: "Inbox",
     icon: Inbox,
