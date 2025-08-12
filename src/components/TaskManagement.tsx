@@ -1323,17 +1323,11 @@ export function TaskManagement() {
             <DialogTitle className="flex items-center gap-3">
               {editingTask && <>
                   <div className={cn("w-1 h-6 rounded-full", editingTask.priority === "urgent" ? "bg-destructive" : editingTask.priority === "medium" ? "bg-amber-500" : "bg-muted")} />
-                  {isEditing ? (
-                    <Input
-                      value={editingTask.title}
-                      onChange={(e) => updateEditingTask({ title: e.target.value })}
-                      className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0"
-                    />
-                  ) : (
-                    <span className={cn(editingTask.completed !== null && "line-through")}>
-                      {editingTask.title}
-                    </span>
-                  )}
+                  <Input
+                    value={editingTask.title}
+                    onChange={(e) => updateEditingTask({ title: e.target.value })}
+                    className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0"
+                  />
                 </>}
             </DialogTitle>
           </DialogHeader>
