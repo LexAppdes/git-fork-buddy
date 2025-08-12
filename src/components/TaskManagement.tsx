@@ -692,13 +692,33 @@ export function TaskManagement() {
                       const button = e.currentTarget.querySelector('button');
                       if (button) button.click();
                     }}
+                    onMouseLeave={(e) => {
+                      const relatedTarget = e.relatedTarget as Element;
+                      if (!relatedTarget?.closest('[data-radix-popper-content-wrapper]')) {
+                        setTimeout(() => {
+                          const button = e.currentTarget.querySelector('button');
+                          if (button) button.click();
+                        }, 100);
+                      }
+                    }}
                   >
                     <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                       <Filter className="w-4 h-4" />
                     </Button>
                   </div>
                 </PopoverTrigger>
-                <PopoverContent className="w-48 p-0" align="end">
+                <PopoverContent 
+                  className="w-48 p-0" 
+                  align="end"
+                  onMouseEnter={(e) => e.stopPropagation()}
+                  onMouseLeave={(e) => {
+                    const trigger = document.querySelector('[data-state="open"]');
+                    if (trigger) {
+                      const button = trigger.querySelector('button');
+                      if (button) button.click();
+                    }
+                  }}
+                >
                   <div className="p-2">
                     <div className="text-xs font-medium text-muted-foreground mb-2 px-2">Filter</div>
                     <div className="space-y-2">
@@ -728,13 +748,33 @@ export function TaskManagement() {
                       const button = e.currentTarget.querySelector('button');
                       if (button) button.click();
                     }}
+                    onMouseLeave={(e) => {
+                      const relatedTarget = e.relatedTarget as Element;
+                      if (!relatedTarget?.closest('[data-radix-popper-content-wrapper]')) {
+                        setTimeout(() => {
+                          const button = e.currentTarget.querySelector('button');
+                          if (button) button.click();
+                        }, 100);
+                      }
+                    }}
                   >
                     <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                       <ArrowUpDown className="w-4 h-4" />
                     </Button>
                   </div>
                 </PopoverTrigger>
-                <PopoverContent className="w-48 p-0" align="end">
+                <PopoverContent 
+                  className="w-48 p-0" 
+                  align="end"
+                  onMouseEnter={(e) => e.stopPropagation()}
+                  onMouseLeave={(e) => {
+                    const trigger = document.querySelector('[data-state="open"]');
+                    if (trigger) {
+                      const button = trigger.querySelector('button');
+                      if (button) button.click();
+                    }
+                  }}
+                >
                   <div className="p-2">
                     <div className="text-xs font-medium text-muted-foreground mb-2 px-2">Sort by</div>
                     <div className="space-y-1">
