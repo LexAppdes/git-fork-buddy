@@ -693,7 +693,7 @@ export function TaskManagement() {
   const getFilteredTasks = () => {
     switch (activeView) {
       case "today":
-        return tasks.filter(task => task.dueDate && isToday(task.dueDate));
+        return tasks.filter(task => task.dueDate && task.dueDate <= startOfDay(new Date()));
       case "upcoming":
         return tasks.filter(task => task.dueDate && !isToday(task.dueDate));
       case "inbox":
