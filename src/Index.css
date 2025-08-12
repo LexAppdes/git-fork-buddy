@@ -118,6 +118,7 @@
   }
 }
 
+<<<<<<< HEAD
 @layer components {
   /* Priority checkbox styling */
   .priority-checkbox {
@@ -148,3 +149,85 @@
     @apply bg-green-500 border-green-500;
   }
 }
+=======
+@layer utilities {
+  /* Custom checkbox styling */
+  input[type="checkbox"].priority-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    margin-top: 2px;
+  }
+  
+  /* Urgent priority - red border when unchecked */
+  input[type="checkbox"].checkbox-urgent {
+    border: 2px solid hsl(var(--task-urgent));
+    background-color: transparent;
+  }
+  
+  /* Medium priority - amber border when unchecked */
+  input[type="checkbox"].checkbox-medium {
+    border: 2px solid hsl(var(--task-medium));
+    background-color: transparent;
+  }
+  
+  /* Low priority - green border when unchecked */
+  input[type="checkbox"].checkbox-low {
+    border: 2px solid hsl(var(--task-low));
+    background-color: transparent;
+  }
+  
+  /* All checked checkboxes are green */
+  input[type="checkbox"].checkbox-urgent:checked,
+  input[type="checkbox"].checkbox-medium:checked,
+  input[type="checkbox"].checkbox-low:checked {
+    background-color: hsl(142 76% 36%);
+    border: 2px solid hsl(142 76% 36%);
+  }
+  
+  /* Checkmark for checked state */
+  input[type="checkbox"].priority-checkbox:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1;
+  }
+  
+  /* Focus states */
+  input[type="checkbox"].priority-checkbox:focus {
+    box-shadow: 0 0 0 2px hsl(var(--ring));
+  }
+  
+  .bg-task-urgent {
+    background-color: hsl(var(--task-urgent));
+  }
+  
+  .bg-task-medium {
+    background-color: hsl(var(--task-medium));
+  }
+  
+  .bg-task-low {
+    background-color: hsl(var(--task-low));
+  }
+
+  /* Navigation button hover and active states */
+  .nav-button-hover:hover:not(.nav-button-active) {
+    background-color: #F3F3F3 !important;
+  }
+  
+  .nav-button-active {
+    background-color: #F3F3F3 !important;
+  }
+}
+>>>>>>> origin/main
