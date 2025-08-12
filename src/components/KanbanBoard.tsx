@@ -43,7 +43,7 @@ interface KanbanBoardProps {
     title: string;
     area: string;
   }>;
-  onProjectAssignment?: (task: Task) => void;
+  onProjectAssignment?: (task: Task, projectId: string) => void;
 }
 
 const getPriorityCheckboxColor = (priority: string) => {
@@ -156,7 +156,7 @@ const TaskCard = ({
     title: string;
     area: string;
   }>;
-  onProjectAssignment?: (task: Task) => void;
+  onProjectAssignment?: (task: Task, projectId: string) => void;
 }) => {
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("text/plain", task.id);
@@ -270,7 +270,7 @@ const KanbanColumn = ({
     title: string;
     area: string;
   }>;
-  onProjectAssignment?: (task: Task) => void;
+  onProjectAssignment?: (task: Task, projectId: string) => void;
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
