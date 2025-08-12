@@ -1490,6 +1490,27 @@ export function TaskManagement() {
                 </Select>
               </div>
 
+              {/* Project */}
+              <div>
+                <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
+                <Select
+                  value={editingTask.project || "none"}
+                  onValueChange={(value) => updateEditingTask({ project: value === "none" ? undefined : value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No project</SelectItem>
+                    {mockProjects.map((project) => (
+                      <SelectItem key={project.id} value={project.id}>
+                        {project.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Timeframe */}
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
