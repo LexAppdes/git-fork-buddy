@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { isBefore, startOfDay } from "date-fns";
+import { Folder } from "lucide-react";
 
 
 interface Task {
@@ -15,6 +16,7 @@ interface Task {
   completed: Date | null; // null = not completed, Date = completion timestamp
   dueDate?: Date;
   area?: string;
+  project?: string;
   created: Date; // automatically set when task is created
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
 }
@@ -202,10 +204,22 @@ const TaskCard = ({
                 )}
               </div>
               <div className="flex items-center">
-                {task.project && (
+                {task.project ? (
                   <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
                     {projects?.find(p => p.id === task.project)?.title || 'Project'}
                   </span>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-5 w-5 p-0 hover:bg-muted"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onTaskClick(task);
+                    }}
+                  >
+                    <Folder className="w-3 h-3 text-muted-foreground" />
+                  </Button>
                 )}
               </div>
             </div>
