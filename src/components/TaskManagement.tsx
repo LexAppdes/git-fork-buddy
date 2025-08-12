@@ -786,8 +786,8 @@ export function TaskManagement() {
                                   </SelectContent>
                                 </Select>
                               )}
-                              {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
-                                  {mockAreas.find(a => a.id === task.area)?.name}
+                              {getAreaFromProject(task.project) && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === getAreaFromProject(task.project))?.color || "bg-muted")}>
+                                  {mockAreas.find(a => a.id === getAreaFromProject(task.project))?.name}
                                 </span>}
                               <span className={cn("text-xs px-2 py-1 rounded font-medium uppercase", getTimeframeColor(task.timeframe))}>
                                 {task.timeframe}
