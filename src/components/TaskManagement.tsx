@@ -687,9 +687,16 @@ export function TaskManagement() {
             <div className="flex items-center gap-2">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                    <Filter className="w-4 h-4" />
-                  </Button>
+                  <div
+                    onMouseEnter={(e) => {
+                      const button = e.currentTarget.querySelector('button');
+                      if (button) button.click();
+                    }}
+                  >
+                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                      <Filter className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-48 p-0" align="end">
                   <div className="p-2">
@@ -716,9 +723,16 @@ export function TaskManagement() {
               </Popover>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                    <ArrowUpDown className="w-4 h-4" />
-                  </Button>
+                  <div
+                    onMouseEnter={(e) => {
+                      const button = e.currentTarget.querySelector('button');
+                      if (button) button.click();
+                    }}
+                  >
+                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                      <ArrowUpDown className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-48 p-0" align="end">
                   <div className="p-2">
