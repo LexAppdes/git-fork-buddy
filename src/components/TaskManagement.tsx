@@ -71,7 +71,6 @@ const mockTasks: Task[] = [{
   title: "Call dentist for appointment",
   priority: "low",
   completed: null,
-  area: "personal",
   created: oneWeekAgo,
   timeframe: "LATER"
 }, {
@@ -79,7 +78,6 @@ const mockTasks: Task[] = [{
   title: "Plan weekend trip",
   priority: "low",
   completed: yesterday,
-  area: "personal",
   created: oneWeekAgo,
   timeframe: "SOMEDAY"
 }, {
@@ -191,7 +189,6 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: twoDaysAgo,
-  area: "personal",
   created: fiveDaysAgo,
   timeframe: "NOW"
 }, {
