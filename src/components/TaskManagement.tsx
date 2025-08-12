@@ -1259,6 +1259,15 @@ export function TaskManagement() {
               onNewProjectDialogChange={setIsNewProjectDialogOpen}
             />
           </div>
+        ) : activeView === "goals" ? (
+          <div className="h-full -m-6">
+            <ProjectManagement
+              selectedAreas={selectedProjectAreas}
+              selectedStatuses={selectedProjectStatuses}
+              isNewProjectDialogOpen={isNewProjectDialogOpen}
+              onNewProjectDialogChange={setIsNewProjectDialogOpen}
+            />
+          </div>
         ) : activeView === "areas" ? (
           renderAreasView()
         ) : (
