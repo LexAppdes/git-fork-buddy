@@ -462,8 +462,8 @@ export function TaskManagement() {
     return "yesterday";
   };
   const renderUpcomingView = () => {
-    // Get all tasks with due dates (excluding today), then apply completion filtering
-    let upcomingTasks = tasks.filter(task => task.dueDate && !isToday(task.dueDate));
+    // Get all tasks with due dates (including today and future), then apply completion filtering
+    let upcomingTasks = tasks.filter(task => task.dueDate);
 
     // Apply completion filter specifically for upcoming view
     if (!showCompleted) {
