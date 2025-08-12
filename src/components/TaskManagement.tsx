@@ -287,7 +287,7 @@ const formatSimpleDate = (date: Date) => {
 };
 
 const formatCreatedDate = (date: Date) => {
-  return format(date, "dd.MM");
+  return format(date, "dd.MM.yyyy");
 };
 
 const isTaskOverdue = (task: Task) => {
