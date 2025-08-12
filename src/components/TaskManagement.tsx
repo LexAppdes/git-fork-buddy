@@ -724,11 +724,9 @@ export function TaskManagement() {
     return <div className="space-y-6">
         {Object.entries(tasksByArea).map(([areaId, tasks]) => {
         const area = mockAreas.find(a => a.id === areaId);
-        const areaName = area?.name;
-        const areaColor = area?.color;
+        const areaName = area?.name || (areaId === 'no-area' ? 'No area' : areaId);
+        const areaColor = area?.color || 'bg-muted';
         const isExpanded = expandedAreas[areaId] !== false; // default to expanded
-
-        if (!area) return null;
 
         return <div key={areaId} className="space-y-0">
               <button onClick={() => toggleArea(areaId)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
