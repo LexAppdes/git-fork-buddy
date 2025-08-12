@@ -415,11 +415,9 @@ export function TaskManagement() {
         (task.completed && task.completedAt && isToday(task.completedAt))
       );
     } else if (activeView === "upcoming" && showCompleted) {
-      // In Upcoming view, when showing completed tasks, only show tasks due/completed on or after today (excluding today)
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
+      // In Upcoming view, when showing completed tasks, only show those completed today or later
       filteredTasks = tasks.filter(task =>
-        (!task.completed && task.dueDate && task.dueDate >= tomorrow) ||
+        !task.completed ||
         (task.completed && task.completedAt && task.completedAt >= startOfDay(new Date()))
       );
     } else if (activeView !== "completed" && !showCompleted) {
