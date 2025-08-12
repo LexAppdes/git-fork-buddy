@@ -146,7 +146,7 @@ const TaskCard = ({
       draggable
       onDragStart={handleDragStart}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3 mb-2">
         <input
           type="checkbox"
           checked={task.completed}
@@ -161,26 +161,28 @@ const TaskCard = ({
           {task.description && (
             <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
           )}
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center">
-              {task.dueDate && (
-                <ClickableDueDate
-                  date={task.dueDate}
-                  taskId={task.id}
-                  onDateChange={onUpdateTaskDueDate}
-                />
-              )}
-            </div>
-            <div className="flex items-center">
-              {task.area && (
-                <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === task.area)?.color || "bg-muted")}>
-                  {areas.find(a => a.id === task.area)?.name}
-                </span>
-              )}
-            </div>
-          </div>
         </div>
       </div>
+      {(task.dueDate || task.area) && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            {task.dueDate && (
+              <ClickableDueDate
+                date={task.dueDate}
+                taskId={task.id}
+                onDateChange={onUpdateTaskDueDate}
+              />
+            )}
+          </div>
+          <div className="flex items-center">
+            {task.area && (
+              <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === task.area)?.color || "bg-muted")}>
+                {areas.find(a => a.id === task.area)?.name}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
