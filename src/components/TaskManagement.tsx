@@ -1057,7 +1057,6 @@ export function TaskManagement() {
       description: "",
       priority: "medium",
       dueDate: undefined,
-      area: "",
       project: "",
       timeframe: "NOW"
     });
