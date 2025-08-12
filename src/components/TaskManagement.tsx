@@ -773,8 +773,8 @@ export function TaskManagement() {
                     value={task.timeframe}
                     onValueChange={(value) => updateTaskTimeframe(task.id, value as Task["timeframe"])}
                   >
-                    <SelectTrigger className={cn("w-20 h-7 text-xs border-none px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden text-center font-medium uppercase", getTimeframeColor(task.timeframe))}>
-                      <SelectValue />
+                    <SelectTrigger className={cn("w-20 h-7 text-xs border-none px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden font-medium uppercase flex items-center justify-center", getTimeframeColor(task.timeframe))}>
+                      <SelectValue className="text-center w-full" />
                     </SelectTrigger>
                     <SelectContent onClick={(e) => e.stopPropagation()}>
                       <SelectItem value="NOW">Now</SelectItem>
