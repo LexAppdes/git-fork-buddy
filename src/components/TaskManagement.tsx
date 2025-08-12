@@ -706,9 +706,9 @@ export function TaskManagement() {
         </div>)}
     </div>;
   const renderTodayView = () => {
-    const todayTasks = tasks.filter(task => task.dueDate && task.dueDate <= endOfDay(new Date()) && task.area);
+    const todayTasks = tasks.filter(task => task.dueDate && task.dueDate <= endOfDay(new Date()));
     const tasksByArea = todayTasks.reduce((acc, task) => {
-      const areaId = task.area!;
+      const areaId = task.area || 'no-area';
       if (!acc[areaId]) {
         acc[areaId] = [];
       }
