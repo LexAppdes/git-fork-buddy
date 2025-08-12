@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { isBefore, startOfDay } from "date-fns";
 
 
 interface Task {
@@ -11,10 +12,10 @@ interface Task {
   title: string;
   description?: string;
   priority: "low" | "medium" | "urgent";
-  completed: boolean;
+  completed: Date | null; // null = not completed, Date = completion timestamp
   dueDate?: Date;
   area?: string;
-  completedAt?: Date;
+  created: Date; // automatically set when task is created
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
 }
 
@@ -66,6 +67,11 @@ const formatSimpleDate = (date: Date) => {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = String(date.getFullYear()).slice(-2);
   return `${day}.${month}.${year}`;
+};
+
+const isTaskOverdue = (task: Task) => {
+  if (!task.dueDate || task.completed !== null) return false;
+  return isBefore(task.dueDate, startOfDay(new Date()));
 };
 
 const ClickableDueDate = ({
@@ -141,7 +147,7 @@ const TaskCard = ({
 
   return (
     <div
-      className={cn("bg-card rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", task.completed && "opacity-60")}
+      className={cn("bg-card rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", task.completed !== null && "opacity-60")}
       onClick={() => onTaskClick(task)}
       draggable
       onDragStart={handleDragStart}
@@ -149,13 +155,13 @@ const TaskCard = ({
       <div className="flex items-start gap-3 mb-2">
         <input
           type="checkbox"
-          checked={task.completed}
+          checked={task.completed !== null}
           className={cn("mt-1 w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))}
           onChange={() => onToggleTask(task.id)}
           onClick={e => e.stopPropagation()}
         />
         <div className="flex-1">
-          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed && "line-through")}>
+          <h4 className={cn("font-medium text-card-foreground text-sm", task.completed !== null && "line-through", isTaskOverdue(task) && "text-red-500")}>
             {task.title}
           </h4>
           {task.description && (
