@@ -1450,14 +1450,14 @@ export function TaskManagement() {
                 <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
                 {isEditing ? (
                   <Select
-                    value={editingTask.area || ""}
-                    onValueChange={(value) => updateEditingTask({ area: value || undefined })}
+                    value={editingTask.area || "none"}
+                    onValueChange={(value) => updateEditingTask({ area: value === "none" ? undefined : value })}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select area" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No area</SelectItem>
+                      <SelectItem value="none">No area</SelectItem>
                       {mockAreas.map((area) => (
                         <SelectItem key={area.id} value={area.id}>
                           {area.name}
