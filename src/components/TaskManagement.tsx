@@ -224,29 +224,41 @@ const formatSimpleDate = (date: Date) => {
   return format(date, "dd.MM.yy");
 };
 
-const ClickableDueDate = ({ 
-  date, 
-  taskId, 
-  onDateChange, 
-  formatFunction = formatSimpleDate, 
-  className = "text-xs text-muted-foreground" 
-}: { 
-  date: Date; 
-  taskId: string; 
+const ClickableDueDate = ({
+  date,
+  taskId,
+  onDateChange,
+  formatFunction = formatSimpleDate,
+  className = "text-xs text-muted-foreground"
+}: {
+  date: Date;
+  taskId: string;
   onDateChange: (taskId: string, date: Date | undefined) => void;
   formatFunction?: (date: Date) => string;
   className?: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsOpen(true);
+  };
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <span className={cn("cursor-pointer hover:text-foreground transition-colors", className)}>
+        <span
+          className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
+          onClick={handleClick}
+        >
           {formatFunction(date)}
         </span>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent
+        className="w-auto p-0"
+        align="start"
+        onClick={(e) => e.stopPropagation()}
+      >
         <CalendarComponent
           mode="single"
           selected={date}
@@ -460,7 +472,7 @@ export function TaskManagement() {
         if (!tasks || tasks.length === 0) return null;
         const isExpanded = expandedAreas[group] !== false; // default to expanded
 
-        return <div key={group} className="space-y-3">
+        return <div key={group} className="space-y-0">
               <button onClick={() => toggleGroup(group)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
                 <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -469,28 +481,30 @@ export function TaskManagement() {
                 <span className="text-sm text-muted-foreground">({tasks.length})</span>
               </button>
               
-              {isExpanded && <div className="space-y-3 animate-fade-in">
-                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+              {isExpanded && <div className="space-y-0 animate-fade-in">
+                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-start gap-3">
                         <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
-                          <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
-                            {task.title}
-                          </h4>
-                          {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
-                           <div className="flex items-center gap-2 mt-2">
-                             {task.dueDate && <ClickableDueDate 
-                               date={task.dueDate} 
-                               taskId={task.id} 
-                               onDateChange={updateTaskDueDate}
-                             />}
+                          <div className="flex items-center justify-between">
+                            <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
+                              {task.title}
+                            </h4>
+                            <div className="flex items-center gap-2 ml-2">
+                              {task.dueDate && <ClickableDueDate
+                                date={task.dueDate}
+                                taskId={task.id}
+                                onDateChange={updateTaskDueDate}
+                              />}
                               {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                                   {mockAreas.find(a => a.id === task.area)?.name}
                                 </span>}
-                             <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                               {task.timeframe}
-                             </span>
-                           </div>
+                              <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                                {task.timeframe}
+                              </span>
+                            </div>
+                          </div>
+                          {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
                         </div>
                       </div>
                     </div>)}
@@ -525,7 +539,7 @@ export function TaskManagement() {
         const date = new Date(dateKey);
         const isExpanded = expandedAreas[dateKey] !== false; // default to expanded
 
-        return <div key={dateKey} className="space-y-3">
+        return <div key={dateKey} className="space-y-0">
               <button onClick={() => toggleGroup(dateKey)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
                 <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -534,23 +548,25 @@ export function TaskManagement() {
                 <span className="text-sm text-muted-foreground">({tasks.length})</span>
               </button>
               
-              {isExpanded && <div className="space-y-3 animate-fade-in">
-                  {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 ml-6 cursor-pointer opacity-60")} onClick={() => handleTaskClick(task)}>
+              {isExpanded && <div className="space-y-0 animate-fade-in">
+                  {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer opacity-60")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-start gap-3">
                         <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
-                          <h4 className="font-medium text-card-foreground line-through">
-                            {task.title}
-                          </h4>
-                          {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
-                           <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-medium text-card-foreground line-through">
+                              {task.title}
+                            </h4>
+                            <div className="flex items-center gap-2 ml-2">
                               {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                                   {mockAreas.find(a => a.id === task.area)?.name}
                                 </span>}
-                             <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                               {task.timeframe}
-                             </span>
-                           </div>
+                              <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                                {task.timeframe}
+                              </span>
+                            </div>
+                          </div>
+                          {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
                         </div>
                       </div>
                     </div>)}
@@ -559,32 +575,34 @@ export function TaskManagement() {
       })}
       </div>;
   };
-  const renderTaskList = (tasks: Task[]) => <div className="space-y-3">
-      {tasks.map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+  const renderTaskList = (tasks: Task[]) => <div className="space-y-0">
+      {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
           <div className="flex items-start gap-3">
             <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
             <div className="flex-1">
-              <h3 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
-                {task.title}
-              </h3>
-              {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
-               <div className="flex items-center gap-2 mt-2">
-                 {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
-                     <ClickableDueDate 
-                       date={task.dueDate} 
-                       taskId={task.id} 
-                       onDateChange={updateTaskDueDate}
-                       formatFunction={formatTaskDate}
-                       className="cursor-pointer hover:opacity-80 transition-opacity"
-                     />
-                   </span>}
+              <div className="flex items-center justify-between">
+                <h3 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
+                  {task.title}
+                </h3>
+                <div className="flex items-center gap-2 ml-2">
+                  {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
+                      <ClickableDueDate
+                        date={task.dueDate}
+                        taskId={task.id}
+                        onDateChange={updateTaskDueDate}
+                        formatFunction={formatTaskDate}
+                        className="cursor-pointer hover:opacity-80 transition-opacity"
+                      />
+                    </span>}
                   {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                       {mockAreas.find(a => a.id === task.area)?.name}
                     </span>}
-                 <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                   {task.timeframe}
-                 </span>
-               </div>
+                  <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                    {task.timeframe}
+                  </span>
+                </div>
+              </div>
+              {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
             </div>
           </div>
         </div>)}
@@ -612,7 +630,7 @@ export function TaskManagement() {
         const areaColor = area?.color || 'bg-muted';
         const isExpanded = expandedAreas[areaId] !== false; // default to expanded
 
-        return <div key={areaId} className="space-y-3">
+        return <div key={areaId} className="space-y-0">
               <button onClick={() => toggleArea(areaId)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
                 <div className={cn("w-3 h-3 rounded-full", areaColor)} />
@@ -620,8 +638,8 @@ export function TaskManagement() {
                 <span className="text-sm text-muted-foreground">({tasks.length})</span>
               </button>
               
-              {isExpanded && <div className="space-y-3 animate-fade-in">
-                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
+              {isExpanded && <div className="space-y-0 animate-fade-in">
+                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed && "opacity-60")} onClick={() => handleTaskClick(task)}>
                        <div className="flex items-start gap-3">
                          <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                          <div className="flex-1">
@@ -906,7 +924,7 @@ export function TaskManagement() {
                     <DialogHeader>
                       <DialogTitle>Create New Task</DialogTitle>
                     </DialogHeader>
-                    <div className="grid gap-4 py-4">
+                    <div className="grid gap-2 py-4">
                       <div className="grid gap-2">
                         <Label htmlFor="title">Title</Label>
                         <Input
@@ -1093,7 +1111,7 @@ export function TaskManagement() {
           
           {selectedTask && <div className="space-y-6 py-4">
               {/* Status and Priority */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
                    <input type="checkbox" checked={selectedTask.completed} className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(selectedTask.priority))} onChange={() => toggleTask(selectedTask.id)} />
                   <span className="text-sm font-medium">
