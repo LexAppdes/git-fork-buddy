@@ -486,23 +486,25 @@ export function TaskManagement() {
                       <div className="flex items-start gap-3">
                         <input type="checkbox" checked={task.completed} className={cn("mt-1 w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
-                          <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
-                            {task.title}
-                          </h4>
-                          {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
-                           <div className="flex items-center gap-2 mt-2">
-                             {task.dueDate && <ClickableDueDate 
-                               date={task.dueDate} 
-                               taskId={task.id} 
-                               onDateChange={updateTaskDueDate}
-                             />}
+                          <div className="flex items-center justify-between">
+                            <h4 className={cn("font-medium text-card-foreground", task.completed && "line-through")}>
+                              {task.title}
+                            </h4>
+                            <div className="flex items-center gap-2 ml-2">
+                              {task.dueDate && <ClickableDueDate
+                                date={task.dueDate}
+                                taskId={task.id}
+                                onDateChange={updateTaskDueDate}
+                              />}
                               {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
                                   {mockAreas.find(a => a.id === task.area)?.name}
                                 </span>}
-                             <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                               {task.timeframe}
-                             </span>
-                           </div>
+                              <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                                {task.timeframe}
+                              </span>
+                            </div>
+                          </div>
+                          {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
                         </div>
                       </div>
                     </div>)}
