@@ -689,7 +689,7 @@ export function TaskManagement() {
                         taskId={task.id}
                         onDateChange={updateTaskDueDate}
                         formatFunction={formatTaskDate}
-                        className="cursor-pointer hover:opacity-80 transition-opacity"
+                        className={cn("cursor-pointer hover:opacity-80 transition-opacity", isTaskOverdue(task) && "text-red-500")}
                       />
                     </span>}
                   {task.area && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === task.area)?.color || "bg-muted")}>
