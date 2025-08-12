@@ -1349,25 +1349,19 @@ export function TaskManagement() {
 
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">Priority:</span>
-                  {isEditing ? (
-                    <Select
-                      value={editingTask.priority}
-                      onValueChange={(value) => updateEditingTask({ priority: value as Task["priority"] })}
-                    >
-                      <SelectTrigger className="w-24 h-7">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="urgent">Urgent</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <span className={cn("text-xs px-2 py-1 rounded-full font-medium", getPriorityBadgeColor(editingTask.priority))}>
-                      {getPriorityLabel(editingTask.priority)}
-                    </span>
-                  )}
+                  <Select
+                    value={editingTask.priority}
+                    onValueChange={(value) => updateEditingTask({ priority: value as Task["priority"] })}
+                  >
+                    <SelectTrigger className="w-24 h-7">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="urgent">Urgent</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
