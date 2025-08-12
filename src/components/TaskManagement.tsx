@@ -22,6 +22,7 @@ interface Task {
   completed: Date | null; // null = not completed, Date = completion timestamp
   dueDate?: Date;
   area?: string;
+  project?: string;
   created: Date; // automatically set when task is created
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
 }
