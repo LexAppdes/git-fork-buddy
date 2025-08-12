@@ -682,7 +682,7 @@ export function TaskManagement() {
     return <div className="space-y-0">
       {sortedTasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground font-medium w-12 text-right">
+            <span className="text-xs text-muted-foreground font-medium w-20 text-right">
               {formatCreatedDate(task.created)}
             </span>
             <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
