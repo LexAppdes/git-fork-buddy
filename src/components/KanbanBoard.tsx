@@ -35,6 +35,11 @@ interface KanbanBoardProps {
     taskCount: number;
   }>;
   selectedAreas?: string[];
+  projects?: Array<{
+    id: string;
+    title: string;
+    area: string;
+  }>;
 }
 
 const getPriorityCheckboxColor = (priority: string) => {
