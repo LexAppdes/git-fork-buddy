@@ -974,7 +974,7 @@ export function TaskManagement() {
   const renderTodayView = () => {
     const todayTasks = tasks.filter(task => task.dueDate && task.dueDate <= endOfDay(new Date()));
     const tasksByArea = todayTasks.reduce((acc, task) => {
-      const areaId = task.area || 'no-area';
+      const areaId = getAreaFromProject(task.project) || 'no-area';
       if (!acc[areaId]) {
         acc[areaId] = [];
       }
