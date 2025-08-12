@@ -218,7 +218,11 @@ const TaskCard = ({
                     className="h-5 w-5 p-0 hover:bg-muted"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onTaskClick(task);
+                      if (onProjectAssignment) {
+                        onProjectAssignment(task);
+                      } else {
+                        onTaskClick(task);
+                      }
                     }}
                   >
                     <Folder className="w-3 h-3 text-muted-foreground" />
