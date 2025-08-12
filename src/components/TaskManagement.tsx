@@ -175,6 +175,24 @@ const mockTasks: Task[] = [{
   dueDate: twoDaysAgo,
   area: "personal",
   timeframe: "NOW"
+}, {
+  id: "18",
+  title: "Random idea to explore",
+  priority: "low",
+  completed: false,
+  timeframe: "SOMEDAY"
+}, {
+  id: "19",
+  title: "Unorganized task",
+  priority: "medium",
+  completed: false,
+  timeframe: "LATER"
+}, {
+  id: "20",
+  title: "Quick note to self",
+  priority: "low",
+  completed: false,
+  timeframe: "SOMEDAY"
 }];
 const mockAreas: Area[] = [{
   id: "work",
@@ -751,7 +769,7 @@ export function TaskManagement() {
       case "upcoming":
         return tasks.filter(task => task.dueDate && !isToday(task.dueDate));
       case "inbox":
-        return tasks.filter(task => !task.dueDate);
+        return tasks.filter(task => !task.dueDate && !task.area);
       case "completed":
         return tasks.filter(task => task.completed);
       default:
