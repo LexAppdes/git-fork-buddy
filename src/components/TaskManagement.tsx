@@ -1329,87 +1329,192 @@ export function TaskManagement() {
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
-              {selectedTask && <>
-                  <div className={cn("w-1 h-6 rounded-full", selectedTask.priority === "urgent" ? "bg-destructive" : selectedTask.priority === "medium" ? "bg-amber-500" : "bg-muted")} />
-                  <span className={cn(selectedTask.completed !== null && "line-through")}>
-                    {selectedTask.title}
-                  </span>
+              {editingTask && <>
+                  <div className={cn("w-1 h-6 rounded-full", editingTask.priority === "urgent" ? "bg-destructive" : editingTask.priority === "medium" ? "bg-amber-500" : "bg-muted")} />
+                  {isEditing ? (
+                    <Input
+                      value={editingTask.title}
+                      onChange={(e) => updateEditingTask({ title: e.target.value })}
+                      className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0"
+                    />
+                  ) : (
+                    <span className={cn(editingTask.completed !== null && "line-through")}>
+                      {editingTask.title}
+                    </span>
+                  )}
                 </>}
             </DialogTitle>
           </DialogHeader>
-          
-          {selectedTask && <div className="space-y-6 py-4">
+
+          {editingTask && <div className="space-y-6 py-4">
               {/* Status and Priority */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                   <input type="checkbox" checked={selectedTask.completed !== null} className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(selectedTask.priority))} onChange={() => toggleTask(selectedTask.id)} />
+                  <input
+                    type="checkbox"
+                    checked={editingTask.completed !== null}
+                    className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(editingTask.priority))}
+                    onChange={() => updateEditingTask({ completed: editingTask.completed ? null : new Date() })}
+                  />
                   <span className="text-sm font-medium">
-                    {selectedTask.completed !== null ? "Completed" : "Pending"}
+                    {editingTask.completed !== null ? "Completed" : "Pending"}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">Priority:</span>
-                  <span className={cn("text-xs px-2 py-1 rounded-full font-medium", getPriorityBadgeColor(selectedTask.priority))}>
-                    {getPriorityLabel(selectedTask.priority)}
-                  </span>
+                  {isEditing ? (
+                    <Select
+                      value={editingTask.priority}
+                      onValueChange={(value) => updateEditingTask({ priority: value as Task["priority"] })}
+                    >
+                      <SelectTrigger className="w-24 h-7">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="urgent">Urgent</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <span className={cn("text-xs px-2 py-1 rounded-full font-medium", getPriorityBadgeColor(editingTask.priority))}>
+                      {getPriorityLabel(editingTask.priority)}
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Description */}
-              {selectedTask.description && <div>
-                  <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
+              <div>
+                <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
+                {isEditing ? (
+                  <Textarea
+                    value={editingTask.description || ""}
+                    onChange={(e) => updateEditingTask({ description: e.target.value })}
+                    placeholder="Enter task description"
+                    rows={3}
+                  />
+                ) : (
                   <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-                    {selectedTask.description}
+                    {editingTask.description || "No description"}
                   </p>
-                </div>}
+                )}
+              </div>
 
               {/* Due Date */}
-              {selectedTask.dueDate && <div>
-                  <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
+              <div>
+                <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
+                {isEditing ? (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !editingTask.dueDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {editingTask.dueDate ? (
+                          format(editingTask.dueDate, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={editingTask.dueDate}
+                        onSelect={(date) => updateEditingTask({ dueDate: date })}
+                        initialFocus
+                        className="p-3"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                ) : editingTask.dueDate ? (
                   <div className="flex items-center gap-2">
                     <CalendarIcon className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm bg-accent text-accent-foreground px-3 py-1 rounded">
-                      {format(selectedTask.dueDate, "EEEE, MMMM d, yyyy")}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      ({formatTaskDate(selectedTask.dueDate)})
+                      {format(editingTask.dueDate, "EEEE, MMMM d, yyyy")}
                     </span>
                   </div>
-                </div>}
+                ) : (
+                  <p className="text-sm text-muted-foreground">No due date</p>
+                )}
+              </div>
 
               {/* Area */}
-              {selectedTask.area && <div>
-                  <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
+              <div>
+                <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
+                {isEditing ? (
+                  <Select
+                    value={editingTask.area || ""}
+                    onValueChange={(value) => updateEditingTask({ area: value || undefined })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select area" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">No area</SelectItem>
+                      {mockAreas.map((area) => (
+                        <SelectItem key={area.id} value={area.id}>
+                          {area.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : editingTask.area ? (
                   <div className="flex items-center gap-2">
-                    <div className={cn("w-3 h-3 rounded-full", mockAreas.find(a => a.id === selectedTask.area)?.color || "bg-muted")} />
-                    <span className={cn("text-xs text-white px-3 py-1 rounded", mockAreas.find(a => a.id === selectedTask.area)?.color || "bg-muted")}>
-                      {mockAreas.find(a => a.id === selectedTask.area)?.name}
+                    <div className={cn("w-3 h-3 rounded-full", mockAreas.find(a => a.id === editingTask.area)?.color || "bg-muted")} />
+                    <span className={cn("text-xs text-white px-3 py-1 rounded", mockAreas.find(a => a.id === editingTask.area)?.color || "bg-muted")}>
+                      {mockAreas.find(a => a.id === editingTask.area)?.name}
                     </span>
                   </div>
-                </div>}
+                ) : (
+                  <p className="text-sm text-muted-foreground">No area</p>
+                )}
+              </div>
 
               {/* Timeframe */}
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
-                <span className="text-sm bg-secondary text-secondary-foreground px-3 py-1 rounded">
-                  {selectedTask.timeframe}
-                </span>
+                {isEditing ? (
+                  <Select
+                    value={editingTask.timeframe}
+                    onValueChange={(value) => updateEditingTask({ timeframe: value as Task["timeframe"] })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="NOW">Now</SelectItem>
+                      <SelectItem value="NEXT">Next</SelectItem>
+                      <SelectItem value="LATER">Later</SelectItem>
+                      <SelectItem value="SOMEDAY">Someday</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <span className="text-sm bg-secondary text-secondary-foreground px-3 py-1 rounded">
+                    {editingTask.timeframe}
+                  </span>
+                )}
               </div>
 
               {/* Created Date */}
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Created</h4>
                 <span className="text-sm text-muted-foreground">
-                  {formatDateTime(selectedTask.created)}
+                  {formatDateTime(editingTask.created)}
                 </span>
               </div>
 
               {/* Completed Date */}
-              {selectedTask.completed !== null && <div>
+              {editingTask.completed !== null && <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Completed</h4>
                 <span className="text-sm text-muted-foreground">
-                  {formatDateTime(selectedTask.completed)}
+                  {formatDateTime(editingTask.completed)}
                 </span>
               </div>}
 
@@ -1417,18 +1522,31 @@ export function TaskManagement() {
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Task ID</h4>
                 <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
-                  {selectedTask.id}
+                  {editingTask.id}
                 </code>
               </div>
             </div>}
 
           <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button variant="outline" onClick={() => setIsTaskViewOpen(false)}>
-              Close
-            </Button>
-            <Button onClick={() => setIsTaskViewOpen(false)}>
-              Edit Task
-            </Button>
+            {isEditing ? (
+              <>
+                <Button variant="outline" onClick={handleCancelEdit}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSaveEdit}>
+                  Save Changes
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => setIsTaskViewOpen(false)}>
+                  Close
+                </Button>
+                <Button onClick={handleStartEdit}>
+                  Edit Task
+                </Button>
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>
