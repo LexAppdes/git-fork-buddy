@@ -458,7 +458,7 @@ export function ProjectManagement({
                     <h3 className="text-lg font-semibold text-foreground mb-3">
                       Tasks ({projectTasks.length})
                     </h3>
-                    <div className="space-y-2">
+                    <div>
                       {projectTasks.map(task => (
                         <div
                           key={task.id}
