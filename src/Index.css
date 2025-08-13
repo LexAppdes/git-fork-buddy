@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Productivity-focused design system with modern blue/purple palette */
+
+@layer base {
+  :root {
+    --background: 250 100% 98%;
+    --foreground: 230 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 230 15% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 230 15% 15%;
+
+    --primary: 235 85% 65%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 235 85% 60%;
+
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 230 15% 25%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 230 8% 46%;
+
+    --accent: 250 100% 95%;
+    --accent-foreground: 235 85% 65%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 235 85% 65%;
+
+    --sidebar-bg: 240 10% 98%;
+    --sidebar-active: 235 85% 65%;
+    --sidebar-hover: 240 5% 94%;
+    
+    --task-urgent: 0 84% 60%;
+    --task-medium: 35 91% 65%;
+    --task-low: 142 76% 36%;
+    
+    --gradient-primary: linear-gradient(135deg, hsl(235 85% 65%), hsl(260 85% 70%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(240 5% 98%));
+    
+    --shadow-soft: 0 2px 8px hsl(235 85% 65% / 0.08);
+    --shadow-medium: 0 4px 12px hsl(235 85% 65% / 0.12);
+    --shadow-strong: 0 8px 24px hsl(235 85% 65% / 0.16);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Custom checkbox styling */
+  input[type="checkbox"].priority-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    margin-top: 2px;
+  }
+
+  /* Urgent priority - red border when unchecked */
+  input[type="checkbox"].checkbox-urgent {
+    border: 2px solid hsl(var(--task-urgent));
+    background-color: transparent;
+  }
+
+  /* Medium priority - amber border when unchecked */
+  input[type="checkbox"].checkbox-medium {
+    border: 2px solid hsl(var(--task-medium));
+    background-color: transparent;
+  }
+
+  /* Low priority - green border when unchecked */
+  input[type="checkbox"].checkbox-low {
+    border: 2px solid hsl(var(--task-low));
+    background-color: transparent;
+  }
+
+  /* All checked checkboxes are green */
+  input[type="checkbox"].checkbox-urgent:checked,
+  input[type="checkbox"].checkbox-medium:checked,
+  input[type="checkbox"].checkbox-low:checked {
+    background-color: hsl(142 76% 36%);
+    border: 2px solid hsl(142 76% 36%);
+  }
+
+  /* Checkmark for checked state */
+  input[type="checkbox"].priority-checkbox:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1;
+  }
+
+  /* Focus states */
+  input[type="checkbox"].priority-checkbox:focus {
+    box-shadow: 0 0 0 2px hsl(var(--ring));
+  }
+
+  .bg-task-urgent {
+    background-color: hsl(var(--task-urgent));
+  }
+
+  .bg-task-medium {
+    background-color: hsl(var(--task-medium));
+  }
+
+  .bg-task-low {
+    background-color: hsl(var(--task-low));
+  }
+
+  /* Navigation button hover and active states */
+  .nav-button-hover:hover:not(.nav-button-active) {
+    background-color: #F3F3F3 !important;
+  }
+
+  .nav-button-active {
+    background-color: #F3F3F3 !important;
+  }
+}
