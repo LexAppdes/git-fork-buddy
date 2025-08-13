@@ -321,16 +321,14 @@ export function ProjectManagement({
             <div className="mt-8 bg-card border border-border rounded-lg p-6 shadow-soft">
               <div className="flex items-start justify-between mb-6">
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
+                  <div className="flex items-center gap-4 flex-wrap">
                     <Input
                       value={editingProject.title}
                       onChange={(e) => updateEditingProject({ title: e.target.value })}
-                      className="font-bold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
-                      style={{ fontSize: '24px' }}
+                      className="font-bold bg-transparent border-none p-0 h-auto focus-visible:ring-0 flex-shrink-0"
+                      style={{ fontSize: '24px', minWidth: '200px' }}
                       placeholder="Project title"
                     />
-                  </div>
-                  <div className="flex items-center gap-2 flex-wrap">
                     {/* Area Tag */}
                     <Select
                       value={editingProject.area}
