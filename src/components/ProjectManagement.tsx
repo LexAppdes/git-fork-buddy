@@ -335,10 +335,10 @@ export function ProjectManagement({
                       value={editingProject.area}
                       onValueChange={(value) => updateEditingProject({ area: value })}
                     >
-                      <SelectTrigger className="h-auto w-auto border-none bg-transparent p-0 hover:bg-muted/50 rounded-md">
-                        <Badge className={cn("text-xs text-white px-2 py-1 rounded cursor-pointer", projectAreas.find(a => a.id === editingProject.area)?.color || "bg-muted")}>
+                      <SelectTrigger className={cn("h-auto w-auto border-none text-xs text-white px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden", projectAreas.find(a => a.id === editingProject.area)?.color || "bg-muted")}>
+                        <SelectValue>
                           {projectAreas.find(a => a.id === editingProject.area)?.name || editingProject.area}
-                        </Badge>
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {projectAreas.map(area => (
@@ -352,10 +352,10 @@ export function ProjectManagement({
                       value={editingProject.status}
                       onValueChange={(value: Project["status"]) => updateEditingProject({ status: value })}
                     >
-                      <SelectTrigger className="h-auto w-auto border-none bg-transparent p-0 hover:bg-muted/50 rounded-md">
-                        <Badge className={cn("cursor-pointer", getStatusColor(editingProject.status))}>
+                      <SelectTrigger className={cn("h-auto w-auto border-none px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden", getStatusColor(editingProject.status))}>
+                        <SelectValue>
                           {getStatusLabel(editingProject.status)}
-                        </Badge>
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="lead">Lead</SelectItem>
@@ -369,10 +369,10 @@ export function ProjectManagement({
                     <div className="flex items-center gap-1">
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Badge variant="outline" className="cursor-pointer hover:bg-muted/50">
+                          <Button variant="outline" size="sm" className="h-auto px-2 py-1 text-xs cursor-pointer hover:bg-muted/50">
                             <Calendar className="mr-1 h-3 w-3" />
                             {editingProject.startDate ? format(editingProject.startDate, "MMM d") : "Start"}
-                          </Badge>
+                          </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
                           <CalendarComponent
@@ -388,10 +388,10 @@ export function ProjectManagement({
 
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Badge variant="outline" className="cursor-pointer hover:bg-muted/50">
+                          <Button variant="outline" size="sm" className="h-auto px-2 py-1 text-xs cursor-pointer hover:bg-muted/50">
                             <Calendar className="mr-1 h-3 w-3" />
                             {editingProject.endDate ? format(editingProject.endDate, "MMM d") : "End"}
-                          </Badge>
+                          </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
                           <CalendarComponent
