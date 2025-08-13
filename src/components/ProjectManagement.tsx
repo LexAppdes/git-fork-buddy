@@ -12,6 +12,14 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 
+interface Step {
+  id: string;
+  title: string;
+  projectId: string;
+  order: number;
+  completed: boolean;
+}
+
 interface Project {
   id: string;
   title: string;
@@ -20,6 +28,7 @@ interface Project {
   startDate?: Date;
   endDate?: Date;
   status: "lead" | "active" | "finished" | "archive";
+  steps: Step[];
 }
 
 const mockProjects: Project[] = [
@@ -135,6 +144,7 @@ interface Task {
   dueDate?: Date;
   area?: string;
   project?: string;
+  step?: string;
   created: Date;
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
 }
