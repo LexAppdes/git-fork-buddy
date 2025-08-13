@@ -74,6 +74,7 @@ const mockTasks: Task[] = [{
   title: "Call dentist for appointment",
   priority: "low",
   completed: null,
+  area: "health",
   created: oneWeekAgo,
   timeframe: "LATER"
 }, {
@@ -199,6 +200,7 @@ const mockTasks: Task[] = [{
   title: "Random idea to explore",
   priority: "low",
   completed: null,
+  area: "fun",
   created: yesterday,
   timeframe: "SOMEDAY"
 }, {
@@ -206,6 +208,7 @@ const mockTasks: Task[] = [{
   title: "Unorganized task",
   priority: "medium",
   completed: null,
+  area: "self-care",
   created: today,
   timeframe: "LATER"
 }, {
@@ -213,8 +216,25 @@ const mockTasks: Task[] = [{
   title: "Quick note to self",
   priority: "low",
   completed: null,
+  area: "psychology",
   created: threeDaysAgo,
   timeframe: "SOMEDAY"
+}, {
+  id: "21",
+  title: "Learn new skill",
+  priority: "medium",
+  completed: null,
+  area: "self-care",
+  created: today,
+  timeframe: "NOW"
+}, {
+  id: "22",
+  title: "Schedule meeting",
+  priority: "urgent",
+  completed: null,
+  area: "work",
+  created: today,
+  timeframe: "NEXT"
 }];
 const mockAreas: Area[] = [{
   id: "work",
