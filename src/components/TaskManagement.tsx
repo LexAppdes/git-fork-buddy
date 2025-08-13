@@ -23,6 +23,7 @@ interface Task {
   dueDate?: Date;
   area?: string;
   project?: string;
+  step?: string;
   created: Date; // automatically set when task is created
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
 }
@@ -432,6 +433,21 @@ export function TaskManagement() {
     setIsEditing(true); // Start in edit mode
   };
 
+  const handleAddTask = (projectId: string, stepId?: string) => {
+    setNewTask({
+      title: "",
+      description: "",
+      priority: "medium",
+      dueDate: undefined,
+      project: projectId,
+      timeframe: "NOW"
+    });
+    // If we have a stepId, we'll store it temporarily and assign it when creating the task
+    if (stepId) {
+      setNewTask(prev => ({ ...prev, step: stepId } as any));
+    }
+    setIsNewTaskDialogOpen(true);
+  };
   const getAreaFromProject = (projectId?: string) => {
     if (!projectId) return undefined;
     const project = mockProjects.find(p => p.id === projectId);
@@ -1067,6 +1083,7 @@ export function TaskManagement() {
       dueDate: newTask.dueDate,
       area: areaId,
       project: projectId,
+      step: (newTask as any).step,
       created: new Date(),
       timeframe: newTask.timeframe
     };
@@ -1510,18 +1527,7 @@ export function TaskManagement() {
               tasks={tasks}
               onTaskClick={handleTaskClick}
               onToggleTask={toggleTask}
-            />
-          </div>
-        ) : activeView === "goals" ? (
-          <div className="h-full -m-6">
-            <ProjectManagement
-              selectedAreas={selectedProjectAreas}
-              selectedStatuses={selectedProjectStatuses}
-              isNewProjectDialogOpen={isNewProjectDialogOpen}
-              onNewProjectDialogChange={setIsNewProjectDialogOpen}
-              tasks={tasks}
-              onTaskClick={handleTaskClick}
-              onToggleTask={toggleTask}
+              onAddTask={handleAddTask}
             />
           </div>
         ) : activeView === "areas" ? (

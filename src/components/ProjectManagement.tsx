@@ -181,6 +181,7 @@ interface ProjectManagementProps {
   tasks?: Task[];
   onTaskClick?: (task: Task) => void;
   onToggleTask?: (taskId: string) => void;
+  onAddTask?: (project: string, step?: string) => void;
 }
 
 export function ProjectManagement({
@@ -190,7 +191,8 @@ export function ProjectManagement({
   onNewProjectDialogChange,
   tasks = [],
   onTaskClick,
-  onToggleTask
+  onToggleTask,
+  onAddTask
 }: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>([...mockProjects]);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
@@ -660,9 +662,14 @@ export function ProjectManagement({
                           ))}
 
                           {stepTasks.length === 0 && (
-                            <p className="text-sm text-muted-foreground italic">
-                              No tasks in this step yet
-                            </p>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => onAddTask?.(editingProject.id, step.id)}
+                              className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto font-normal"
+                            >
+                              + add task
+                            </Button>
                           )}
                         </div>
                       </div>
@@ -675,6 +682,86 @@ export function ProjectManagement({
                     </p>
                   )}
                 </div>
+
+                {/* Unassigned Project Tasks */}
+                {(() => {
+                  const unassignedTasks = tasks.filter(task => 
+                    task.project === editingProject.id && !task.step
+                  );
+                  
+                  if (unassignedTasks.length > 0) {
+                    return (
+                      <div className="mt-6 pt-4 border-t border-border">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-lg font-semibold text-foreground">
+                            Unassigned Tasks ({unassignedTasks.length})
+                          </h3>
+                        </div>
+                        <div className="space-y-2">
+                          {unassignedTasks.map(task => (
+                            <div
+                              key={task.id}
+                              className={cn(
+                                "flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer border border-border",
+                                task.completed !== null && "opacity-60"
+                              )}
+                              onClick={() => onTaskClick?.(task)}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={task.completed !== null}
+                                className={cn(
+                                  "w-4 h-4 rounded focus:ring-2",
+                                  task.priority === "urgent" && "accent-red-500",
+                                  task.priority === "medium" && "accent-amber-500",
+                                  task.priority === "low" && "accent-gray-500"
+                                )}
+                                onChange={() => onToggleTask?.(task.id)}
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <h5 className={cn(
+                                    "text-sm font-medium text-foreground truncate",
+                                    task.completed !== null && "line-through"
+                                  )}>
+                                    {task.title}
+                                  </h5>
+                                  <div className="flex items-center gap-2 ml-2">
+                                    {task.dueDate && (
+                                      <span className={cn(
+                                        "text-xs px-2 py-1 rounded",
+                                        task.dueDate < new Date() && !task.completed
+                                          ? "bg-red-100 text-red-700"
+                                          : "bg-muted text-muted-foreground"
+                                      )}>
+                                        {format(task.dueDate, "MMM d")}
+                                      </span>
+                                    )}
+                                    <span className={cn(
+                                      "text-xs px-2 py-1 rounded font-medium",
+                                      task.priority === "urgent" && "bg-red-500 text-white",
+                                      task.priority === "medium" && "bg-amber-500 text-white",
+                                      task.priority === "low" && "bg-gray-500 text-white"
+                                    )}>
+                                      {task.priority}
+                                    </span>
+                                  </div>
+                                </div>
+                                {task.description && (
+                                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                    {task.description}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
             </div>
           )}
