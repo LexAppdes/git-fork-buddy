@@ -12,6 +12,14 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 
+interface Step {
+  id: string;
+  title: string;
+  projectId: string;
+  order: number;
+  completed: boolean;
+}
+
 interface Project {
   id: string;
   title: string;
@@ -20,6 +28,7 @@ interface Project {
   startDate?: Date;
   endDate?: Date;
   status: "lead" | "active" | "finished" | "archive";
+  steps: Step[];
 }
 
 const mockProjects: Project[] = [
@@ -30,7 +39,13 @@ const mockProjects: Project[] = [
     area: "work",
     startDate: new Date("2024-01-15"),
     endDate: new Date("2024-03-15"),
-    status: "active"
+    status: "active",
+    steps: [
+      { id: "step-1-1", title: "Discovery & Research", projectId: "1", order: 1, completed: true },
+      { id: "step-1-2", title: "Design & Wireframes", projectId: "1", order: 2, completed: false },
+      { id: "step-1-3", title: "Development", projectId: "1", order: 3, completed: false },
+      { id: "step-1-4", title: "Testing & Launch", projectId: "1", order: 4, completed: false }
+    ]
   },
   {
     id: "2",
@@ -39,7 +54,12 @@ const mockProjects: Project[] = [
     area: "work",
     startDate: new Date("2024-02-01"),
     endDate: new Date("2024-06-30"),
-    status: "lead"
+    status: "lead",
+    steps: [
+      { id: "step-2-1", title: "Planning", projectId: "2", order: 1, completed: false },
+      { id: "step-2-2", title: "UI/UX Design", projectId: "2", order: 2, completed: false },
+      { id: "step-2-3", title: "Development", projectId: "2", order: 3, completed: false }
+    ]
   },
   {
     id: "3",
@@ -48,7 +68,11 @@ const mockProjects: Project[] = [
     area: "health",
     startDate: new Date("2024-01-01"),
     endDate: new Date("2024-03-31"),
-    status: "active"
+    status: "active",
+    steps: [
+      { id: "step-3-1", title: "Setup", projectId: "3", order: 1, completed: true },
+      { id: "step-3-2", title: "Week 1-4", projectId: "3", order: 2, completed: false }
+    ]
   },
   {
     id: "4",
@@ -57,7 +81,11 @@ const mockProjects: Project[] = [
     area: "order",
     startDate: new Date("2023-12-01"),
     endDate: new Date("2024-01-31"),
-    status: "finished"
+    status: "finished",
+    steps: [
+      { id: "step-4-1", title: "Living Room", projectId: "4", order: 1, completed: true },
+      { id: "step-4-2", title: "Bedroom", projectId: "4", order: 2, completed: true }
+    ]
   },
   {
     id: "5",
@@ -66,7 +94,12 @@ const mockProjects: Project[] = [
     area: "family",
     startDate: new Date("2024-04-01"),
     endDate: new Date("2024-05-15"),
-    status: "archive"
+    status: "archive",
+    steps: [
+      { id: "step-5-1", title: "Destination Research", projectId: "5", order: 1, completed: true },
+      { id: "step-5-2", title: "Booking", projectId: "5", order: 2, completed: true },
+      { id: "step-5-3", title: "Packing", projectId: "5", order: 3, completed: true }
+    ]
   }
 ];
 
@@ -126,18 +159,38 @@ const getStatusLabel = (status: string) => {
   }
 };
 
+interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  priority: "low" | "medium" | "urgent";
+  completed: Date | null;
+  dueDate?: Date;
+  area?: string;
+  project?: string;
+  step?: string;
+  created: Date;
+  timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
+}
+
 interface ProjectManagementProps {
   selectedAreas?: string[];
   selectedStatuses?: string[];
   isNewProjectDialogOpen?: boolean;
   onNewProjectDialogChange?: (open: boolean) => void;
+  tasks?: Task[];
+  onTaskClick?: (task: Task) => void;
+  onToggleTask?: (taskId: string) => void;
 }
 
 export function ProjectManagement({
   selectedAreas = [],
   selectedStatuses = [],
   isNewProjectDialogOpen: externalDialogOpen,
-  onNewProjectDialogChange
+  onNewProjectDialogChange,
+  tasks = [],
+  onTaskClick,
+  onToggleTask
 }: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>([...mockProjects]);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
@@ -152,7 +205,10 @@ export function ProjectManagement({
     }
   };
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
+  const [newStepTitle, setNewStepTitle] = useState("");
   const [newProject, setNewProject] = useState({
     title: "",
     description: "",
@@ -163,7 +219,91 @@ export function ProjectManagement({
   });
 
   const handleProjectClick = (project: Project) => {
-    setSelectedProject(selectedProject?.id === project.id ? null : project);
+    if (selectedProject?.id === project.id) {
+      setSelectedProject(null);
+      setEditingProject(null);
+      setIsEditing(false);
+    } else {
+      setSelectedProject(project);
+      setEditingProject({...project});
+      setIsEditing(true);
+    }
+  };
+
+  const updateEditingProject = (updates: Partial<Project>) => {
+    if (editingProject) {
+      setEditingProject({...editingProject, ...updates});
+    }
+  };
+
+  const saveProjectChanges = () => {
+    if (editingProject && selectedProject) {
+      setProjects(prevProjects => prevProjects.map(project =>
+        project.id === editingProject.id ? editingProject : project
+      ));
+      setSelectedProject(editingProject);
+      setIsEditing(false);
+    }
+  };
+
+  const cancelProjectChanges = () => {
+    if (selectedProject) {
+      setEditingProject({...selectedProject});
+      setIsEditing(true);
+    }
+  };
+
+  const addStep = () => {
+    if (!newStepTitle.trim() || !editingProject) return;
+
+    const newStep: Step = {
+      id: `step-${Date.now()}`,
+      title: newStepTitle.trim(),
+      projectId: editingProject.id,
+      order: editingProject.steps.length + 1,
+      completed: false
+    };
+
+    const updatedProject = {
+      ...editingProject,
+      steps: [...editingProject.steps, newStep]
+    };
+
+    setEditingProject(updatedProject);
+    setProjects(prevProjects => prevProjects.map(project =>
+      project.id === editingProject.id ? updatedProject : project
+    ));
+    setNewStepTitle("");
+  };
+
+  const toggleStep = (stepId: string) => {
+    if (!editingProject) return;
+
+    const updatedProject = {
+      ...editingProject,
+      steps: editingProject.steps.map(step =>
+        step.id === stepId ? { ...step, completed: !step.completed } : step
+      )
+    };
+
+    setEditingProject(updatedProject);
+    setProjects(prevProjects => prevProjects.map(project =>
+      project.id === editingProject.id ? updatedProject : project
+    ));
+  };
+
+  const deleteStep = (stepId: string) => {
+    if (!editingProject) return;
+
+    const updatedProject = {
+      ...editingProject,
+      steps: editingProject.steps.filter(step => step.id !== stepId)
+    };
+
+    setEditingProject(updatedProject);
+    setProjects(prevProjects => prevProjects.map(project =>
+      project.id === editingProject.id ? updatedProject : project
+    ));
   };
 
   const addProject = () => {
@@ -284,50 +424,255 @@ export function ProjectManagement({
           </div>
 
           {/* Project Details Section */}
-          {selectedProject && (
+          {selectedProject && editingProject && (
             <div className="mt-8 bg-card border border-border rounded-lg p-6 shadow-soft">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-card-foreground">{selectedProject.title}</h2>
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <Input
+                      value={editingProject.title}
+                      onChange={(e) => updateEditingProject({ title: e.target.value })}
+                      className="font-bold bg-transparent border-none p-0 h-auto focus-visible:ring-0 flex-shrink-0"
+                      style={{ fontSize: '24px', minWidth: '200px' }}
+                      placeholder="Project title"
+                    />
+                    {/* Area Tag */}
+                    <Select
+                      value={editingProject.area}
+                      onValueChange={(value) => updateEditingProject({ area: value })}
+                    >
+                      <SelectTrigger className={cn("h-auto w-auto border-none text-xs text-white px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden", projectAreas.find(a => a.id === editingProject.area)?.color || "bg-muted")}>
+                        <SelectValue>
+                          {projectAreas.find(a => a.id === editingProject.area)?.name || editingProject.area}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projectAreas.map(area => (
+                          <SelectItem key={area.id} value={area.id}>{area.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Status Tag */}
+                    <Select
+                      value={editingProject.status}
+                      onValueChange={(value: Project["status"]) => updateEditingProject({ status: value })}
+                    >
+                      <SelectTrigger className={cn("h-auto w-auto border-none px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden", getStatusColor(editingProject.status))}>
+                        <SelectValue>
+                          {getStatusLabel(editingProject.status)}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="lead">Lead</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="finished">Finished</SelectItem>
+                        <SelectItem value="archive">Archive</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    {/* Timeline Tags */}
+                    <div className="flex items-center gap-1">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="sm" className="h-auto px-2 py-1 text-xs cursor-pointer hover:bg-muted/50">
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {editingProject.startDate ? format(editingProject.startDate, "MMM d") : "Start"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <CalendarComponent
+                            mode="single"
+                            selected={editingProject.startDate}
+                            onSelect={(date) => updateEditingProject({ startDate: date })}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+
+                      <span className="text-muted-foreground">→</span>
+
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="sm" className="h-auto px-2 py-1 text-xs cursor-pointer hover:bg-muted/50">
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {editingProject.endDate ? format(editingProject.endDate, "MMM d") : "End"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <CalendarComponent
+                            mode="single"
+                            selected={editingProject.endDate}
+                            onSelect={(date) => updateEditingProject({ endDate: date })}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setSelectedProject(null)}
+                  onClick={() => {
+                    saveProjectChanges();
+                    setSelectedProject(null);
+                    setEditingProject(null);
+                    setIsEditing(false);
+                  }}
                   className="text-muted-foreground hover:text-foreground"
                 >
                   ✕
                 </Button>
               </div>
 
-              <div className="space-y-4">
-                {selectedProject.description && (
-                  <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Description</Label>
-                    <p className="mt-1 text-foreground">{selectedProject.description}</p>
-                  </div>
-                )}
+              <div>
+                <Textarea
+                  value={editingProject.description || ""}
+                  onChange={(e) => updateEditingProject({ description: e.target.value })}
+                  className="border-none bg-transparent p-0 resize-none focus-visible:ring-0"
+                  placeholder="Enter project description..."
+                  rows={3}
+                />
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Area</Label>
-                    <p className="mt-1 text-foreground">
-                      {projectAreas.find(a => a.id === selectedProject.area)?.name || selectedProject.area}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
-                    <div className="mt-1">
-                      <Badge className={cn(getStatusColor(selectedProject.status))}>
-                        {getStatusLabel(selectedProject.status)}
-                      </Badge>
-                    </div>
+              {/* Project Steps */}
+              <div className="mt-6 pt-4 border-t border-border">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-foreground">Steps</h3>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={newStepTitle}
+                      onChange={(e) => setNewStepTitle(e.target.value)}
+                      placeholder="Add new step..."
+                      className="h-8 text-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          addStep();
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={addStep}
+                      size="sm"
+                      disabled={!newStepTitle.trim()}
+                      className="h-8"
+                    >
+                      Add
+                    </Button>
                   </div>
                 </div>
 
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Timeline</Label>
-                  <p className="mt-1 text-foreground">
-                    {formatDateRange(selectedProject.startDate, selectedProject.endDate)}
-                  </p>
+                <div className="space-y-4">
+                  {editingProject.steps.sort((a, b) => a.order - b.order).map(step => {
+                    const stepTasks = tasks.filter(task => task.step === step.id);
+
+                    return (
+                      <div key={step.id} className="border border-border rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={step.completed}
+                              onChange={() => toggleStep(step.id)}
+                              className="w-4 h-4 rounded focus:ring-2"
+                            />
+                            <h4 className={cn(
+                              "font-medium text-foreground",
+                              step.completed && "line-through opacity-60"
+                            )}>
+                              {step.title}
+                            </h4>
+                            <span className="text-xs text-muted-foreground">
+                              ({stepTasks.length} tasks)
+                            </span>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteStep(step.id)}
+                            className="h-6 w-6 p-0 text-muted-foreground hover:text-red-500"
+                          >
+                            ✕
+                          </Button>
+                        </div>
+
+                        {/* Tasks for this step */}
+                        <div className="ml-6">
+                          {stepTasks.map(task => (
+                            <div
+                              key={task.id}
+                              className={cn(
+                                "flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer",
+                                task.completed !== null && "opacity-60"
+                              )}
+                              onClick={() => onTaskClick?.(task)}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={task.completed !== null}
+                                className={cn(
+                                  "w-4 h-4 rounded focus:ring-2",
+                                  task.priority === "urgent" && "accent-red-500",
+                                  task.priority === "medium" && "accent-amber-500",
+                                  task.priority === "low" && "accent-gray-500"
+                                )}
+                                onChange={() => onToggleTask?.(task.id)}
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <h5 className={cn(
+                                    "text-sm font-medium text-foreground truncate",
+                                    task.completed !== null && "line-through"
+                                  )}>
+                                    {task.title}
+                                  </h5>
+                                  <div className="flex items-center gap-2 ml-2">
+                                    {task.dueDate && (
+                                      <span className={cn(
+                                        "text-xs px-2 py-1 rounded",
+                                        task.dueDate < new Date() && !task.completed
+                                          ? "bg-red-100 text-red-700"
+                                          : "bg-muted text-muted-foreground"
+                                      )}>
+                                        {format(task.dueDate, "MMM d")}
+                                      </span>
+                                    )}
+                                    <span className={cn(
+                                      "text-xs px-2 py-1 rounded font-medium",
+                                      task.priority === "urgent" && "bg-red-500 text-white",
+                                      task.priority === "medium" && "bg-amber-500 text-white",
+                                      task.priority === "low" && "bg-gray-500 text-white"
+                                    )}>
+                                      {task.priority}
+                                    </span>
+                                  </div>
+                                </div>
+                                {task.description && (
+                                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                    {task.description}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+
+                          {stepTasks.length === 0 && (
+                            <p className="text-sm text-muted-foreground italic">
+                              No tasks in this step yet
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {editingProject.steps.length === 0 && (
+                    <p className="text-sm text-muted-foreground italic text-center py-4">
+                      No steps added yet. Create your first step above.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

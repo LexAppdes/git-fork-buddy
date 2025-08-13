@@ -74,6 +74,7 @@ const mockTasks: Task[] = [{
   title: "Call dentist for appointment",
   priority: "low",
   completed: null,
+  area: "health",
   created: oneWeekAgo,
   timeframe: "LATER"
 }, {
@@ -199,6 +200,7 @@ const mockTasks: Task[] = [{
   title: "Random idea to explore",
   priority: "low",
   completed: null,
+  area: "fun",
   created: yesterday,
   timeframe: "SOMEDAY"
 }, {
@@ -206,6 +208,7 @@ const mockTasks: Task[] = [{
   title: "Unorganized task",
   priority: "medium",
   completed: null,
+  area: "self-care",
   created: today,
   timeframe: "LATER"
 }, {
@@ -213,8 +216,25 @@ const mockTasks: Task[] = [{
   title: "Quick note to self",
   priority: "low",
   completed: null,
+  area: "psychology",
   created: threeDaysAgo,
   timeframe: "SOMEDAY"
+}, {
+  id: "21",
+  title: "Learn new skill",
+  priority: "medium",
+  completed: null,
+  area: "self-care",
+  created: today,
+  timeframe: "NOW"
+}, {
+  id: "22",
+  title: "Schedule meeting",
+  priority: "urgent",
+  completed: null,
+  area: "work",
+  created: today,
+  timeframe: "NEXT"
 }];
 const mockAreas: Area[] = [{
   id: "work",
@@ -504,7 +524,7 @@ export function TaskManagement() {
   }, {
     id: "areas",
     label: "by Area",
-    icon: FolderOpen,
+    icon: Folder,
     count: 18
   }, {
     id: "projects",
@@ -849,7 +869,7 @@ export function TaskManagement() {
                       onValueChange={(value) => handleProjectAssignment(task, value)}
                     >
                       <SelectTrigger
-                        className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded"
+                        className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded flex items-center justify-center [&_svg:last-child]:hidden"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Folder className="w-3 h-3 text-muted-foreground" />
@@ -933,7 +953,7 @@ export function TaskManagement() {
                       onValueChange={(value) => handleProjectAssignment(task, value)}
                     >
                       <SelectTrigger
-                        className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded"
+                        className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded flex items-center justify-center [&_svg:last-child]:hidden"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Folder className="w-3 h-3 text-muted-foreground" />
@@ -1487,6 +1507,9 @@ export function TaskManagement() {
               selectedStatuses={selectedProjectStatuses}
               isNewProjectDialogOpen={isNewProjectDialogOpen}
               onNewProjectDialogChange={setIsNewProjectDialogOpen}
+              tasks={tasks}
+              onTaskClick={handleTaskClick}
+              onToggleTask={toggleTask}
             />
           </div>
         ) : activeView === "goals" ? (
@@ -1496,6 +1519,9 @@ export function TaskManagement() {
               selectedStatuses={selectedProjectStatuses}
               isNewProjectDialogOpen={isNewProjectDialogOpen}
               onNewProjectDialogChange={setIsNewProjectDialogOpen}
+              tasks={tasks}
+              onTaskClick={handleTaskClick}
+              onToggleTask={toggleTask}
             />
           </div>
         ) : activeView === "areas" ? (
