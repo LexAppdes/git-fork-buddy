@@ -325,7 +325,8 @@ export function ProjectManagement({
                     <Input
                       value={editingProject.title}
                       onChange={(e) => updateEditingProject({ title: e.target.value })}
-                      className="text-3xl font-bold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
+                      className="font-bold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
+                      style={{ fontSize: '24px' }}
                       placeholder="Project title"
                     />
                   </div>
