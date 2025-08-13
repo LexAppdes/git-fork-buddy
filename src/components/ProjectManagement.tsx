@@ -253,6 +253,59 @@ export function ProjectManagement({
     }
   };
 
+  const addStep = () => {
+    if (!newStepTitle.trim() || !editingProject) return;
+
+    const newStep: Step = {
+      id: `step-${Date.now()}`,
+      title: newStepTitle.trim(),
+      projectId: editingProject.id,
+      order: editingProject.steps.length + 1,
+      completed: false
+    };
+
+    const updatedProject = {
+      ...editingProject,
+      steps: [...editingProject.steps, newStep]
+    };
+
+    setEditingProject(updatedProject);
+    setProjects(prevProjects => prevProjects.map(project =>
+      project.id === editingProject.id ? updatedProject : project
+    ));
+    setNewStepTitle("");
+  };
+
+  const toggleStep = (stepId: string) => {
+    if (!editingProject) return;
+
+    const updatedProject = {
+      ...editingProject,
+      steps: editingProject.steps.map(step =>
+        step.id === stepId ? { ...step, completed: !step.completed } : step
+      )
+    };
+
+    setEditingProject(updatedProject);
+    setProjects(prevProjects => prevProjects.map(project =>
+      project.id === editingProject.id ? updatedProject : project
+    ));
+  };
+
+  const deleteStep = (stepId: string) => {
+    if (!editingProject) return;
+
+    const updatedProject = {
+      ...editingProject,
+      steps: editingProject.steps.filter(step => step.id !== stepId)
+    };
+
+    setEditingProject(updatedProject);
+    setProjects(prevProjects => prevProjects.map(project =>
+      project.id === editingProject.id ? updatedProject : project
+    ));
+  };
+
   const addProject = () => {
     if (!newProject.title.trim()) return;
 
