@@ -326,36 +326,19 @@ export function ProjectManagement({
                   className="text-xl font-semibold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
                   placeholder="Project title"
                 />
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={cancelProjectChanges}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={saveProjectChanges}
-                    className="text-primary-foreground"
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedProject(null);
-                      setEditingProject(null);
-                      setIsEditing(false);
-                    }}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    ✕
-                  </Button>
-                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    saveProjectChanges();
+                    setSelectedProject(null);
+                    setEditingProject(null);
+                    setIsEditing(false);
+                  }}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  ✕
+                </Button>
               </div>
 
               <div className="space-y-4">
