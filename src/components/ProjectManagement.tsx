@@ -463,7 +463,7 @@ export function ProjectManagement({
                         <div
                           key={task.id}
                           className={cn(
-                            "flex items-center gap-3 p-3 rounded-lg bg-background border border-border hover:shadow-sm transition-all duration-200 cursor-pointer",
+                            "flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer",
                             task.completed !== null && "opacity-60"
                           )}
                           onClick={() => onTaskClick?.(task)}
