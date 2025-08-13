@@ -434,18 +434,16 @@ export function TaskManagement() {
   };
 
   const handleAddTask = (projectId: string, stepId?: string) => {
-    setNewTask({
+    const newTaskData = {
       title: "",
       description: "",
-      priority: "medium",
+      priority: "medium" as Task["priority"],
       dueDate: undefined,
       project: projectId,
-      timeframe: "NOW"
-    });
-    // If we have a stepId, we'll store it temporarily and assign it when creating the task
-    if (stepId) {
-      setNewTask(prev => ({ ...prev, step: stepId } as any));
-    }
+      timeframe: "NOW" as Task["timeframe"],
+      ...(stepId && { step: stepId })
+    };
+    setNewTask(newTaskData as any);
     setIsNewTaskDialogOpen(true);
   };
   const getAreaFromProject = (projectId?: string) => {
