@@ -504,7 +504,7 @@ export function TaskManagement() {
   }, {
     id: "areas",
     label: "by Area",
-    icon: FolderOpen,
+    icon: Folder,
     count: 18
   }, {
     id: "projects",
