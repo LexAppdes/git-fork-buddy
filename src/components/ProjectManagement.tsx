@@ -536,79 +536,145 @@ export function ProjectManagement({
                 />
               </div>
 
-              {/* Project Tasks */}
-              {(() => {
-                const projectTasks = tasks.filter(task => task.project === selectedProject.id);
-                if (projectTasks.length === 0) return null;
+              {/* Project Steps */}
+              <div className="mt-6 pt-4 border-t border-border">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-foreground">Steps</h3>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={newStepTitle}
+                      onChange={(e) => setNewStepTitle(e.target.value)}
+                      placeholder="Add new step..."
+                      className="h-8 text-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          addStep();
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={addStep}
+                      size="sm"
+                      disabled={!newStepTitle.trim()}
+                      className="h-8"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                </div>
 
-                return (
-                  <div className="mt-6 pt-4 border-t border-border">
-                    <h3 className="text-lg font-semibold text-foreground mb-3">
-                      Tasks ({projectTasks.length})
-                    </h3>
-                    <div>
-                      {projectTasks.map(task => (
-                        <div
-                          key={task.id}
-                          className={cn(
-                            "flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer",
-                            task.completed !== null && "opacity-60"
-                          )}
-                          onClick={() => onTaskClick?.(task)}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={task.completed !== null}
-                            className={cn(
-                              "w-4 h-4 rounded focus:ring-2",
-                              task.priority === "urgent" && "accent-red-500",
-                              task.priority === "medium" && "accent-amber-500",
-                              task.priority === "low" && "accent-gray-500"
-                            )}
-                            onChange={() => onToggleTask?.(task.id)}
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <h4 className={cn(
-                                "text-sm font-medium text-foreground truncate",
-                                task.completed !== null && "line-through"
-                              )}>
-                                {task.title}
-                              </h4>
-                              <div className="flex items-center gap-2 ml-2">
-                                {task.dueDate && (
-                                  <span className={cn(
-                                    "text-xs px-2 py-1 rounded",
-                                    task.dueDate < new Date() && !task.completed
-                                      ? "bg-red-100 text-red-700"
-                                      : "bg-muted text-muted-foreground"
-                                  )}>
-                                    {format(task.dueDate, "MMM d")}
-                                  </span>
+                <div className="space-y-4">
+                  {editingProject.steps.sort((a, b) => a.order - b.order).map(step => {
+                    const stepTasks = tasks.filter(task => task.step === step.id);
+
+                    return (
+                      <div key={step.id} className="border border-border rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={step.completed}
+                              onChange={() => toggleStep(step.id)}
+                              className="w-4 h-4 rounded focus:ring-2"
+                            />
+                            <h4 className={cn(
+                              "font-medium text-foreground",
+                              step.completed && "line-through opacity-60"
+                            )}>
+                              {step.title}
+                            </h4>
+                            <span className="text-xs text-muted-foreground">
+                              ({stepTasks.length} tasks)
+                            </span>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteStep(step.id)}
+                            className="h-6 w-6 p-0 text-muted-foreground hover:text-red-500"
+                          >
+                            ✕
+                          </Button>
+                        </div>
+
+                        {/* Tasks for this step */}
+                        <div className="ml-6">
+                          {stepTasks.map(task => (
+                            <div
+                              key={task.id}
+                              className={cn(
+                                "flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer",
+                                task.completed !== null && "opacity-60"
+                              )}
+                              onClick={() => onTaskClick?.(task)}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={task.completed !== null}
+                                className={cn(
+                                  "w-4 h-4 rounded focus:ring-2",
+                                  task.priority === "urgent" && "accent-red-500",
+                                  task.priority === "medium" && "accent-amber-500",
+                                  task.priority === "low" && "accent-gray-500"
                                 )}
-                                <span className={cn(
-                                  "text-xs px-2 py-1 rounded font-medium",
-                                  task.priority === "urgent" && "bg-red-500 text-white",
-                                  task.priority === "medium" && "bg-amber-500 text-white",
-                                  task.priority === "low" && "bg-gray-500 text-white"
-                                )}>
-                                  {task.priority}
-                                </span>
+                                onChange={() => onToggleTask?.(task.id)}
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <h5 className={cn(
+                                    "text-sm font-medium text-foreground truncate",
+                                    task.completed !== null && "line-through"
+                                  )}>
+                                    {task.title}
+                                  </h5>
+                                  <div className="flex items-center gap-2 ml-2">
+                                    {task.dueDate && (
+                                      <span className={cn(
+                                        "text-xs px-2 py-1 rounded",
+                                        task.dueDate < new Date() && !task.completed
+                                          ? "bg-red-100 text-red-700"
+                                          : "bg-muted text-muted-foreground"
+                                      )}>
+                                        {format(task.dueDate, "MMM d")}
+                                      </span>
+                                    )}
+                                    <span className={cn(
+                                      "text-xs px-2 py-1 rounded font-medium",
+                                      task.priority === "urgent" && "bg-red-500 text-white",
+                                      task.priority === "medium" && "bg-amber-500 text-white",
+                                      task.priority === "low" && "bg-gray-500 text-white"
+                                    )}>
+                                      {task.priority}
+                                    </span>
+                                  </div>
+                                </div>
+                                {task.description && (
+                                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                    {task.description}
+                                  </p>
+                                )}
                               </div>
                             </div>
-                            {task.description && (
-                              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                                {task.description}
-                              </p>
-                            )}
-                          </div>
+                          ))}
+
+                          {stepTasks.length === 0 && (
+                            <p className="text-sm text-muted-foreground italic">
+                              No tasks in this step yet
+                            </p>
+                          )}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })()}
+                      </div>
+                    );
+                  })}
+
+                  {editingProject.steps.length === 0 && (
+                    <p className="text-sm text-muted-foreground italic text-center py-4">
+                      No steps added yet. Create your first step above.
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>
