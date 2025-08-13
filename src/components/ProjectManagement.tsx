@@ -319,13 +319,92 @@ export function ProjectManagement({
           {/* Project Details Section */}
           {selectedProject && editingProject && (
             <div className="mt-8 bg-card border border-border rounded-lg p-6 shadow-soft">
-              <div className="flex items-center justify-between mb-4">
-                <Input
-                  value={editingProject.title}
-                  onChange={(e) => updateEditingProject({ title: e.target.value })}
-                  className="text-xl font-semibold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
-                  placeholder="Project title"
-                />
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Input
+                      value={editingProject.title}
+                      onChange={(e) => updateEditingProject({ title: e.target.value })}
+                      className="text-3xl font-bold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
+                      placeholder="Project title"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* Area Tag */}
+                    <Select
+                      value={editingProject.area}
+                      onValueChange={(value) => updateEditingProject({ area: value })}
+                    >
+                      <SelectTrigger className="h-auto w-auto border-none bg-transparent p-0 hover:bg-muted/50 rounded-md">
+                        <Badge className={cn("text-xs text-white px-2 py-1 rounded cursor-pointer", projectAreas.find(a => a.id === editingProject.area)?.color || "bg-muted")}>
+                          {projectAreas.find(a => a.id === editingProject.area)?.name || editingProject.area}
+                        </Badge>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projectAreas.map(area => (
+                          <SelectItem key={area.id} value={area.id}>{area.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Status Tag */}
+                    <Select
+                      value={editingProject.status}
+                      onValueChange={(value: Project["status"]) => updateEditingProject({ status: value })}
+                    >
+                      <SelectTrigger className="h-auto w-auto border-none bg-transparent p-0 hover:bg-muted/50 rounded-md">
+                        <Badge className={cn("cursor-pointer", getStatusColor(editingProject.status))}>
+                          {getStatusLabel(editingProject.status)}
+                        </Badge>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="lead">Lead</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="finished">Finished</SelectItem>
+                        <SelectItem value="archive">Archive</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    {/* Timeline Tags */}
+                    <div className="flex items-center gap-1">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Badge variant="outline" className="cursor-pointer hover:bg-muted/50">
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {editingProject.startDate ? format(editingProject.startDate, "MMM d") : "Start"}
+                          </Badge>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <CalendarComponent
+                            mode="single"
+                            selected={editingProject.startDate}
+                            onSelect={(date) => updateEditingProject({ startDate: date })}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+
+                      <span className="text-muted-foreground">→</span>
+
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Badge variant="outline" className="cursor-pointer hover:bg-muted/50">
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {editingProject.endDate ? format(editingProject.endDate, "MMM d") : "End"}
+                          </Badge>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <CalendarComponent
+                            mode="single"
+                            selected={editingProject.endDate}
+                            onSelect={(date) => updateEditingProject({ endDate: date })}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -341,95 +420,14 @@ export function ProjectManagement({
                 </Button>
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Description</Label>
-                  <Textarea
-                    value={editingProject.description || ""}
-                    onChange={(e) => updateEditingProject({ description: e.target.value })}
-                    className="mt-1"
-                    placeholder="Enter project description"
-                    rows={3}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Area</Label>
-                    <Select
-                      value={editingProject.area}
-                      onValueChange={(value) => updateEditingProject({ area: value })}
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Select area" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {projectAreas.map(area => (
-                          <SelectItem key={area.id} value={area.id}>{area.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
-                    <Select
-                      value={editingProject.status}
-                      onValueChange={(value: Project["status"]) => updateEditingProject({ status: value })}
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="lead">Lead</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="finished">Finished</SelectItem>
-                        <SelectItem value="archive">Archive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Timeline</Label>
-                  <div className="grid grid-cols-2 gap-4 mt-1">
-                    <div>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" className="justify-start text-left font-normal w-full">
-                            <Calendar className="mr-2 h-4 w-4" />
-                            {editingProject.startDate ? format(editingProject.startDate, "PPP") : "Start date"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <CalendarComponent
-                            mode="single"
-                            selected={editingProject.startDate}
-                            onSelect={(date) => updateEditingProject({ startDate: date })}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <div>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" className="justify-start text-left font-normal w-full">
-                            <Calendar className="mr-2 h-4 w-4" />
-                            {editingProject.endDate ? format(editingProject.endDate, "PPP") : "End date"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <CalendarComponent
-                            mode="single"
-                            selected={editingProject.endDate}
-                            onSelect={(date) => updateEditingProject({ endDate: date })}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <Textarea
+                  value={editingProject.description || ""}
+                  onChange={(e) => updateEditingProject({ description: e.target.value })}
+                  className="border-none bg-transparent p-0 resize-none focus-visible:ring-0"
+                  placeholder="Enter project description..."
+                  rows={3}
+                />
               </div>
             </div>
           )}
