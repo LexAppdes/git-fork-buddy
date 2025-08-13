@@ -447,6 +447,80 @@ export function ProjectManagement({
                   rows={3}
                 />
               </div>
+
+              {/* Project Tasks */}
+              {(() => {
+                const projectTasks = tasks.filter(task => task.project === selectedProject.id);
+                if (projectTasks.length === 0) return null;
+
+                return (
+                  <div className="mt-6 pt-4 border-t border-border">
+                    <h3 className="text-lg font-semibold text-foreground mb-3">
+                      Tasks ({projectTasks.length})
+                    </h3>
+                    <div className="space-y-2">
+                      {projectTasks.map(task => (
+                        <div
+                          key={task.id}
+                          className={cn(
+                            "flex items-center gap-3 p-3 rounded-lg bg-background border border-border hover:shadow-sm transition-all duration-200 cursor-pointer",
+                            task.completed !== null && "opacity-60"
+                          )}
+                          onClick={() => onTaskClick?.(task)}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={task.completed !== null}
+                            className={cn(
+                              "w-4 h-4 rounded focus:ring-2",
+                              task.priority === "urgent" && "accent-red-500",
+                              task.priority === "medium" && "accent-amber-500",
+                              task.priority === "low" && "accent-gray-500"
+                            )}
+                            onChange={() => onToggleTask?.(task.id)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <h4 className={cn(
+                                "text-sm font-medium text-foreground truncate",
+                                task.completed !== null && "line-through"
+                              )}>
+                                {task.title}
+                              </h4>
+                              <div className="flex items-center gap-2 ml-2">
+                                {task.dueDate && (
+                                  <span className={cn(
+                                    "text-xs px-2 py-1 rounded",
+                                    task.dueDate < new Date() && !task.completed
+                                      ? "bg-red-100 text-red-700"
+                                      : "bg-muted text-muted-foreground"
+                                  )}>
+                                    {format(task.dueDate, "MMM d")}
+                                  </span>
+                                )}
+                                <span className={cn(
+                                  "text-xs px-2 py-1 rounded font-medium",
+                                  task.priority === "urgent" && "bg-red-500 text-white",
+                                  task.priority === "medium" && "bg-amber-500 text-white",
+                                  task.priority === "low" && "bg-gray-500 text-white"
+                                )}>
+                                  {task.priority}
+                                </span>
+                              </div>
+                            </div>
+                            {task.description && (
+                              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                {task.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           )}
         </div>
