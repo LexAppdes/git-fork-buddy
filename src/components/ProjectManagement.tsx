@@ -317,50 +317,135 @@ export function ProjectManagement({
           </div>
 
           {/* Project Details Section */}
-          {selectedProject && (
+          {selectedProject && editingProject && (
             <div className="mt-8 bg-card border border-border rounded-lg p-6 shadow-soft">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-card-foreground">{selectedProject.title}</h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedProject(null)}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  ✕
-                </Button>
+                <Input
+                  value={editingProject.title}
+                  onChange={(e) => updateEditingProject({ title: e.target.value })}
+                  className="text-xl font-semibold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
+                  placeholder="Project title"
+                />
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={cancelProjectChanges}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={saveProjectChanges}
+                    className="text-primary-foreground"
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedProject(null);
+                      setEditingProject(null);
+                      setIsEditing(false);
+                    }}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    ✕
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-4">
-                {selectedProject.description && (
-                  <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Description</Label>
-                    <p className="mt-1 text-foreground">{selectedProject.description}</p>
-                  </div>
-                )}
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Description</Label>
+                  <Textarea
+                    value={editingProject.description || ""}
+                    onChange={(e) => updateEditingProject({ description: e.target.value })}
+                    className="mt-1"
+                    placeholder="Enter project description"
+                    rows={3}
+                  />
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label className="text-sm font-medium text-muted-foreground">Area</Label>
-                    <p className="mt-1 text-foreground">
-                      {projectAreas.find(a => a.id === selectedProject.area)?.name || selectedProject.area}
-                    </p>
+                    <Select
+                      value={editingProject.area}
+                      onValueChange={(value) => updateEditingProject({ area: value })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Select area" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projectAreas.map(area => (
+                          <SelectItem key={area.id} value={area.id}>{area.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-muted-foreground">Status</Label>
-                    <div className="mt-1">
-                      <Badge className={cn(getStatusColor(selectedProject.status))}>
-                        {getStatusLabel(selectedProject.status)}
-                      </Badge>
-                    </div>
+                    <Select
+                      value={editingProject.status}
+                      onValueChange={(value: Project["status"]) => updateEditingProject({ status: value })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="lead">Lead</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="finished">Finished</SelectItem>
+                        <SelectItem value="archive">Archive</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
                 <div>
                   <Label className="text-sm font-medium text-muted-foreground">Timeline</Label>
-                  <p className="mt-1 text-foreground">
-                    {formatDateRange(selectedProject.startDate, selectedProject.endDate)}
-                  </p>
+                  <div className="grid grid-cols-2 gap-4 mt-1">
+                    <div>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" className="justify-start text-left font-normal w-full">
+                            <Calendar className="mr-2 h-4 w-4" />
+                            {editingProject.startDate ? format(editingProject.startDate, "PPP") : "Start date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <CalendarComponent
+                            mode="single"
+                            selected={editingProject.startDate}
+                            onSelect={(date) => updateEditingProject({ startDate: date })}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" className="justify-start text-left font-normal w-full">
+                            <Calendar className="mr-2 h-4 w-4" />
+                            {editingProject.endDate ? format(editingProject.endDate, "PPP") : "End date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <CalendarComponent
+                            mode="single"
+                            selected={editingProject.endDate}
+                            onSelect={(date) => updateEditingProject({ endDate: date })}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
