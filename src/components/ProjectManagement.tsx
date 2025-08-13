@@ -152,6 +152,8 @@ export function ProjectManagement({
     }
   };
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
   const [newProject, setNewProject] = useState({
     title: "",
@@ -163,7 +165,38 @@ export function ProjectManagement({
   });
 
   const handleProjectClick = (project: Project) => {
-    setSelectedProject(selectedProject?.id === project.id ? null : project);
+    if (selectedProject?.id === project.id) {
+      setSelectedProject(null);
+      setEditingProject(null);
+      setIsEditing(false);
+    } else {
+      setSelectedProject(project);
+      setEditingProject({...project});
+      setIsEditing(true);
+    }
+  };
+
+  const updateEditingProject = (updates: Partial<Project>) => {
+    if (editingProject) {
+      setEditingProject({...editingProject, ...updates});
+    }
+  };
+
+  const saveProjectChanges = () => {
+    if (editingProject && selectedProject) {
+      setProjects(prevProjects => prevProjects.map(project =>
+        project.id === editingProject.id ? editingProject : project
+      ));
+      setSelectedProject(editingProject);
+      setIsEditing(false);
+    }
+  };
+
+  const cancelProjectChanges = () => {
+    if (selectedProject) {
+      setEditingProject({...selectedProject});
+      setIsEditing(true);
+    }
   };
 
   const addProject = () => {
