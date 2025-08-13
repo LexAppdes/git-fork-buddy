@@ -126,18 +126,37 @@ const getStatusLabel = (status: string) => {
   }
 };
 
+interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  priority: "low" | "medium" | "urgent";
+  completed: Date | null;
+  dueDate?: Date;
+  area?: string;
+  project?: string;
+  created: Date;
+  timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
+}
+
 interface ProjectManagementProps {
   selectedAreas?: string[];
   selectedStatuses?: string[];
   isNewProjectDialogOpen?: boolean;
   onNewProjectDialogChange?: (open: boolean) => void;
+  tasks?: Task[];
+  onTaskClick?: (task: Task) => void;
+  onToggleTask?: (taskId: string) => void;
 }
 
 export function ProjectManagement({
   selectedAreas = [],
   selectedStatuses = [],
   isNewProjectDialogOpen: externalDialogOpen,
-  onNewProjectDialogChange
+  onNewProjectDialogChange,
+  tasks = [],
+  onTaskClick,
+  onToggleTask
 }: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>([...mockProjects]);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
