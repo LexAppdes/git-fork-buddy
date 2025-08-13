@@ -39,7 +39,13 @@ const mockProjects: Project[] = [
     area: "work",
     startDate: new Date("2024-01-15"),
     endDate: new Date("2024-03-15"),
-    status: "active"
+    status: "active",
+    steps: [
+      { id: "step-1-1", title: "Discovery & Research", projectId: "1", order: 1, completed: true },
+      { id: "step-1-2", title: "Design & Wireframes", projectId: "1", order: 2, completed: false },
+      { id: "step-1-3", title: "Development", projectId: "1", order: 3, completed: false },
+      { id: "step-1-4", title: "Testing & Launch", projectId: "1", order: 4, completed: false }
+    ]
   },
   {
     id: "2",
@@ -48,7 +54,12 @@ const mockProjects: Project[] = [
     area: "work",
     startDate: new Date("2024-02-01"),
     endDate: new Date("2024-06-30"),
-    status: "lead"
+    status: "lead",
+    steps: [
+      { id: "step-2-1", title: "Planning", projectId: "2", order: 1, completed: false },
+      { id: "step-2-2", title: "UI/UX Design", projectId: "2", order: 2, completed: false },
+      { id: "step-2-3", title: "Development", projectId: "2", order: 3, completed: false }
+    ]
   },
   {
     id: "3",
@@ -57,7 +68,11 @@ const mockProjects: Project[] = [
     area: "health",
     startDate: new Date("2024-01-01"),
     endDate: new Date("2024-03-31"),
-    status: "active"
+    status: "active",
+    steps: [
+      { id: "step-3-1", title: "Setup", projectId: "3", order: 1, completed: true },
+      { id: "step-3-2", title: "Week 1-4", projectId: "3", order: 2, completed: false }
+    ]
   },
   {
     id: "4",
@@ -66,7 +81,11 @@ const mockProjects: Project[] = [
     area: "order",
     startDate: new Date("2023-12-01"),
     endDate: new Date("2024-01-31"),
-    status: "finished"
+    status: "finished",
+    steps: [
+      { id: "step-4-1", title: "Living Room", projectId: "4", order: 1, completed: true },
+      { id: "step-4-2", title: "Bedroom", projectId: "4", order: 2, completed: true }
+    ]
   },
   {
     id: "5",
@@ -75,7 +94,12 @@ const mockProjects: Project[] = [
     area: "family",
     startDate: new Date("2024-04-01"),
     endDate: new Date("2024-05-15"),
-    status: "archive"
+    status: "archive",
+    steps: [
+      { id: "step-5-1", title: "Destination Research", projectId: "5", order: 1, completed: true },
+      { id: "step-5-2", title: "Booking", projectId: "5", order: 2, completed: true },
+      { id: "step-5-3", title: "Packing", projectId: "5", order: 3, completed: true }
+    ]
   }
 ];
 
