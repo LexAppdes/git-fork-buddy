@@ -316,7 +316,8 @@ export function ProjectManagement({
       area: newProject.area,
       startDate: newProject.startDate,
       endDate: newProject.endDate,
-      status: newProject.status
+      status: newProject.status,
+      steps: []
     };
 
     setProjects(prev => [...prev, project]);
