@@ -1519,6 +1519,9 @@ export function TaskManagement() {
               selectedStatuses={selectedProjectStatuses}
               isNewProjectDialogOpen={isNewProjectDialogOpen}
               onNewProjectDialogChange={setIsNewProjectDialogOpen}
+              tasks={tasks}
+              onTaskClick={handleTaskClick}
+              onToggleTask={toggleTask}
             />
           </div>
         ) : activeView === "areas" ? (
