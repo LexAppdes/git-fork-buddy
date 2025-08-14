@@ -262,7 +262,8 @@ export function ProjectManagement({
   onTaskClick,
   onToggleTask,
   onAddTask,
-  onAssignTaskToStep
+  onAssignTaskToStep,
+  onUpdateTaskDueDate
 }: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>([...mockProjects]);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
