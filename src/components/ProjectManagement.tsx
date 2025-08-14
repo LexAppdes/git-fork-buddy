@@ -887,12 +887,7 @@ export function ProjectManagement({
                               <input
                                 type="checkbox"
                                 checked={task.completed !== null}
-                                className={cn(
-                                  "w-4 h-4 rounded focus:ring-2",
-                                  task.priority === "urgent" && "accent-red-500",
-                                  task.priority === "medium" && "accent-amber-500",
-                                  task.priority === "low" && "accent-gray-500"
-                                )}
+                                className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))}
                                 onChange={() => onToggleTask?.(task.id)}
                                 onClick={(e) => e.stopPropagation()}
                               />
@@ -906,14 +901,18 @@ export function ProjectManagement({
                                   </h5>
                                   <div className="flex items-center gap-2 ml-2">
                                     {task.dueDate ? (
-                                      <span className={cn(
-                                        "text-xs px-2 py-1 rounded",
-                                        task.dueDate < new Date() && !task.completed
-                                          ? "bg-red-100 text-red-700"
-                                          : "bg-muted text-muted-foreground"
-                                      )}>
-                                        {format(task.dueDate, "MMM d")}
-                                      </span>
+                                      <ClickableDueDate
+                                        date={task.dueDate}
+                                        taskId={task.id}
+                                        onDateChange={onUpdateTaskDueDate || (() => {})}
+                                        formatFunction={formatSimpleDate}
+                                        className={cn(
+                                          "text-xs px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity",
+                                          task.dueDate < new Date() && !task.completed
+                                            ? "bg-red-100 text-red-700"
+                                            : "bg-muted text-muted-foreground"
+                                        )}
+                                      />
                                     ) : (
                                       <Popover>
                                         <PopoverTrigger asChild>
@@ -935,8 +934,9 @@ export function ProjectManagement({
                                             mode="single"
                                             selected={task.dueDate}
                                             onSelect={(date) => {
-                                              // Update task due date logic would go here
-                                              // For now, we'll just close the popover
+                                              if (onUpdateTaskDueDate) {
+                                                onUpdateTaskDueDate(task.id, date);
+                                              }
                                             }}
                                             initialFocus
                                             className={cn("p-3 pointer-events-auto")}
@@ -944,14 +944,6 @@ export function ProjectManagement({
                                         </PopoverContent>
                                       </Popover>
                                     )}
-                                    <span className={cn(
-                                      "text-xs px-2 py-1 rounded font-medium",
-                                      task.priority === "urgent" && "bg-red-500 text-white",
-                                      task.priority === "medium" && "bg-amber-500 text-white",
-                                      task.priority === "low" && "bg-gray-500 text-white"
-                                    )}>
-                                      {task.priority}
-                                    </span>
                                   </div>
                                 </div>
                                 {task.description && (
