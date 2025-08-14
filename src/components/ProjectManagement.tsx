@@ -433,7 +433,7 @@ export function ProjectManagement({
             <div className="mt-8 bg-card border border-border rounded-lg p-6 shadow-soft">
               <div className="flex items-start justify-between mb-6">
                 <div className="flex-1">
-                  <div className="flex items-center gap-4 flex-wrap">
+                  <div className="flex items-center justify-between gap-4">
                     <Input
                       value={editingProject.title}
                       onChange={(e) => updateEditingProject({ title: e.target.value })}
@@ -441,44 +441,46 @@ export function ProjectManagement({
                       style={{ fontSize: '24px', minWidth: '200px' }}
                       placeholder="Project title"
                     />
-                    {/* Area Tag */}
-                    <Select
-                      value={editingProject.area}
-                      onValueChange={(value) => updateEditingProject({ area: value })}
-                    >
-                      <SelectTrigger className={cn("h-auto w-auto border-none text-xs text-white px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden", projectAreas.find(a => a.id === editingProject.area)?.color || "bg-muted")}>
-                        <SelectValue>
-                          {projectAreas.find(a => a.id === editingProject.area)?.name || editingProject.area}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {projectAreas.map(area => (
-                          <SelectItem key={area.id} value={area.id}>{area.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    
+                    <div className="flex items-center gap-3 flex-wrap">
+                      {/* Area Tag */}
+                      <Select
+                        value={editingProject.area}
+                        onValueChange={(value) => updateEditingProject({ area: value })}
+                      >
+                        <SelectTrigger className={cn("h-auto w-auto border-none text-xs text-white px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden", projectAreas.find(a => a.id === editingProject.area)?.color || "bg-muted")}>
+                          <SelectValue>
+                            {projectAreas.find(a => a.id === editingProject.area)?.name || editingProject.area}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {projectAreas.map(area => (
+                            <SelectItem key={area.id} value={area.id}>{area.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
 
-                    {/* Status Tag */}
-                    <Select
-                      value={editingProject.status}
-                      onValueChange={(value: Project["status"]) => updateEditingProject({ status: value })}
-                    >
-                      <SelectTrigger className={cn("h-auto w-auto border-none px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden", getStatusColor(editingProject.status))}>
-                        <SelectValue>
-                          {getStatusLabel(editingProject.status)}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="lead">Lead</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="finished">Finished</SelectItem>
-                        <SelectItem value="archive">Archive</SelectItem>
-                      </SelectContent>
-                    </Select>
+                      {/* Status Tag */}
+                      <Select
+                        value={editingProject.status}
+                        onValueChange={(value: Project["status"]) => updateEditingProject({ status: value })}
+                      >
+                        <SelectTrigger className={cn("h-auto w-auto border-none px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity [&>svg]:hidden", getStatusColor(editingProject.status))}>
+                          <SelectValue>
+                            {getStatusLabel(editingProject.status)}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="lead">Lead</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="finished">Finished</SelectItem>
+                          <SelectItem value="archive">Archive</SelectItem>
+                        </SelectContent>
+                      </Select>
 
-                    {/* Timeline Tags */}
-                    <div className="flex items-center gap-1">
-                      <Popover>
+                      {/* Timeline Tags */}
+                      <div className="flex items-center gap-1">
+                        <Popover>
                         <PopoverTrigger asChild>
                           <Button variant="outline" size="sm" className="h-auto px-2 py-1 text-xs cursor-pointer hover:bg-muted/50">
                             <Calendar className="mr-1 h-3 w-3" />
@@ -513,6 +515,7 @@ export function ProjectManagement({
                           />
                         </PopoverContent>
                       </Popover>
+                      </div>
                     </div>
                   </div>
                 </div>
