@@ -282,6 +282,28 @@ export function ProjectManagement({
     setNewStepTitle("");
   };
 
+  const addStepWithDefaultName = () => {
+    if (!editingProject) return;
+
+    const newStep: Step = {
+      id: `step-${Date.now()}`,
+      title: "New Step",
+      projectId: editingProject.id,
+      order: editingProject.steps.length + 1,
+      completed: false
+    };
+
+    const updatedProject = {
+      ...editingProject,
+      steps: [...editingProject.steps, newStep]
+    };
+
+    setEditingProject(updatedProject);
+    setProjects(prevProjects => prevProjects.map(project =>
+      project.id === editingProject.id ? updatedProject : project
+    ));
+  };
+
   const toggleStep = (stepId: string) => {
     if (!editingProject) return;
 
