@@ -212,7 +212,6 @@ export function ProjectManagement({
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
-  const [newStepTitle, setNewStepTitle] = useState("");
   const [editingStepId, setEditingStepId] = useState<string | null>(null);
   const [editingStepTitle, setEditingStepTitle] = useState("");
   const [newProject, setNewProject] = useState({
