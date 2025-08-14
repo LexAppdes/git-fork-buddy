@@ -507,7 +507,7 @@ export function ProjectManagement({
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <div 
+                    <div
                       className={cn("w-3 h-3 rounded-full shrink-0", getStatusCircleColor(project.status))}
                       title={getStatusLabel(project.status)}
                     />
@@ -521,10 +521,30 @@ export function ProjectManagement({
                     <div className="flex items-center gap-1">
                     </div>
                   </div>
+
+                  {/* Progress bar and area tag row */}
+                  <div className="flex items-center justify-between gap-2">
+                    {/* Progress bar on the left */}
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-primary transition-all duration-300 rounded-full"
+                          style={{
+                            width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`
+                          }}
+                        />
+                      </div>
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {project.steps.filter(s => s.completed).length} / {project.steps.length}
+                      </span>
+                    </div>
+
+                    {/* Area tag on the right */}
+                    <span className={cn("text-xs text-white px-2 py-1 rounded", projectAreas.find(a => a.id === project.area)?.color || "bg-muted")}>
+                      {projectAreas.find(a => a.id === project.area)?.name || project.area}
+                    </span>
+                  </div>
                 </div>
-                <span className={cn("text-xs text-white px-2 py-1 rounded", projectAreas.find(a => a.id === project.area)?.color || "bg-muted")}>
-                  {projectAreas.find(a => a.id === project.area)?.name || project.area}
-                </span>
               </div>
             ))}
           </div>
