@@ -1669,6 +1669,7 @@ export function TaskManagement() {
               onToggleTask={toggleTask}
               onAddTask={handleAddTask}
               onAssignTaskToStep={handleAssignTaskToStep}
+              onUpdateTaskDueDate={updateTaskDueDate}
             />
           </div>
         ) : activeView === "areas" ? (
