@@ -250,6 +250,7 @@ interface ProjectManagementProps {
   onToggleTask?: (taskId: string) => void;
   onAddTask?: (project: string, step?: string) => void;
   onAssignTaskToStep?: (taskId: string, stepId: string) => void;
+  onUpdateTaskDueDate?: (taskId: string, date: Date | undefined) => void;
 }
 
 export function ProjectManagement({
