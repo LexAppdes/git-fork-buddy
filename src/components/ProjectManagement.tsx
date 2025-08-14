@@ -797,9 +797,21 @@ export function ProjectManagement({
 
                   {editingProject.steps.length === 0 && (
                     <p className="text-sm text-muted-foreground italic text-center py-4">
-                      No steps added yet. Create your first step above.
+                      No steps added yet. Create your first step below.
                     </p>
                   )}
+
+                  {/* Add step button */}
+                  <div className="mt-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={addStepWithDefaultName}
+                      className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto font-normal"
+                    >
+                      + add step
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Unassigned Project Tasks */}
