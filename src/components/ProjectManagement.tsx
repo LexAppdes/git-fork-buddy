@@ -770,7 +770,7 @@ export function ProjectManagement({
                                     {task.title}
                                   </h5>
                                   <div className="flex items-center gap-2 ml-2">
-                                    {task.dueDate && (
+                                    {task.dueDate ? (
                                       <span className={cn(
                                         "text-xs px-2 py-1 rounded",
                                         task.dueDate < new Date() && !task.completed
@@ -779,6 +779,35 @@ export function ProjectManagement({
                                       )}>
                                         {format(task.dueDate, "MMM d")}
                                       </span>
+                                    ) : (
+                                      <Popover>
+                                        <PopoverTrigger asChild>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-7 w-7 p-0 hover:bg-muted"
+                                            onClick={(e) => e.stopPropagation()}
+                                          >
+                                            <Calendar className="w-3 h-3 text-muted-foreground" />
+                                          </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                          className="w-auto p-0"
+                                          align="end"
+                                          onClick={(e) => e.stopPropagation()}
+                                        >
+                                          <CalendarComponent
+                                            mode="single"
+                                            selected={task.dueDate}
+                                            onSelect={(date) => {
+                                              // Update task due date logic would go here
+                                              // For now, we'll just close the popover
+                                            }}
+                                            initialFocus
+                                            className={cn("p-3 pointer-events-auto")}
+                                          />
+                                        </PopoverContent>
+                                      </Popover>
                                     )}
                                     <span className={cn(
                                       "text-xs px-2 py-1 rounded font-medium",
