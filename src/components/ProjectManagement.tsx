@@ -535,14 +535,31 @@ export function ProjectManagement({
               <div className="flex items-start justify-between mb-6">
                 <div className="flex-1">
                   <div className="flex items-center gap-4 flex-wrap">
-                    <Input
-                      value={editingProject.title}
-                      onChange={(e) => updateEditingProject({ title: e.target.value })}
-                      className="font-bold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
-                      style={{ fontSize: '24px', maxWidth: '400px' }}
-                      placeholder="Project title"
-                    />
-                    
+                    <div className="flex flex-col gap-2">
+                      <Input
+                        value={editingProject.title}
+                        onChange={(e) => updateEditingProject({ title: e.target.value })}
+                        className="font-bold bg-transparent border-none p-0 h-auto focus-visible:ring-0"
+                        style={{ fontSize: '24px', maxWidth: '400px' }}
+                        placeholder="Project title"
+                      />
+
+                      {/* Project Progress */}
+                      <div className="flex items-center gap-3">
+                        <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-primary transition-all duration-300 rounded-full"
+                            style={{
+                              width: `${editingProject.steps.length > 0 ? (editingProject.steps.filter(s => s.completed).length / editingProject.steps.length) * 100 : 0}%`
+                            }}
+                          />
+                        </div>
+                        <span className="text-sm text-muted-foreground whitespace-nowrap">
+                          {editingProject.steps.filter(s => s.completed).length} / {editingProject.steps.length} steps
+                        </span>
+                      </div>
+                    </div>
+
                     <div className="flex items-center gap-3 flex-wrap ml-auto">
                       {/* Area Tag */}
                       <Select
