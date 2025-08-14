@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { DateTimePicker, InlineDateTimePicker } from "@/components/ui/date-time-picker";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 
@@ -189,40 +190,25 @@ const ClickableDueDate = ({
   formatFunction?: (date: Date) => string;
   className?: string;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsOpen(true);
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <span
-          className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
-          onClick={handleClick}
-        >
-          {formatFunction(date)}
-        </span>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-auto p-0"
-        align="start"
-        onClick={(e) => e.stopPropagation()}
+    <InlineDateTimePicker
+      date={date}
+      onDateChange={(newDate) => onDateChange(taskId, newDate)}
+      align="start"
+      showTime={false}
+      allowClear={true}
+    >
+      <span
+        className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
+        onClick={handleClick}
       >
-        <CalendarComponent
-          mode="single"
-          selected={date}
-          onSelect={(selectedDate) => {
-            onDateChange(taskId, selectedDate);
-            setIsOpen(false);
-          }}
-          initialFocus
-          className="p-3"
-        />
-      </PopoverContent>
-    </Popover>
+        {formatFunction(date)}
+      </span>
+    </InlineDateTimePicker>
   );
 };
 
@@ -618,41 +604,33 @@ export function ProjectManagement({
 
                       {/* Timeline Tags */}
                       <div className="flex items-center gap-1">
-                        <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm" className="h-auto px-2 py-1 text-xs cursor-pointer hover:bg-muted/50">
-                            <Calendar className="mr-1 h-3 w-3" />
-                            {editingProject.startDate ? format(editingProject.startDate, "MMM d") : "Start"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <CalendarComponent
-                            mode="single"
-                            selected={editingProject.startDate}
-                            onSelect={(date) => updateEditingProject({ startDate: date })}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                        <InlineDateTimePicker
+                        date={editingProject.startDate}
+                        onDateChange={(date) => updateEditingProject({ startDate: date })}
+                        align="center"
+                        showTime={false}
+                        allowClear={true}
+                      >
+                        <Button variant="outline" size="sm" className="h-auto px-2 py-1 text-xs cursor-pointer hover:bg-muted/50">
+                          <Calendar className="mr-1 h-3 w-3" />
+                          {editingProject.startDate ? format(editingProject.startDate, "MMM d") : "Start"}
+                        </Button>
+                      </InlineDateTimePicker>
 
                       <span className="text-muted-foreground">→</span>
 
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm" className="h-auto px-2 py-1 text-xs cursor-pointer hover:bg-muted/50">
-                            <Calendar className="mr-1 h-3 w-3" />
-                            {editingProject.endDate ? format(editingProject.endDate, "MMM d") : "End"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <CalendarComponent
-                            mode="single"
-                            selected={editingProject.endDate}
-                            onSelect={(date) => updateEditingProject({ endDate: date })}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                      <InlineDateTimePicker
+                        date={editingProject.endDate}
+                        onDateChange={(date) => updateEditingProject({ endDate: date })}
+                        align="center"
+                        showTime={false}
+                        allowClear={true}
+                      >
+                        <Button variant="outline" size="sm" className="h-auto px-2 py-1 text-xs cursor-pointer hover:bg-muted/50">
+                          <Calendar className="mr-1 h-3 w-3" />
+                          {editingProject.endDate ? format(editingProject.endDate, "MMM d") : "End"}
+                        </Button>
+                      </InlineDateTimePicker>
                       </div>
                     </div>
                   </div>
@@ -821,35 +799,26 @@ export function ProjectManagement({
                                          )}
                                        />
                                      ) : (
-                                       <Popover>
-                                         <PopoverTrigger asChild>
-                                           <Button
-                                             variant="ghost"
-                                             size="sm"
-                                             className="h-7 w-7 p-0 hover:bg-muted"
-                                             onClick={(e) => e.stopPropagation()}
-                                           >
-                                             <Calendar className="w-3 h-3 text-muted-foreground" />
-                                           </Button>
-                                         </PopoverTrigger>
-                                         <PopoverContent
-                                           className="w-auto p-0"
-                                           align="end"
+                                       <InlineDateTimePicker
+                                         date={task.dueDate}
+                                         onDateChange={(date) => {
+                                           if (onUpdateTaskDueDate) {
+                                             onUpdateTaskDueDate(task.id, date);
+                                           }
+                                         }}
+                                         align="end"
+                                         showTime={false}
+                                         allowClear={true}
+                                       >
+                                         <Button
+                                           variant="ghost"
+                                           size="sm"
+                                           className="h-7 w-7 p-0 hover:bg-muted"
                                            onClick={(e) => e.stopPropagation()}
                                          >
-                                           <CalendarComponent
-                                             mode="single"
-                                             selected={task.dueDate}
-                                             onSelect={(date) => {
-                                               if (onUpdateTaskDueDate) {
-                                                 onUpdateTaskDueDate(task.id, date);
-                                               }
-                                             }}
-                                             initialFocus
-                                             className={cn("p-3 pointer-events-auto")}
-                                           />
-                                         </PopoverContent>
-                                       </Popover>
+                                           <Calendar className="w-3 h-3 text-muted-foreground" />
+                                         </Button>
+                                       </InlineDateTimePicker>
                                      )}
                                   </div>
                                 </div>
@@ -961,35 +930,26 @@ export function ProjectManagement({
                                         )}
                                       />
                                     ) : (
-                                      <Popover>
-                                        <PopoverTrigger asChild>
-                                          <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-7 w-7 p-0 hover:bg-muted"
-                                            onClick={(e) => e.stopPropagation()}
-                                          >
-                                            <Calendar className="w-3 h-3 text-muted-foreground" />
-                                          </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                          className="w-auto p-0"
-                                          align="end"
+                                      <InlineDateTimePicker
+                                        date={task.dueDate}
+                                        onDateChange={(date) => {
+                                          if (onUpdateTaskDueDate) {
+                                            onUpdateTaskDueDate(task.id, date);
+                                          }
+                                        }}
+                                        align="end"
+                                        showTime={false}
+                                        allowClear={true}
+                                      >
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          className="h-7 w-7 p-0 hover:bg-muted"
                                           onClick={(e) => e.stopPropagation()}
                                         >
-                                          <CalendarComponent
-                                            mode="single"
-                                            selected={task.dueDate}
-                                            onSelect={(date) => {
-                                              if (onUpdateTaskDueDate) {
-                                                onUpdateTaskDueDate(task.id, date);
-                                              }
-                                            }}
-                                            initialFocus
-                                            className={cn("p-3 pointer-events-auto")}
-                                          />
-                                        </PopoverContent>
-                                      </Popover>
+                                          <Calendar className="w-3 h-3 text-muted-foreground" />
+                                        </Button>
+                                      </InlineDateTimePicker>
                                     )}
                                   </div>
                                 </div>
@@ -1054,41 +1014,23 @@ export function ProjectManagement({
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label>Start Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="justify-start text-left font-normal">
-                      <Calendar className="mr-2 h-4 w-4" />
-                      {newProject.startDate ? format(newProject.startDate, "PPP") : "Pick start date"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <CalendarComponent
-                      mode="single"
-                      selected={newProject.startDate}
-                      onSelect={(date) => setNewProject(prev => ({ ...prev, startDate: date }))}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <DateTimePicker
+                  date={newProject.startDate}
+                  onDateChange={(date) => setNewProject(prev => ({ ...prev, startDate: date }))}
+                  placeholder="Pick start date"
+                  showTime={false}
+                  allowClear={true}
+                />
               </div>
               <div className="grid gap-2">
                 <Label>End Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="justify-start text-left font-normal">
-                      <Calendar className="mr-2 h-4 w-4" />
-                      {newProject.endDate ? format(newProject.endDate, "PPP") : "Pick end date"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <CalendarComponent
-                      mode="single"
-                      selected={newProject.endDate}
-                      onSelect={(date) => setNewProject(prev => ({ ...prev, endDate: date }))}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <DateTimePicker
+                  date={newProject.endDate}
+                  onDateChange={(date) => setNewProject(prev => ({ ...prev, endDate: date }))}
+                  placeholder="Pick end date"
+                  showTime={false}
+                  allowClear={true}
+                />
               </div>
             </div>
             <div className="grid gap-2">
