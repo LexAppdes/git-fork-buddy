@@ -192,61 +192,89 @@ const TaskCard = ({
           )}
         </div>
       </div>
-      {(task.dueDate || task.area || task.project) && (
-        <div className="space-y-2">
-          {task.dueDate && (
-            <div className="flex items-center">
-              <ClickableDueDate
-                date={task.dueDate}
-                taskId={task.id}
-                onDateChange={onUpdateTaskDueDate}
-                className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
-              />
-            </div>
-          )}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              {getAreaFromProject(task.project) && (
-                <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === getAreaFromProject(task.project))?.color || "bg-muted")}>
-                  {areas.find(a => a.id === getAreaFromProject(task.project))?.name}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center">
-              {task.project ? (
-                <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
-                  {projects?.find(p => p.id === task.project)?.title || 'Project'}
-                </span>
-              ) : (
-                <Select
-                  value="none"
-                  onValueChange={(value) => {
-                    if (onProjectAssignment) {
-                      // Call the project assignment with the task and new project value
-                      onProjectAssignment(task, value);
+      <div className="space-y-2">
+        <div className="flex items-center">
+          {task.dueDate ? (
+            <ClickableDueDate
+              date={task.dueDate}
+              taskId={task.id}
+              onDateChange={onUpdateTaskDueDate}
+              className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
+            />
+          ) : (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-5 w-5 p-0 hover:bg-muted"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <CalendarIcon className="w-3 h-3 text-muted-foreground" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-auto p-0"
+                align="start"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <CalendarComponent
+                  mode="single"
+                  selected={task.dueDate}
+                  onSelect={(date) => {
+                    if (onUpdateTaskDueDate) {
+                      onUpdateTaskDueDate(task.id, date);
                     }
                   }}
+                  initialFocus
+                  className="p-3"
+                />
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            {getAreaFromProject(task.project) && (
+              <span className={cn("text-xs text-white px-2 py-1 rounded", areas.find(a => a.id === getAreaFromProject(task.project))?.color || "bg-muted")}>
+                {areas.find(a => a.id === getAreaFromProject(task.project))?.name}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center">
+            {task.project ? (
+              <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
+                {projects?.find(p => p.id === task.project)?.title || 'Project'}
+              </span>
+            ) : (
+              <Select
+                value="none"
+                onValueChange={(value) => {
+                  if (onProjectAssignment) {
+                    // Call the project assignment with the task and new project value
+                    onProjectAssignment(task, value);
+                  }
+                }}
+              >
+                <SelectTrigger
+                  className="h-5 w-5 p-0 border-none bg-transparent hover:bg-muted rounded flex items-center justify-center [&_svg:last-child]:hidden"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <SelectTrigger
-                    className="h-5 w-5 p-0 border-none bg-transparent hover:bg-muted rounded flex items-center justify-center [&_svg:last-child]:hidden"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Folder className="w-3 h-3 text-muted-foreground" />
-                  </SelectTrigger>
-                  <SelectContent onClick={(e) => e.stopPropagation()}>
-                    <SelectItem value="none">No project</SelectItem>
-                    {projects?.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
+                  <Folder className="w-3 h-3 text-muted-foreground" />
+                </SelectTrigger>
+                <SelectContent onClick={(e) => e.stopPropagation()}>
+                  <SelectItem value="none">No project</SelectItem>
+                  {projects?.map((project) => (
+                    <SelectItem key={project.id} value={project.id}>
+                      {project.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
