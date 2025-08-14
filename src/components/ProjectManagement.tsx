@@ -711,9 +711,19 @@ export function ProjectManagement({
                                 {step.title}
                               </h4>
                             )}
-                            <span className="text-xs text-muted-foreground">
-                              ({stepTasks.length} tasks)
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-primary transition-all duration-300 rounded-full"
+                                  style={{
+                                    width: `${stepTasks.length > 0 ? (stepTasks.filter(t => t.completed !== null).length / stepTasks.length) * 100 : 0}%`
+                                  }}
+                                />
+                              </div>
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                {stepTasks.filter(t => t.completed !== null).length} / {stepTasks.length}
+                              </span>
+                            </div>
                           </div>
                           <Button
                             variant="ghost"
@@ -767,10 +777,10 @@ export function ProjectManagement({
                                          onDateChange={onUpdateTaskDueDate || (() => {})}
                                          formatFunction={formatSimpleDate}
                                          className={cn(
-                                           "text-xs px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity",
+                                           "text-xs cursor-pointer hover:opacity-80 transition-opacity",
                                            task.dueDate < new Date() && !task.completed
-                                             ? "bg-red-100 text-red-700"
-                                             : "bg-muted text-muted-foreground"
+                                             ? "text-red-500"
+                                             : "text-muted-foreground"
                                          )}
                                        />
                                      ) : (
@@ -907,10 +917,10 @@ export function ProjectManagement({
                                         onDateChange={onUpdateTaskDueDate || (() => {})}
                                         formatFunction={formatSimpleDate}
                                         className={cn(
-                                          "text-xs px-2 py-1 rounded cursor-pointer hover:opacity-80 transition-opacity",
+                                          "text-xs cursor-pointer hover:opacity-80 transition-opacity",
                                           task.dueDate < new Date() && !task.completed
-                                            ? "bg-red-100 text-red-700"
-                                            : "bg-muted text-muted-foreground"
+                                            ? "text-red-500"
+                                            : "text-muted-foreground"
                                         )}
                                       />
                                     ) : (
