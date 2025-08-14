@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { DateTimePicker, InlineDateTimePicker } from "@/components/ui/date-time-picker";
 import { format, isToday, isTomorrow, isAfter, startOfDay, endOfDay, isYesterday, differenceInDays, isBefore } from "date-fns";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { Badge } from "@/components/ui/badge";
@@ -423,40 +424,25 @@ const ClickableDueDate = ({
   formatFunction?: (date: Date) => string;
   className?: string;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsOpen(true);
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <span
-          className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
-          onClick={handleClick}
-        >
-          {formatFunction(date)}
-        </span>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-auto p-0"
-        align="start"
-        onClick={(e) => e.stopPropagation()}
+    <InlineDateTimePicker
+      date={date}
+      onDateChange={(newDate) => onDateChange(taskId, newDate)}
+      align="start"
+      showTime={false}
+      allowClear={true}
+    >
+      <span
+        className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
+        onClick={handleClick}
       >
-        <CalendarComponent
-          mode="single"
-          selected={date}
-          onSelect={(selectedDate) => {
-            onDateChange(taskId, selectedDate);
-            setIsOpen(false);
-          }}
-          initialFocus
-          className="p-3"
-        />
-      </PopoverContent>
-    </Popover>
+        {formatFunction(date)}
+      </span>
+    </InlineDateTimePicker>
   );
 };
 export function TaskManagement() {
@@ -1014,31 +1000,22 @@ export function TaskManagement() {
                     </SelectContent>
                   </Select>
 
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0 hover:bg-muted"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <CalendarIcon className="w-3 h-3 text-muted-foreground" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto p-0"
-                      align="end"
+                  <InlineDateTimePicker
+                    date={task.dueDate}
+                    onDateChange={(date) => updateTaskDueDate(task.id, date)}
+                    align="end"
+                    showTime={false}
+                    allowClear={true}
+                  >
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 w-7 p-0 hover:bg-muted"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <CalendarComponent
-                        mode="single"
-                        selected={task.dueDate}
-                        onSelect={(date) => updateTaskDueDate(task.id, date)}
-                        initialFocus
-                        className="p-3"
-                      />
-                    </PopoverContent>
-                  </Popover>
+                      <CalendarIcon className="w-3 h-3 text-muted-foreground" />
+                    </Button>
+                  </InlineDateTimePicker>
                 </div>
               </div>
               {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
@@ -1602,38 +1579,19 @@ export function TaskManagement() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="dueDate">Due Date</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full justify-start text-left font-normal",
-                                !newTask.dueDate && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {newTask.dueDate ? (
-                                format(newTask.dueDate, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <CalendarComponent
-                              mode="single"
-                              selected={newTask.dueDate}
-                              onSelect={(date) =>
-                                setNewTask((prev) => ({
-                                  ...prev,
-                                  dueDate: date,
-                                }))
-                              }
-                              initialFocus
-                              className="p-3 pointer-events-auto"
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <DateTimePicker
+                          date={newTask.dueDate}
+                          onDateChange={(date) =>
+                            setNewTask((prev) => ({
+                              ...prev,
+                              dueDate: date,
+                            }))
+                          }
+                          placeholder="Pick a date"
+                          align="start"
+                          showTime={true}
+                          allowClear={true}
+                        />
                       </div>
                     </div>
                     <div className="flex justify-end gap-2">
@@ -1744,33 +1702,14 @@ export function TaskManagement() {
               {/* Due Date */}
               <div>
                 <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !editingTask.dueDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {editingTask.dueDate ? (
-                        format(editingTask.dueDate, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <CalendarComponent
-                      mode="single"
-                      selected={editingTask.dueDate}
-                      onSelect={(date) => updateEditingTask({ dueDate: date })}
-                      initialFocus
-                      className="p-3"
-                    />
-                  </PopoverContent>
-                </Popover>
+                <DateTimePicker
+                  date={editingTask.dueDate}
+                  onDateChange={(date) => updateEditingTask({ dueDate: date })}
+                  placeholder="Pick a date"
+                  align="start"
+                  showTime={true}
+                  allowClear={true}
+                />
               </div>
 
 
