@@ -159,6 +159,73 @@ const getStatusLabel = (status: string) => {
   }
 };
 
+const getPriorityCheckboxColor = (priority: string) => {
+  switch (priority) {
+    case "urgent":
+      return "priority-checkbox checkbox-urgent";
+    case "medium":
+      return "priority-checkbox checkbox-medium";
+    case "low":
+      return "priority-checkbox checkbox-low";
+    default:
+      return "priority-checkbox checkbox-medium";
+  }
+};
+
+const formatSimpleDate = (date: Date) => {
+  return format(date, "dd.MM.yy");
+};
+
+const ClickableDueDate = ({
+  date,
+  taskId,
+  onDateChange,
+  formatFunction = formatSimpleDate,
+  className = "text-xs text-muted-foreground"
+}: {
+  date: Date;
+  taskId: string;
+  onDateChange: (taskId: string, date: Date | undefined) => void;
+  formatFunction?: (date: Date) => string;
+  className?: string;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsOpen(true);
+  };
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <span
+          className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
+          onClick={handleClick}
+        >
+          {formatFunction(date)}
+        </span>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-auto p-0"
+        align="start"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <CalendarComponent
+          mode="single"
+          selected={date}
+          onSelect={(selectedDate) => {
+            onDateChange(taskId, selectedDate);
+            setIsOpen(false);
+          }}
+          initialFocus
+          className="p-3"
+        />
+      </PopoverContent>
+    </Popover>
+  );
+};
+
 interface Task {
   id: string;
   title: string;
