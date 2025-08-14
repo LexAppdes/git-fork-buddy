@@ -555,7 +555,7 @@ export function ProjectManagement({
                           />
                         </div>
                         <span className="text-sm text-muted-foreground whitespace-nowrap">
-                          {editingProject.steps.filter(s => s.completed).length} / {editingProject.steps.length} steps
+                          {editingProject.steps.filter(s => s.completed).length} / {editingProject.steps.length}
                         </span>
                       </div>
                     </div>
