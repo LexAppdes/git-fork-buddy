@@ -213,6 +213,8 @@ export function ProjectManagement({
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
   const [newStepTitle, setNewStepTitle] = useState("");
+  const [editingStepId, setEditingStepId] = useState<string | null>(null);
+  const [editingStepTitle, setEditingStepTitle] = useState("");
   const [newProject, setNewProject] = useState({
     title: "",
     description: "",
@@ -308,6 +310,38 @@ export function ProjectManagement({
     setProjects(prevProjects => prevProjects.map(project =>
       project.id === editingProject.id ? updatedProject : project
     ));
+  };
+
+  const startEditingStep = (stepId: string, currentTitle: string) => {
+    setEditingStepId(stepId);
+    setEditingStepTitle(currentTitle);
+  };
+
+  const saveStepTitle = () => {
+    if (!editingProject || !editingStepId || !editingStepTitle.trim()) {
+      cancelStepEdit();
+      return;
+    }
+
+    const updatedProject = {
+      ...editingProject,
+      steps: editingProject.steps.map(step =>
+        step.id === editingStepId ? { ...step, title: editingStepTitle.trim() } : step
+      )
+    };
+
+    setEditingProject(updatedProject);
+    setProjects(prevProjects => prevProjects.map(project =>
+      project.id === editingProject.id ? updatedProject : project
+    ));
+
+    setEditingStepId(null);
+    setEditingStepTitle("");
+  };
+
+  const cancelStepEdit = () => {
+    setEditingStepId(null);
+    setEditingStepTitle("");
   };
 
   const addProject = () => {
@@ -603,12 +637,34 @@ export function ProjectManagement({
                               onChange={() => toggleStep(step.id)}
                               className="w-4 h-4 rounded focus:ring-2"
                             />
-                            <h4 className={cn(
-                              "font-medium text-foreground",
-                              step.completed && "line-through opacity-60"
-                            )}>
-                              {step.title}
-                            </h4>
+                            {editingStepId === step.id ? (
+                              <Input
+                                value={editingStepTitle}
+                                onChange={(e) => setEditingStepTitle(e.target.value)}
+                                onBlur={saveStepTitle}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    saveStepTitle();
+                                  } else if (e.key === 'Escape') {
+                                    cancelStepEdit();
+                                  }
+                                }}
+                                className="h-6 border-none p-0 bg-transparent focus-visible:ring-1 focus-visible:ring-primary font-medium"
+                                autoFocus
+                                onFocus={(e) => e.target.select()}
+                              />
+                            ) : (
+                              <h4
+                                className={cn(
+                                  "font-medium text-foreground cursor-pointer hover:bg-muted/30 px-1 py-0.5 rounded transition-colors",
+                                  step.completed && "line-through opacity-60"
+                                )}
+                                onClick={() => startEditingStep(step.id, step.title)}
+                                title="Click to edit step name"
+                              >
+                                {step.title}
+                              </h4>
+                            )}
                             <span className="text-xs text-muted-foreground">
                               ({stepTasks.length} tasks)
                             </span>
