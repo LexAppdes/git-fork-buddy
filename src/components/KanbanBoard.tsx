@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { isBefore, startOfDay } from "date-fns";
-import { Folder } from "lucide-react";
+import { Folder, Calendar as CalendarIcon } from "lucide-react";
 
 
 interface Task {
