@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { InlineDateTimePicker } from "@/components/ui/date-time-picker";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { isBefore, startOfDay } from "date-fns";
 import { Folder, Calendar as CalendarIcon } from "lucide-react";
@@ -94,13 +95,8 @@ const ClickableDueDate = ({
   onDateChange?: (taskId: string, date: Date | undefined) => void;
   className?: string;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onDateChange) {
-      setIsOpen(true);
-    }
   };
 
   if (!onDateChange) {
@@ -108,32 +104,20 @@ const ClickableDueDate = ({
   }
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <span
-          className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
-          onClick={handleClick}
-        >
-          {formatSimpleDate(date)}
-        </span>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-auto p-0"
-        align="start"
-        onClick={(e) => e.stopPropagation()}
+    <InlineDateTimePicker
+      date={date}
+      onDateChange={(newDate) => onDateChange(taskId, newDate)}
+      align="start"
+      showTime={false}
+      allowClear={true}
+    >
+      <span
+        className={cn("cursor-pointer hover:text-foreground transition-colors", className)}
+        onClick={handleClick}
       >
-        <CalendarComponent
-          mode="single"
-          selected={date}
-          onSelect={(selectedDate) => {
-            onDateChange(taskId, selectedDate);
-            setIsOpen(false);
-          }}
-          initialFocus
-          className="p-3"
-        />
-      </PopoverContent>
-    </Popover>
+        {formatSimpleDate(date)}
+      </span>
+    </InlineDateTimePicker>
   );
 };
 
@@ -202,35 +186,26 @@ const TaskCard = ({
               className={cn("text-xs text-muted-foreground", isTaskOverdue(task) && "text-red-500")}
             />
           ) : (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-5 w-5 p-0 hover:bg-muted"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <CalendarIcon className="w-3 h-3 text-muted-foreground" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-auto p-0"
-                align="start"
+            <InlineDateTimePicker
+              date={task.dueDate}
+              onDateChange={(date) => {
+                if (onUpdateTaskDueDate) {
+                  onUpdateTaskDueDate(task.id, date);
+                }
+              }}
+              align="start"
+              showTime={false}
+              allowClear={true}
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-5 w-5 p-0 hover:bg-muted"
                 onClick={(e) => e.stopPropagation()}
               >
-                <CalendarComponent
-                  mode="single"
-                  selected={task.dueDate}
-                  onSelect={(date) => {
-                    if (onUpdateTaskDueDate) {
-                      onUpdateTaskDueDate(task.id, date);
-                    }
-                  }}
-                  initialFocus
-                  className="p-3"
-                />
-              </PopoverContent>
-            </Popover>
+                <CalendarIcon className="w-3 h-3 text-muted-foreground" />
+              </Button>
+            </InlineDateTimePicker>
           )}
         </div>
         <div className="flex items-center justify-between">
