@@ -728,7 +728,7 @@ export function ProjectManagement({
                       <div className="mt-6 pt-4 border-t border-border">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="text-lg font-semibold text-foreground">
-                            Unassigned Tasks ({unassignedTasks.length})
+                            No step
                           </h3>
                         </div>
                         <div className="space-y-2">
