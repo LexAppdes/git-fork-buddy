@@ -604,27 +604,6 @@ export function ProjectManagement({
               <div className="mt-6 pt-4 border-t border-border">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-foreground">Steps</h3>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={newStepTitle}
-                      onChange={(e) => setNewStepTitle(e.target.value)}
-                      placeholder="Add new step..."
-                      className="h-8 text-sm"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          addStep();
-                        }
-                      }}
-                    />
-                    <Button
-                      onClick={addStep}
-                      size="sm"
-                      disabled={!newStepTitle.trim()}
-                      className="h-8"
-                    >
-                      Add
-                    </Button>
-                  </div>
                 </div>
 
                 <div className="space-y-4">
