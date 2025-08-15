@@ -514,9 +514,10 @@ export function ProjectManagement({
                     <div className="flex items-center gap-2">
                       <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-primary transition-all duration-300 rounded-full"
+                          className="h-full bg-primary rounded-full"
                           style={{
-                            width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`
+                            width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`,
+                            transition: 'width 0.3s ease-out'
                           }}
                         />
                       </div>
