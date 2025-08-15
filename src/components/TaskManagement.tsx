@@ -566,8 +566,8 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       setTasks(prevTasks => prevTasks.map(task =>
         task.id === editingTask.id ? editingTask : task
       ));
-      setSelectedTask(editingTask);
     }
+    setSelectedTask(null);
     setIsTaskViewOpen(false);
     setIsEditing(false);
     setEditingTask(null);
