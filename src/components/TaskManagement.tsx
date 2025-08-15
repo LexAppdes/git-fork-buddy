@@ -595,12 +595,12 @@ export function TaskManagement() {
     } : task));
   };
   
-  const updateTaskDueDate = (taskId: string, dueDate: Date | undefined) => {
+  const updateTaskDueDate = useCallback((taskId: string, dueDate: Date | undefined) => {
     setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
       ...task,
       dueDate
     } : task));
-  };
+  }, []);
   const getPriorityLabel = (priority: string) => {
     switch (priority) {
       case "urgent":
