@@ -341,6 +341,7 @@ const KanbanColumn = ({
               areas={areas}
               projects={projects}
               onProjectAssignment={onProjectAssignment}
+              selectedTask={selectedTask}
             />
           ))}
         </div>
@@ -359,6 +360,7 @@ export function KanbanBoard({
   selectedAreas: controlledSelectedAreas,
   projects,
   onProjectAssignment,
+  selectedTask,
 }: KanbanBoardProps) {
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const timeframes = ["NOW", "NEXT", "LATER", "SOMEDAY"] as const;
