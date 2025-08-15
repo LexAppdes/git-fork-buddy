@@ -123,49 +123,57 @@ export function TaskDetailsSidebar({
               onValueChange={useCallback((value: string) =>
                 onUpdateTask({ priority: value as Task["priority"] }), [onUpdateTask])}
             >
-              <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M6 4L18 4C18.5523 4 19 4.44772 19 5V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V5C5 4.44772 5.44772 4 6 4Z"
-                    fill={
-                      task.priority === "urgent" ? "#ef4444" :
-                      task.priority === "medium" ? "#eab308" :
-                      "#3b82f6"
-                    }
-                  />
-                </svg>
+              <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
+                  alt="Priority flag"
+                  className="w-6 h-6"
+                  style={{
+                    filter: task.priority === "urgent"
+                      ? "brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(7434%) hue-rotate(2deg) brightness(102%) contrast(107%)"
+                      : task.priority === "medium"
+                      ? "brightness(0) saturate(100%) invert(70%) sepia(70%) saturate(421%) hue-rotate(13deg) brightness(104%) contrast(94%)"
+                      : "brightness(0) saturate(100%) invert(47%) sepia(96%) saturate(1288%) hue-rotate(204deg) brightness(97%) contrast(94%)"
+                  }}
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="low">
                   <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M6 4L18 4C18.5523 4 19 4.44772 19 5V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V5C5 4.44772 5.44772 4 6 4Z"
-                        fill="#3b82f6"
-                      />
-                    </svg>
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
+                      alt="Low priority"
+                      className="w-4 h-4"
+                      style={{
+                        filter: "brightness(0) saturate(100%) invert(47%) sepia(96%) saturate(1288%) hue-rotate(204deg) brightness(97%) contrast(94%)"
+                      }}
+                    />
                     <span>Low</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="medium">
                   <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M6 4L18 4C18.5523 4 19 4.44772 19 5V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V5C5 4.44772 5.44772 4 6 4Z"
-                        fill="#eab308"
-                      />
-                    </svg>
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
+                      alt="Medium priority"
+                      className="w-4 h-4"
+                      style={{
+                        filter: "brightness(0) saturate(100%) invert(70%) sepia(70%) saturate(421%) hue-rotate(13deg) brightness(104%) contrast(94%)"
+                      }}
+                    />
                     <span>Medium</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="urgent">
                   <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M6 4L18 4C18.5523 4 19 4.44772 19 5V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V5C5 4.44772 5.44772 4 6 4Z"
-                        fill="#ef4444"
-                      />
-                    </svg>
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
+                      alt="High priority"
+                      className="w-4 h-4"
+                      style={{
+                        filter: "brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(7434%) hue-rotate(2deg) brightness(102%) contrast(107%)"
+                      }}
+                    />
                     <span>High</span>
                   </div>
                 </SelectItem>
