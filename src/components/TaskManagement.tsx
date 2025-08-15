@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import { TaskDetailsSidebar } from "@/components/TaskDetailsSidebar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -446,7 +447,11 @@ const ClickableDueDate = ({
     </InlineTaskDateTimePicker>
   );
 };
-export function TaskManagement() {
+interface TaskManagementProps {
+  onTaskSidebarChange?: (isOpen: boolean) => void;
+}
+
+export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}) {
   const [tasks, setTasks] = useState<Task[]>([...mockTasks]);
   const [activeView, setActiveView] = useState("today");
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
@@ -480,6 +485,7 @@ export function TaskManagement() {
     setEditingTask({...task});
     setIsTaskViewOpen(true);
     setIsEditing(true); // Start in edit mode
+    onTaskSidebarChange?.(true);
   };
 
   const handleAddTask = (projectId: string, stepId?: string) => {
@@ -554,16 +560,18 @@ export function TaskManagement() {
     ));
   };
 
-  const handleDialogClose = () => {
+  const handleSidebarClose = () => {
     // Auto-save changes when closing
     if (editingTask) {
       setTasks(prevTasks => prevTasks.map(task =>
         task.id === editingTask.id ? editingTask : task
       ));
-      setSelectedTask(editingTask);
     }
+    setSelectedTask(null);
     setIsTaskViewOpen(false);
     setIsEditing(false);
+    setEditingTask(null);
+    onTaskSidebarChange?.(false);
   };
 
   const updateEditingTask = useCallback((updates: Partial<Task>) => {
@@ -600,6 +608,56 @@ export function TaskManagement() {
       ...task,
       dueDate
     } : task));
+  }, []);
+
+  const handleNewTaskDateChange = useCallback((date: Date | undefined) => {
+    setNewTask((prev) => ({
+      ...prev,
+      dueDate: date,
+    }));
+  }, []);
+
+  const handleNewTaskTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTask((prev) => ({
+      ...prev,
+      title: e.target.value,
+    }));
+  }, []);
+
+  const handleNewTaskDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewTask((prev) => ({
+      ...prev,
+      description: e.target.value,
+    }));
+  }, []);
+
+  const handleNewTaskPriorityChange = useCallback((value: string) => {
+    setNewTask((prev) => ({
+      ...prev,
+      priority: value as Task["priority"],
+    }));
+  }, []);
+
+  const handleNewTaskProjectChange = useCallback((value: string) => {
+    setNewTask((prev) => ({
+      ...prev,
+      project: value,
+      step: undefined // Clear step when project changes
+    }));
+  }, []);
+
+  const handleNewTaskStepChange = useCallback((value: string) => {
+    setNewTask((prev) => ({
+      ...prev,
+      step: value === "none" ? undefined : value,
+    }));
+  }, []);
+
+  const handleNewTaskTimeframeChange = useCallback((value: string) => {
+    setNewTask((prev) => ({
+      ...prev,
+      timeframe: value as Task["timeframe"],
+    }));
   }, []);
   const getPriorityLabel = (priority: string) => {
     switch (priority) {
@@ -668,6 +726,13 @@ export function TaskManagement() {
       setSelectedArea(mockAreas[0].id);
     }
   }, [activeView, selectedArea]);
+
+  // Close sidebar when view changes
+  useEffect(() => {
+    if (isTaskViewOpen) {
+      handleSidebarClose();
+    }
+  }, [activeView]);
   const getPriorityCheckboxColor = (priority: string) => {
     switch (priority) {
       case "urgent":
@@ -790,7 +855,7 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-0 animate-fade-in">
-                   {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                   {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-center gap-3">
                         <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                                                   <div className="flex-1">
@@ -882,7 +947,7 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-0 animate-fade-in">
-                  {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer opacity-60")} onClick={() => handleTaskClick(task)}>
+                  {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-center gap-3">
                         {task.completed && <span className="text-xs text-muted-foreground font-medium w-12 text-right">
                           {formatCompletedTime(task.completed)}
@@ -961,7 +1026,7 @@ export function TaskManagement() {
     });
 
     return <div className="space-y-0">
-      {sortedTasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
+      {sortedTasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground font-medium w-20 text-right">
               {formatCreatedDate(task.created)}
@@ -1039,7 +1104,7 @@ export function TaskManagement() {
   };
 
   const renderTaskList = (tasks: Task[]) => <div className="space-y-0">
-      {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
+      {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
           <div className="flex items-center gap-3">
             <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
             <div className="flex-1">
@@ -1127,7 +1192,7 @@ export function TaskManagement() {
               </button>
               
               {isExpanded && <div className="space-y-0 animate-fade-in">
-                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60")} onClick={() => handleTaskClick(task)}>
+                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                        <div className="flex items-center gap-3">
                          <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                          <div className="flex-1">
@@ -1201,7 +1266,7 @@ export function TaskManagement() {
     });
   };
   const renderAreasView = () => <div className="h-full">
-      <KanbanBoard tasks={filterAndSortTasks(tasks)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} />
+      <KanbanBoard tasks={filterAndSortTasks(tasks)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} />
     </div>;
   const getFilteredTasks = () => {
     switch (activeView) {
@@ -1479,12 +1544,7 @@ export function TaskManagement() {
                         <Input
                           id="title"
                           value={newTask.title}
-                          onChange={(e) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              title: e.target.value,
-                            }))
-                          }
+                          onChange={handleNewTaskTitleChange}
                           placeholder="Enter task title"
                         />
                       </div>
@@ -1493,12 +1553,7 @@ export function TaskManagement() {
                         <Textarea
                           id="description"
                           value={newTask.description}
-                          onChange={(e) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              description: e.target.value,
-                            }))
-                          }
+                          onChange={handleNewTaskDescriptionChange}
                           placeholder="Enter task description (optional)"
                           rows={3}
                         />
@@ -1507,12 +1562,7 @@ export function TaskManagement() {
                         <Label htmlFor="priority">Priority</Label>
                         <Select
                           value={newTask.priority}
-                          onValueChange={(value) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              priority: value as Task["priority"],
-                            }))
-                          }
+                          onValueChange={handleNewTaskPriorityChange}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select priority" />
@@ -1528,14 +1578,7 @@ export function TaskManagement() {
                         <Label htmlFor="project">Project</Label>
                         <Select
                           value={newTask.project}
-                          onValueChange={(value) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              project: value,
-                              // Clear step when project changes
-                              step: prev.project !== value ? undefined : prev.step,
-                            }))
-                          }
+                          onValueChange={handleNewTaskProjectChange}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select project" />
@@ -1554,12 +1597,7 @@ export function TaskManagement() {
                           <Label htmlFor="step">Step (optional)</Label>
                           <Select
                             value={newTask.step || "none"}
-                            onValueChange={(value) =>
-                              setNewTask((prev) => ({
-                                ...prev,
-                                step: value === "none" ? undefined : value,
-                              }))
-                            }
+                            onValueChange={handleNewTaskStepChange}
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Select step" />
@@ -1587,12 +1625,7 @@ export function TaskManagement() {
                         <Label htmlFor="timeframe">Timeframe</Label>
                         <Select
                           value={newTask.timeframe}
-                          onValueChange={(value) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              timeframe: value as Task["timeframe"],
-                            }))
-                          }
+                          onValueChange={handleNewTaskTimeframeChange}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select timeframe" />
@@ -1609,11 +1642,7 @@ export function TaskManagement() {
                         <Label htmlFor="dueDate">Due Date</Label>
                         <TaskDateTimePicker
                           date={newTask.dueDate}
-                          onDateChange={useCallback((date: Date | undefined) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              dueDate: date,
-                            })), [])}
+                          onDateChange={handleNewTaskDateChange}
                           placeholder="Pick a date"
                           align="center"
                           side="right"
@@ -1666,190 +1695,15 @@ export function TaskManagement() {
         )}
       </div>
 
-      {/* Task Detail Dialog */}
-      <Dialog open={isTaskViewOpen} onOpenChange={setIsTaskViewOpen}>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-3">
-              {editingTask && <>
-                  <div className={cn("w-1 h-6 rounded-full", editingTask.priority === "urgent" ? "bg-destructive" : editingTask.priority === "medium" ? "bg-amber-500" : "bg-muted")} />
-                  <Input
-                    value={editingTask.title}
-                    onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => updateEditingTask({ title: e.target.value }), [updateEditingTask])}
-                    className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0"
-                  />
-                </>}
-            </DialogTitle>
-          </DialogHeader>
-
-          {editingTask && <div className="py-4">
-              {/* Status and Priority Row */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={editingTask.completed !== null}
-                    className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(editingTask.priority))}
-                    onChange={useCallback(() => updateEditingTask({ completed: editingTask.completed ? null : new Date() }), [updateEditingTask, editingTask.completed])}
-                  />
-                  <span className="text-sm font-medium">
-                    {editingTask.completed !== null ? "Completed" : "Pending"}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Priority:</span>
-                  <Select
-                    value={editingTask.priority}
-                    onValueChange={useCallback((value: string) => updateEditingTask({ priority: value as Task["priority"] }), [updateEditingTask])}
-                  >
-                    <SelectTrigger className="w-24 h-7">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="urgent">Urgent</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Two Column Layout */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Left Column */}
-                <div className="space-y-4">
-                  {/* Description */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
-                    <Textarea
-                      value={editingTask.description || ""}
-                      onChange={useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => updateEditingTask({ description: e.target.value }), [updateEditingTask])}
-                      placeholder="Enter task description"
-                      rows={3}
-                    />
-                  </div>
-
-                  {/* Due Date */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
-                    <TaskDateTimePicker
-                      date={editingTask.dueDate}
-                      onDateChange={useCallback((date: Date | undefined) => updateEditingTask({ dueDate: date }), [updateEditingTask])}
-                      placeholder="Pick a date"
-                      align="center"
-                      side="right"
-                      allowClear={true}
-                    />
-                  </div>
-
-                  {/* Timeframe */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
-                    <Select
-                      value={editingTask.timeframe}
-                      onValueChange={useCallback((value: string) => updateEditingTask({ timeframe: value as Task["timeframe"] }), [updateEditingTask])}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="NOW">Now</SelectItem>
-                        <SelectItem value="NEXT">Next</SelectItem>
-                        <SelectItem value="LATER">Later</SelectItem>
-                        <SelectItem value="SOMEDAY">Someday</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Right Column */}
-                <div className="space-y-4">
-                  {/* Project */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
-                    <Select
-                      value={editingTask.project || "none"}
-                      onValueChange={useCallback((value: string) => {
-                        const projectId = value === "none" ? undefined : value;
-                        const areaId = getAreaFromProject(projectId);
-                        updateEditingTask({
-                          project: projectId,
-                          area: areaId
-                        });
-                      }, [updateEditingTask])}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select project" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">No project</SelectItem>
-                        {mockProjects.map((project) => (
-                          <SelectItem key={project.id} value={project.id}>
-                            {project.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Area (read-only, derived from project) */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
-                    <div className="flex items-center gap-2">
-                      {getAreaFromProject(editingTask.project) ? (
-                        <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.color || "bg-muted")}>
-                          {mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.name}
-                        </span>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">No area (no project assigned)</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Created Date */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Created</h4>
-                    <span className="text-sm text-muted-foreground">
-                      {formatDateTime(editingTask.created)}
-                    </span>
-                  </div>
-
-                  {/* Completed Date */}
-                  {editingTask.completed !== null && <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Completed</h4>
-                    <span className="text-sm text-muted-foreground">
-                      {formatDateTime(editingTask.completed)}
-                    </span>
-                  </div>}
-
-                  {/* Task ID */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Task ID</h4>
-                    <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
-                      {editingTask.id}
-                    </code>
-                  </div>
-                </div>
-              </div>
-            </div>}
-
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button onClick={() => {
-              // Auto-save changes when closing
-              if (editingTask) {
-                setTasks(prevTasks => prevTasks.map(task =>
-                  task.id === editingTask.id ? editingTask : task
-                ));
-                setSelectedTask(editingTask);
-              }
-              setIsTaskViewOpen(false);
-              setIsEditing(false);
-            }}>
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Task Details Sidebar */}
+      <TaskDetailsSidebar
+        isOpen={isTaskViewOpen}
+        task={editingTask}
+        onClose={handleSidebarClose}
+        onUpdateTask={updateEditingTask}
+        projects={mockProjects}
+        areas={mockAreas}
+        getAreaFromProject={getAreaFromProject}
+      />
     </div>;
 }

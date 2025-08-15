@@ -111,8 +111,8 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
                       ? "justify-center p-2.5"
                       : "gap-3 px-3 py-2.5",
                     isActive
-                      ? "bg-orange-500 text-white"
-                      : "text-gray-700 hover:bg-black/5"
+                      ? "bg-[#EEEBE7] text-[#F4642B]"
+                      : "text-gray-700 hover:bg-[#EEEBE7] hover:text-[#F4642B]"
                   )}
                   title={isCollapsed ? item.label : undefined}
                 >
