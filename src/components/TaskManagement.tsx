@@ -1266,7 +1266,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     });
   };
   const renderAreasView = () => <div className="h-full">
-      <KanbanBoard tasks={filterAndSortTasks(tasks)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} />
+      <KanbanBoard tasks={filterAndSortTasks(tasks)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} />
     </div>;
   const getFilteredTasks = () => {
     switch (activeView) {
