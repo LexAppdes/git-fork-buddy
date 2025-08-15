@@ -80,11 +80,6 @@ export function TaskDetailsSidebar({
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className={cn(
-            "w-1 h-6 rounded-full flex-shrink-0",
-            task.priority === "urgent" ? "bg-destructive" : 
-            task.priority === "medium" ? "bg-amber-500" : "bg-muted"
-          )} />
           <Input
             value={task.title}
             onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => 
