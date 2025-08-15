@@ -447,11 +447,7 @@ const ClickableDueDate = ({
     </InlineTaskDateTimePicker>
   );
 };
-interface TaskManagementProps {
-  onTaskSidebarChange?: (isOpen: boolean) => void;
-}
-
-export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
+export function TaskManagement() {
   const [tasks, setTasks] = useState<Task[]>([...mockTasks]);
   const [activeView, setActiveView] = useState("today");
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
@@ -485,7 +481,6 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
     setEditingTask({...task});
     setIsTaskViewOpen(true);
     setIsEditing(true); // Start in edit mode
-    onTaskSidebarChange?.(true);
   };
 
   const handleAddTask = (projectId: string, stepId?: string) => {
@@ -571,7 +566,6 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
     setIsTaskViewOpen(false);
     setIsEditing(false);
     setEditingTask(null);
-    onTaskSidebarChange?.(false);
   };
 
   const updateEditingTask = useCallback((updates: Partial<Task>) => {
