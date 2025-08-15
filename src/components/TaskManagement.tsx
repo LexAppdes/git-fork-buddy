@@ -1676,7 +1676,7 @@ export function TaskManagement() {
                   <div className={cn("w-1 h-6 rounded-full", editingTask.priority === "urgent" ? "bg-destructive" : editingTask.priority === "medium" ? "bg-amber-500" : "bg-muted")} />
                   <Input
                     value={editingTask.title}
-                    onChange={(e) => updateEditingTask({ title: e.target.value })}
+                    onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => updateEditingTask({ title: e.target.value }), [updateEditingTask])}
                     className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0"
                   />
                 </>}
@@ -1691,7 +1691,7 @@ export function TaskManagement() {
                     type="checkbox"
                     checked={editingTask.completed !== null}
                     className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(editingTask.priority))}
-                    onChange={() => updateEditingTask({ completed: editingTask.completed ? null : new Date() })}
+                    onChange={useCallback(() => updateEditingTask({ completed: editingTask.completed ? null : new Date() }), [updateEditingTask, editingTask.completed])}
                   />
                   <span className="text-sm font-medium">
                     {editingTask.completed !== null ? "Completed" : "Pending"}
@@ -1725,7 +1725,7 @@ export function TaskManagement() {
                     <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
                     <Textarea
                       value={editingTask.description || ""}
-                      onChange={(e) => updateEditingTask({ description: e.target.value })}
+                      onChange={useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => updateEditingTask({ description: e.target.value }), [updateEditingTask])}
                       placeholder="Enter task description"
                       rows={3}
                     />
