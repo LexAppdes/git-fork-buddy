@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Calendar, Inbox, Clock, FolderOpen, ChevronDown, ChevronRight, Plus, Filter, ArrowUpDown, CalendarIcon, Folder } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -566,11 +566,22 @@ export function TaskManagement() {
     setIsEditing(false);
   };
 
-  const updateEditingTask = (updates: Partial<Task>) => {
-    if (editingTask) {
-      setEditingTask({...editingTask, ...updates});
-    }
-  };
+  const updateEditingTask = useCallback((updates: Partial<Task>) => {
+    setEditingTask(prev => {
+      if (!prev) return prev;
+
+      // Check if any of the updates actually change the values
+      const hasChanges = Object.keys(updates).some(key => {
+        const typedKey = key as keyof Task;
+        return prev[typedKey] !== updates[typedKey];
+      });
+
+      // Only update if there are actual changes
+      if (!hasChanges) return prev;
+
+      return {...prev, ...updates};
+    });
+  }, []);
   const toggleTask = (taskId: string) => {
     setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
       ...task,
@@ -584,12 +595,12 @@ export function TaskManagement() {
     } : task));
   };
   
-  const updateTaskDueDate = (taskId: string, dueDate: Date | undefined) => {
+  const updateTaskDueDate = useCallback((taskId: string, dueDate: Date | undefined) => {
     setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
       ...task,
       dueDate
     } : task));
-  };
+  }, []);
   const getPriorityLabel = (priority: string) => {
     switch (priority) {
       case "urgent":
@@ -1598,12 +1609,11 @@ export function TaskManagement() {
                         <Label htmlFor="dueDate">Due Date</Label>
                         <TaskDateTimePicker
                           date={newTask.dueDate}
-                          onDateChange={(date) =>
+                          onDateChange={useCallback((date: Date | undefined) =>
                             setNewTask((prev) => ({
                               ...prev,
                               dueDate: date,
-                            }))
-                          }
+                            })), [])}
                           placeholder="Pick a date"
                           align="center"
                           side="right"
@@ -1665,7 +1675,7 @@ export function TaskManagement() {
                   <div className={cn("w-1 h-6 rounded-full", editingTask.priority === "urgent" ? "bg-destructive" : editingTask.priority === "medium" ? "bg-amber-500" : "bg-muted")} />
                   <Input
                     value={editingTask.title}
-                    onChange={(e) => updateEditingTask({ title: e.target.value })}
+                    onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => updateEditingTask({ title: e.target.value }), [updateEditingTask])}
                     className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0"
                   />
                 </>}
@@ -1680,7 +1690,7 @@ export function TaskManagement() {
                     type="checkbox"
                     checked={editingTask.completed !== null}
                     className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(editingTask.priority))}
-                    onChange={() => updateEditingTask({ completed: editingTask.completed ? null : new Date() })}
+                    onChange={useCallback(() => updateEditingTask({ completed: editingTask.completed ? null : new Date() }), [updateEditingTask, editingTask.completed])}
                   />
                   <span className="text-sm font-medium">
                     {editingTask.completed !== null ? "Completed" : "Pending"}
@@ -1691,7 +1701,7 @@ export function TaskManagement() {
                   <span className="text-sm text-muted-foreground">Priority:</span>
                   <Select
                     value={editingTask.priority}
-                    onValueChange={(value) => updateEditingTask({ priority: value as Task["priority"] })}
+                    onValueChange={useCallback((value: string) => updateEditingTask({ priority: value as Task["priority"] }), [updateEditingTask])}
                   >
                     <SelectTrigger className="w-24 h-7">
                       <SelectValue />
@@ -1714,7 +1724,7 @@ export function TaskManagement() {
                     <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
                     <Textarea
                       value={editingTask.description || ""}
-                      onChange={(e) => updateEditingTask({ description: e.target.value })}
+                      onChange={useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => updateEditingTask({ description: e.target.value }), [updateEditingTask])}
                       placeholder="Enter task description"
                       rows={3}
                     />
@@ -1725,7 +1735,7 @@ export function TaskManagement() {
                     <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
                     <TaskDateTimePicker
                       date={editingTask.dueDate}
-                      onDateChange={(date) => updateEditingTask({ dueDate: date })}
+                      onDateChange={useCallback((date: Date | undefined) => updateEditingTask({ dueDate: date }), [updateEditingTask])}
                       placeholder="Pick a date"
                       align="center"
                       side="right"
@@ -1738,7 +1748,7 @@ export function TaskManagement() {
                     <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
                     <Select
                       value={editingTask.timeframe}
-                      onValueChange={(value) => updateEditingTask({ timeframe: value as Task["timeframe"] })}
+                      onValueChange={useCallback((value: string) => updateEditingTask({ timeframe: value as Task["timeframe"] }), [updateEditingTask])}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -1760,14 +1770,14 @@ export function TaskManagement() {
                     <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
                     <Select
                       value={editingTask.project || "none"}
-                      onValueChange={(value) => {
+                      onValueChange={useCallback((value: string) => {
                         const projectId = value === "none" ? undefined : value;
                         const areaId = getAreaFromProject(projectId);
                         updateEditingTask({
                           project: projectId,
                           area: areaId
                         });
-                      }}
+                      }, [updateEditingTask])}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select project" />

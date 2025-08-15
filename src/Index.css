@@ -197,4 +197,20 @@
   .nav-button-active {
     background-color: #F3F3F3 !important;
   }
+
+  /* Performance optimizations to prevent ResizeObserver loops */
+
+  /* Optimize dialog and popover animations without affecting layout */
+  [data-state="open"][data-radix-popover-content],
+  [data-state="open"][data-radix-dialog-content] {
+    animation-fill-mode: forwards;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
+  /* Smooth scrolling optimizations */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
 }
