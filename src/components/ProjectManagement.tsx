@@ -977,20 +977,7 @@ export function ProjectManagement({
       </div>
 
       {/* New Project Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={(open) => {
-        if (!open) {
-          // Reset form when closing
-          setNewProject({
-            title: "",
-            description: "",
-            area: "",
-            startDate: undefined,
-            endDate: undefined,
-            status: "lead"
-          });
-        }
-        setDialogOpen(open);
-      }}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Create New Project</DialogTitle>
@@ -1065,7 +1052,18 @@ export function ProjectManagement({
             </div>
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+            <Button variant="outline" onClick={() => {
+              // Reset form when canceling
+              setNewProject({
+                title: "",
+                description: "",
+                area: "",
+                startDate: undefined,
+                endDate: undefined,
+                status: "lead"
+              });
+              setDialogOpen(false);
+            }}>
               Cancel
             </Button>
             <Button onClick={addProject}>
