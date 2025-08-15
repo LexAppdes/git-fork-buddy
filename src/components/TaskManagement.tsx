@@ -451,7 +451,7 @@ interface TaskManagementProps {
   onTaskSidebarChange?: (isOpen: boolean) => void;
 }
 
-export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
+export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}) {
   const [tasks, setTasks] = useState<Task[]>([...mockTasks]);
   const [activeView, setActiveView] = useState("today");
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
