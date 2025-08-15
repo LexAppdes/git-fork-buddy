@@ -29,35 +29,38 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div 
+    <div
       className={cn(
-        "bg-white border-r border-border min-h-screen flex flex-col transition-all duration-300",
+        "bg-[#F6F4F1] min-h-screen flex flex-col transition-all duration-300",
         isCollapsed ? "w-14" : "w-[215px]"
       )}
     >
       {/* Header with controls */}
-      <div className="p-3 border-b border-border">
-        <div className="flex items-center gap-2">
+      <div className="p-3">
+        <div className={cn(
+          "flex items-center",
+          isCollapsed ? "flex-col gap-2" : "gap-2"
+        )}>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-black/5 rounded-lg transition-colors"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             <Menu className="w-5 h-5 text-gray-600" />
           </button>
-          
+
           {!isCollapsed && (
             <button
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-1 flex items-center justify-center"
+              className="p-2 hover:bg-black/5 rounded-lg transition-colors flex-1 flex items-center justify-center"
               title="Search"
             >
               <Search className="w-5 h-5 text-gray-600" />
             </button>
           )}
-          
+
           {isCollapsed && (
             <button
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-black/5 rounded-lg transition-colors"
               title="Search"
             >
               <Search className="w-5 h-5 text-gray-600" />
@@ -72,16 +75,19 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
           {sidebarItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeSection === item.id;
-            
+
             return (
               <li key={item.id}>
                 <button
                   onClick={() => onSectionChange(item.id)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200",
+                    "w-full flex items-center rounded-lg text-left transition-all duration-200",
+                    isCollapsed
+                      ? "justify-center p-2.5"
+                      : "gap-3 px-3 py-2.5",
                     isActive
                       ? "bg-orange-500 text-white"
-                      : "text-gray-700 hover:bg-gray-100"
+                      : "text-gray-700 hover:bg-black/5"
                   )}
                   title={isCollapsed ? item.label : undefined}
                 >
