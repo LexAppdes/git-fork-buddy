@@ -278,24 +278,6 @@ export function ProjectManagement({
     status: "lead" as Project["status"]
   });
 
-  // Reset new project form when dialog closes
-  useEffect(() => {
-    if (!dialogOpen) {
-      // Small delay to ensure dialog animation completes before resetting form
-      const timer = setTimeout(() => {
-        setNewProject({
-          title: "",
-          description: "",
-          area: "",
-          startDate: undefined,
-          endDate: undefined,
-          status: "lead"
-        });
-      }, 150);
-      return () => clearTimeout(timer);
-    }
-  }, [dialogOpen]);
-
   const handleProjectClick = (project: Project) => {
     if (selectedProject?.id === project.id) {
       setSelectedProject(null);
