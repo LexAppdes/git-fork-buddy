@@ -44,7 +44,7 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
           {!isCollapsed && (
             <>
               <button
-                className="p-2 hover:bg-black/5 rounded-lg transition-colors flex-1 flex items-center justify-center"
+                className="p-2 hover:bg-black/5 rounded-lg transition-colors flex-1 flex items-center justify-start"
                 title="Search"
               >
                 <Search className="w-5 h-5 text-gray-600" />
