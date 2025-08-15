@@ -1610,19 +1610,7 @@ export function TaskManagement() {
                       </div>
                     </div>
                     <div className="flex justify-end gap-2">
-                      <Button variant="outline" onClick={() => {
-                        // Reset form when canceling
-                        setNewTask({
-                          title: "",
-                          description: "",
-                          priority: "medium",
-                          dueDate: undefined,
-                          project: "",
-                          step: undefined,
-                          timeframe: "NOW"
-                        });
-                        setIsNewTaskDialogOpen(false);
-                      }}>
+                      <Button variant="outline" onClick={() => setIsNewTaskDialogOpen(false)}>
                         Cancel
                       </Button>
                       <Button onClick={createTask} disabled={!newTask.title.trim()}>
