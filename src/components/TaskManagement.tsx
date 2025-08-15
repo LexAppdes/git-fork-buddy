@@ -609,6 +609,13 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
       dueDate
     } : task));
   }, []);
+
+  const handleNewTaskDateChange = useCallback((date: Date | undefined) => {
+    setNewTask((prev) => ({
+      ...prev,
+      dueDate: date,
+    }));
+  }, []);
   const getPriorityLabel = (priority: string) => {
     switch (priority) {
       case "urgent":
@@ -1617,11 +1624,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
                         <Label htmlFor="dueDate">Due Date</Label>
                         <TaskDateTimePicker
                           date={newTask.dueDate}
-                          onDateChange={useCallback((date: Date | undefined) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              dueDate: date,
-                            })), [])}
+                          onDateChange={handleNewTaskDateChange}
                           placeholder="Pick a date"
                           align="center"
                           side="right"
