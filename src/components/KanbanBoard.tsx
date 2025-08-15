@@ -428,6 +428,7 @@ export function KanbanBoard({
             areas={areas}
             projects={projects}
             onProjectAssignment={onProjectAssignment}
+            selectedTask={selectedTask}
           />
         ))}
       </div>
