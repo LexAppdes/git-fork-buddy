@@ -566,24 +566,22 @@ export function TaskManagement() {
     setIsEditing(false);
   };
 
-  const updateEditingTask = (updates: Partial<Task>) => {
-    if (editingTask) {
-      setEditingTask(prev => {
-        if (!prev) return prev;
+  const updateEditingTask = useCallback((updates: Partial<Task>) => {
+    setEditingTask(prev => {
+      if (!prev) return prev;
 
-        // Check if any of the updates actually change the values
-        const hasChanges = Object.keys(updates).some(key => {
-          const typedKey = key as keyof Task;
-          return prev[typedKey] !== updates[typedKey];
-        });
-
-        // Only update if there are actual changes
-        if (!hasChanges) return prev;
-
-        return {...prev, ...updates};
+      // Check if any of the updates actually change the values
+      const hasChanges = Object.keys(updates).some(key => {
+        const typedKey = key as keyof Task;
+        return prev[typedKey] !== updates[typedKey];
       });
-    }
-  };
+
+      // Only update if there are actual changes
+      if (!hasChanges) return prev;
+
+      return {...prev, ...updates};
+    });
+  }, []);
   const toggleTask = (taskId: string) => {
     setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
       ...task,
