@@ -1808,7 +1808,17 @@ export function TaskManagement() {
             </div>}
 
           <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button onClick={() => setIsTaskViewOpen(false)}>
+            <Button onClick={() => {
+              // Auto-save changes when closing
+              if (editingTask) {
+                setTasks(prevTasks => prevTasks.map(task =>
+                  task.id === editingTask.id ? editingTask : task
+                ));
+                setSelectedTask(editingTask);
+              }
+              setIsTaskViewOpen(false);
+              setIsEditing(false);
+            }}>
               Close
             </Button>
           </div>
