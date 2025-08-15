@@ -1736,7 +1736,7 @@ export function TaskManagement() {
                     <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
                     <TaskDateTimePicker
                       date={editingTask.dueDate}
-                      onDateChange={(date) => updateEditingTask({ dueDate: date })}
+                      onDateChange={useCallback((date: Date | undefined) => updateEditingTask({ dueDate: date }), [updateEditingTask])}
                       placeholder="Pick a date"
                       align="center"
                       side="right"
