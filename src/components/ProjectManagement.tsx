@@ -882,13 +882,13 @@ export function ProjectManagement({
                             No step
                           </h3>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-0">
                           {unassignedTasks.map(task => (
                             <div
                               key={task.id}
                               draggable
                               className={cn(
-                                "flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer border border-border",
+                                "flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer",
                                 task.completed !== null && "opacity-60"
                               )}
                               onClick={() => onTaskClick?.(task)}
