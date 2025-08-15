@@ -197,4 +197,42 @@
   .nav-button-active {
     background-color: #F3F3F3 !important;
   }
+
+  /* Performance optimizations to prevent ResizeObserver loops */
+
+  /* Optimize rendering for components that frequently resize */
+  [data-radix-popper-content-wrapper],
+  [data-radix-popover-content],
+  [data-radix-select-content],
+  [data-radix-dialog-content],
+  [data-radix-calendar] {
+    contain: layout style;
+    will-change: transform;
+  }
+
+  /* Prevent unnecessary reflows in scrollable areas */
+  .overflow-auto,
+  .overflow-y-auto,
+  .overflow-x-auto {
+    contain: size layout style;
+  }
+
+  /* Optimize dialog and popover animations to prevent layout thrashing */
+  [data-state="open"][data-radix-popover-content],
+  [data-state="open"][data-radix-dialog-content] {
+    animation-fill-mode: forwards;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
+  /* Smooth scrolling optimizations */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent subpixel rendering issues that can trigger ResizeObserver */
+  [data-radix-popper-content-wrapper] * {
+    transform: translateZ(0);
+  }
 }
