@@ -1571,14 +1571,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
                         <Label htmlFor="project">Project</Label>
                         <Select
                           value={newTask.project}
-                          onValueChange={(value) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              project: value,
-                              // Clear step when project changes
-                              step: prev.project !== value ? undefined : prev.step,
-                            }))
-                          }
+                          onValueChange={handleNewTaskProjectChange}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select project" />
@@ -1597,12 +1590,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
                           <Label htmlFor="step">Step (optional)</Label>
                           <Select
                             value={newTask.step || "none"}
-                            onValueChange={(value) =>
-                              setNewTask((prev) => ({
-                                ...prev,
-                                step: value === "none" ? undefined : value,
-                              }))
-                            }
+                            onValueChange={handleNewTaskStepChange}
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Select step" />
