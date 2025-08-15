@@ -115,13 +115,9 @@ export function TaskDetailsSidebar({
                 onUpdateTask({ completed: task.completed ? null : new Date() }), 
                 [onUpdateTask, task.completed])}
             />
-            <span className="text-sm font-medium">
-              {task.completed !== null ? "Completed" : "Pending"}
-            </span>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Priority:</span>
             <Select
               value={task.priority}
               onValueChange={useCallback((value: string) => 
