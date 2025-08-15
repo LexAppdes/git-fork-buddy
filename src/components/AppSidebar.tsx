@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { StickyNote, PenTool, CheckSquare, FolderOpen } from "lucide-react";
+import { 
+  Menu, 
+  Search, 
+  BookOpen, 
+  Home, 
+  StickyNote, 
+  Tag, 
+  CheckSquare, 
+  Bookmark 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AppSidebarProps {
@@ -8,22 +17,58 @@ interface AppSidebarProps {
 }
 
 const sidebarItems = [
+  { id: "journal", label: "Journal", icon: BookOpen },
+  { id: "home", label: "Home", icon: Home },
   { id: "notes", label: "Notes", icon: StickyNote },
-  { id: "whiteboards", label: "Whiteboards", icon: PenTool },
+  { id: "tags", label: "Tags", icon: Tag },
   { id: "tasks", label: "Tasks", icon: CheckSquare },
+  { id: "highlights", label: "Highlights", icon: Bookmark },
 ];
 
 export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   return (
-    <div className="w-64 bg-sidebar-bg border-r border-border min-h-screen flex flex-col">
-      <div className="p-6 bg-[#f3f3f3]">
-        <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-          Planner
-        </h1>
+    <div 
+      className={cn(
+        "bg-white border-r border-border min-h-screen flex flex-col transition-all duration-300",
+        isCollapsed ? "w-14" : "w-[215px]"
+      )}
+    >
+      {/* Header with controls */}
+      <div className="p-3 border-b border-border">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <Menu className="w-5 h-5 text-gray-600" />
+          </button>
+          
+          {!isCollapsed && (
+            <button
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-1 flex items-center justify-center"
+              title="Search"
+            >
+              <Search className="w-5 h-5 text-gray-600" />
+            </button>
+          )}
+          
+          {isCollapsed && (
+            <button
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Search"
+            >
+              <Search className="w-5 h-5 text-gray-600" />
+            </button>
+          )}
+        </div>
       </div>
 
-      <nav className="flex-1 p-4 bg-[#f3f3f3]">
-        <ul className="space-y-2">
+      {/* Navigation */}
+      <nav className="flex-1 p-3">
+        <ul className="space-y-1">
           {sidebarItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeSection === item.id;
@@ -33,14 +78,17 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
                 <button
                   onClick={() => onSectionChange(item.id)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200",
+                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200",
                     isActive
-                      ? "bg-primary text-primary-foreground shadow-medium"
-                      : "text-foreground hover:bg-sidebar-hover hover:text-primary"
+                      ? "bg-orange-500 text-white"
+                      : "text-gray-700 hover:bg-gray-100"
                   )}
+                  title={isCollapsed ? item.label : undefined}
                 >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{item.label}</span>
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  {!isCollapsed && (
+                    <span className="font-medium">{item.label}</span>
+                  )}
                 </button>
               </li>
             );
