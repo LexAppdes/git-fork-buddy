@@ -124,40 +124,50 @@ export function TaskDetailsSidebar({
                 onUpdateTask({ priority: value as Task["priority"] }), [onUpdateTask])}
             >
               <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0">
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
-                  alt="Priority flag"
-                  className={cn("w-6 h-6",
-                    task.priority === "low" && "brightness-0 sepia-1 hue-rotate-210 saturate-3",
-                    task.priority === "medium" && "brightness-0 sepia-1 hue-rotate-60 saturate-5",
-                    task.priority === "urgent" && "brightness-0 sepia-1 hue-rotate-0 saturate-7"
-                  )}
-                />
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M6 4L18 4C18.5523 4 19 4.44772 19 5V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V5C5 4.44772 5.44772 4 6 4Z"
+                    fill={
+                      task.priority === "urgent" ? "#ef4444" :
+                      task.priority === "medium" ? "#eab308" :
+                      "#3b82f6"
+                    }
+                  />
+                </svg>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="low" className="flex items-center gap-2">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
-                    alt="Low priority"
-                    className="w-4 h-4 brightness-0 sepia-1 hue-rotate-210 saturate-3"
-                  />
-                  Low
+                <SelectItem value="low">
+                  <div className="flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M6 4L18 4C18.5523 4 19 4.44772 19 5V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V5C5 4.44772 5.44772 4 6 4Z"
+                        fill="#3b82f6"
+                      />
+                    </svg>
+                    <span>Low</span>
+                  </div>
                 </SelectItem>
-                <SelectItem value="medium" className="flex items-center gap-2">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
-                    alt="Medium priority"
-                    className="w-4 h-4 brightness-0 sepia-1 hue-rotate-60 saturate-5"
-                  />
-                  Medium
+                <SelectItem value="medium">
+                  <div className="flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M6 4L18 4C18.5523 4 19 4.44772 19 5V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V5C5 4.44772 5.44772 4 6 4Z"
+                        fill="#eab308"
+                      />
+                    </svg>
+                    <span>Medium</span>
+                  </div>
                 </SelectItem>
-                <SelectItem value="urgent" className="flex items-center gap-2">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
-                    alt="High priority"
-                    className="w-4 h-4 brightness-0 sepia-1 hue-rotate-0 saturate-7"
-                  />
-                  High
+                <SelectItem value="urgent">
+                  <div className="flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M6 4L18 4C18.5523 4 19 4.44772 19 5V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V5C5 4.44772 5.44772 4 6 4Z"
+                        fill="#ef4444"
+                      />
+                    </svg>
+                    <span>High</span>
+                  </div>
                 </SelectItem>
               </SelectContent>
             </Select>
