@@ -1066,18 +1066,7 @@ export function ProjectManagement({
             </div>
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => {
-              // Reset form when canceling
-              setNewProject({
-                title: "",
-                description: "",
-                area: "",
-                startDate: undefined,
-                endDate: undefined,
-                status: "lead"
-              });
-              setDialogOpen(false);
-            }}>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
               Cancel
             </Button>
             <Button onClick={addProject}>
