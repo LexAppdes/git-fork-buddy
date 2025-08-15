@@ -1723,12 +1723,12 @@ export function TaskManagement() {
                   {/* Due Date */}
                   <div>
                     <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
-                    <DateTimePicker
+                    <TaskDateTimePicker
                       date={editingTask.dueDate}
                       onDateChange={(date) => updateEditingTask({ dueDate: date })}
                       placeholder="Pick a date"
-                      align="start"
-                      showTime={true}
+                      align="center"
+                      side="right"
                       allowClear={true}
                     />
                   </div>
