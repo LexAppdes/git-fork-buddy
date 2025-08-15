@@ -1609,12 +1609,11 @@ export function TaskManagement() {
                         <Label htmlFor="dueDate">Due Date</Label>
                         <TaskDateTimePicker
                           date={newTask.dueDate}
-                          onDateChange={(date) =>
+                          onDateChange={useCallback((date: Date | undefined) =>
                             setNewTask((prev) => ({
                               ...prev,
                               dueDate: date,
-                            }))
-                          }
+                            })), [])}
                           placeholder="Pick a date"
                           align="center"
                           side="right"
