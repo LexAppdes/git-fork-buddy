@@ -1640,8 +1640,8 @@ export function TaskManagement() {
       </div>
 
       {/* Task Detail Dialog */}
-      <Dialog open={isTaskViewOpen} onOpenChange={(open) => open ? setIsTaskViewOpen(true) : handleDialogClose()}>
-        <DialogContent className="sm:max-w-[500px]">
+      <Dialog open={isTaskViewOpen} onOpenChange={setIsTaskViewOpen}>
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
               {editingTask && <>
@@ -1655,9 +1655,9 @@ export function TaskManagement() {
             </DialogTitle>
           </DialogHeader>
 
-          {editingTask && <div className="space-y-6 py-4">
-              {/* Status and Priority */}
-              <div className="flex items-center gap-4">
+          {editingTask && <div className="py-4">
+              {/* Status and Priority Row */}
+              <div className="flex items-center gap-4 mb-6">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -1688,119 +1688,127 @@ export function TaskManagement() {
                 </div>
               </div>
 
-              {/* Description */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
-                <Textarea
-                  value={editingTask.description || ""}
-                  onChange={(e) => updateEditingTask({ description: e.target.value })}
-                  placeholder="Enter task description"
-                  rows={3}
-                />
-              </div>
+              {/* Two Column Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left Column */}
+                <div className="space-y-4">
+                  {/* Description */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
+                    <Textarea
+                      value={editingTask.description || ""}
+                      onChange={(e) => updateEditingTask({ description: e.target.value })}
+                      placeholder="Enter task description"
+                      rows={3}
+                    />
+                  </div>
 
-              {/* Due Date */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
-                <DateTimePicker
-                  date={editingTask.dueDate}
-                  onDateChange={(date) => updateEditingTask({ dueDate: date })}
-                  placeholder="Pick a date"
-                  align="start"
-                  showTime={true}
-                  allowClear={true}
-                />
-              </div>
+                  {/* Due Date */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
+                    <DateTimePicker
+                      date={editingTask.dueDate}
+                      onDateChange={(date) => updateEditingTask({ dueDate: date })}
+                      placeholder="Pick a date"
+                      align="start"
+                      showTime={true}
+                      allowClear={true}
+                    />
+                  </div>
 
-
-              {/* Project */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
-                <Select
-                  value={editingTask.project || "none"}
-                  onValueChange={(value) => {
-                    const projectId = value === "none" ? undefined : value;
-                    const areaId = getAreaFromProject(projectId);
-                    updateEditingTask({
-                      project: projectId,
-                      area: areaId
-                    });
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select project" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">No project</SelectItem>
-                    {mockProjects.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Area (read-only, derived from project) */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
-                <div className="flex items-center gap-2">
-                  {getAreaFromProject(editingTask.project) ? (
-                    <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.color || "bg-muted")}>
-                      {mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.name}
-                    </span>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">No area (no project assigned)</span>
-                  )}
+                  {/* Timeframe */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
+                    <Select
+                      value={editingTask.timeframe}
+                      onValueChange={(value) => updateEditingTask({ timeframe: value as Task["timeframe"] })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NOW">Now</SelectItem>
+                        <SelectItem value="NEXT">Next</SelectItem>
+                        <SelectItem value="LATER">Later</SelectItem>
+                        <SelectItem value="SOMEDAY">Someday</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              </div>
 
-              {/* Timeframe */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
-                <Select
-                  value={editingTask.timeframe}
-                  onValueChange={(value) => updateEditingTask({ timeframe: value as Task["timeframe"] })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NOW">Now</SelectItem>
-                    <SelectItem value="NEXT">Next</SelectItem>
-                    <SelectItem value="LATER">Later</SelectItem>
-                    <SelectItem value="SOMEDAY">Someday</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                {/* Right Column */}
+                <div className="space-y-4">
+                  {/* Project */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
+                    <Select
+                      value={editingTask.project || "none"}
+                      onValueChange={(value) => {
+                        const projectId = value === "none" ? undefined : value;
+                        const areaId = getAreaFromProject(projectId);
+                        updateEditingTask({
+                          project: projectId,
+                          area: areaId
+                        });
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select project" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">No project</SelectItem>
+                        {mockProjects.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            {project.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              {/* Created Date */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Created</h4>
-                <span className="text-sm text-muted-foreground">
-                  {formatDateTime(editingTask.created)}
-                </span>
-              </div>
+                  {/* Area (read-only, derived from project) */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
+                    <div className="flex items-center gap-2">
+                      {getAreaFromProject(editingTask.project) ? (
+                        <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.color || "bg-muted")}>
+                          {mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.name}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">No area (no project assigned)</span>
+                      )}
+                    </div>
+                  </div>
 
-              {/* Completed Date */}
-              {editingTask.completed !== null && <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Completed</h4>
-                <span className="text-sm text-muted-foreground">
-                  {formatDateTime(editingTask.completed)}
-                </span>
-              </div>}
+                  {/* Created Date */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Created</h4>
+                    <span className="text-sm text-muted-foreground">
+                      {formatDateTime(editingTask.created)}
+                    </span>
+                  </div>
 
-              {/* Task ID */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Task ID</h4>
-                <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
-                  {editingTask.id}
-                </code>
+                  {/* Completed Date */}
+                  {editingTask.completed !== null && <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Completed</h4>
+                    <span className="text-sm text-muted-foreground">
+                      {formatDateTime(editingTask.completed)}
+                    </span>
+                  </div>}
+
+                  {/* Task ID */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Task ID</h4>
+                    <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
+                      {editingTask.id}
+                    </code>
+                  </div>
+                </div>
               </div>
             </div>}
 
           <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button onClick={handleDialogClose}>
+            <Button onClick={() => setIsTaskViewOpen(false)}>
               Close
             </Button>
           </div>
