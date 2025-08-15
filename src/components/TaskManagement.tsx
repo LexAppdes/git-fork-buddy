@@ -616,6 +616,49 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
       dueDate: date,
     }));
   }, []);
+
+  const handleNewTaskTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTask((prev) => ({
+      ...prev,
+      title: e.target.value,
+    }));
+  }, []);
+
+  const handleNewTaskDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewTask((prev) => ({
+      ...prev,
+      description: e.target.value,
+    }));
+  }, []);
+
+  const handleNewTaskPriorityChange = useCallback((value: string) => {
+    setNewTask((prev) => ({
+      ...prev,
+      priority: value as Task["priority"],
+    }));
+  }, []);
+
+  const handleNewTaskProjectChange = useCallback((value: string) => {
+    setNewTask((prev) => ({
+      ...prev,
+      project: value,
+      step: undefined // Clear step when project changes
+    }));
+  }, []);
+
+  const handleNewTaskStepChange = useCallback((value: string) => {
+    setNewTask((prev) => ({
+      ...prev,
+      step: value === "none" ? undefined : value,
+    }));
+  }, []);
+
+  const handleNewTaskTimeframeChange = useCallback((value: string) => {
+    setNewTask((prev) => ({
+      ...prev,
+      timeframe: value as Task["timeframe"],
+    }));
+  }, []);
   const getPriorityLabel = (priority: string) => {
     switch (priority) {
       case "urgent":
