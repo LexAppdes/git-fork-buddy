@@ -82,7 +82,8 @@ export function TaskDateTimePicker({
     }
   };
 
-  const handleTimeChange = () => {
+  // Handle time changes with loop prevention
+  useEffect(() => {
     if (date && includeTime) {
       // Convert 12-hour to 24-hour format
       let hour24 = startTime.hour;
@@ -94,18 +95,22 @@ export function TaskDateTimePicker({
       
       const newDate = new Date(date);
       newDate.setHours(hour24, startTime.minute, 0, 0);
-      onDateChange(newDate);
+      
+      // Only update if the time actually changed to prevent loops
+      if (newDate.getTime() !== date.getTime()) {
+        onDateChange(newDate);
+      }
     } else if (date && !includeTime) {
       // Remove time component
       const newDate = new Date(date);
       newDate.setHours(0, 0, 0, 0);
-      onDateChange(newDate);
+      
+      // Only update if the time actually changed to prevent loops
+      if (newDate.getTime() !== date.getTime()) {
+        onDateChange(newDate);
+      }
     }
-  };
-
-  useEffect(() => {
-    handleTimeChange();
-  }, [includeTime, startTime]);
+  }, [includeTime, startTime, date, onDateChange]);
 
   const handleClear = () => {
     onDateChange(undefined);
@@ -400,7 +405,8 @@ export function InlineTaskDateTimePicker({
     }
   };
 
-  const handleTimeChange = () => {
+  // Handle time changes with loop prevention
+  useEffect(() => {
     if (date && includeTime) {
       // Convert 12-hour to 24-hour format
       let hour24 = startTime.hour;
@@ -412,18 +418,22 @@ export function InlineTaskDateTimePicker({
       
       const newDate = new Date(date);
       newDate.setHours(hour24, startTime.minute, 0, 0);
-      onDateChange(newDate);
+      
+      // Only update if the time actually changed to prevent loops
+      if (newDate.getTime() !== date.getTime()) {
+        onDateChange(newDate);
+      }
     } else if (date && !includeTime) {
       // Remove time component
       const newDate = new Date(date);
       newDate.setHours(0, 0, 0, 0);
-      onDateChange(newDate);
+      
+      // Only update if the time actually changed to prevent loops
+      if (newDate.getTime() !== date.getTime()) {
+        onDateChange(newDate);
+      }
     }
-  };
-
-  useEffect(() => {
-    handleTimeChange();
-  }, [includeTime, startTime]);
+  }, [includeTime, startTime, date, onDateChange]);
 
   const handleClear = () => {
     onDateChange(undefined);
