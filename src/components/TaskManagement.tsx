@@ -1596,7 +1596,7 @@ export function TaskManagement() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="dueDate">Due Date</Label>
-                        <DateTimePicker
+                        <TaskDateTimePicker
                           date={newTask.dueDate}
                           onDateChange={(date) =>
                             setNewTask((prev) => ({
@@ -1605,8 +1605,8 @@ export function TaskManagement() {
                             }))
                           }
                           placeholder="Pick a date"
-                          align="start"
-                          showTime={true}
+                          align="center"
+                          side="right"
                           allowClear={true}
                         />
                       </div>
