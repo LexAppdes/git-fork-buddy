@@ -430,11 +430,11 @@ const ClickableDueDate = ({
   };
 
   return (
-    <InlineDateTimePicker
+    <InlineTaskDateTimePicker
       date={date}
       onDateChange={(newDate) => onDateChange(taskId, newDate)}
-      align="start"
-      showTime={false}
+      align="center"
+      side="right"
       allowClear={true}
     >
       <span
@@ -443,7 +443,7 @@ const ClickableDueDate = ({
       >
         {formatFunction(date)}
       </span>
-    </InlineDateTimePicker>
+    </InlineTaskDateTimePicker>
   );
 };
 export function TaskManagement() {
