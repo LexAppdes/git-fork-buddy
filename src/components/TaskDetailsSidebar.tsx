@@ -76,7 +76,15 @@ export function TaskDetailsSidebar({
   }
 
   return (
-    <div className="fixed right-0 top-0 h-full w-96 bg-white border-l border-border shadow-lg z-50 overflow-hidden flex flex-col">
+    <>
+      {/* Background overlay */}
+      <div
+        className="fixed inset-0 bg-black/20 z-40"
+        onClick={onClose}
+      />
+
+      {/* Sidebar */}
+      <div className="fixed right-0 top-0 h-full w-96 bg-white border-l border-border shadow-lg z-50 overflow-hidden flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -258,5 +266,6 @@ export function TaskDetailsSidebar({
         </div>
       </div>
     </div>
+    </>
   );
 }
