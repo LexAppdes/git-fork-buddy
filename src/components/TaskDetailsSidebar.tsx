@@ -76,7 +76,7 @@ export function TaskDetailsSidebar({
   }
 
   return (
-    <div className="fixed right-0 top-0 h-full w-96 bg-white border-l border-border shadow-lg z-50 overflow-hidden flex flex-col">
+    <div className="fixed right-0 top-0 h-full w-96 bg-white border-l border-border shadow-2xl z-50 overflow-hidden flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-3 flex-1 min-w-0">
