@@ -129,7 +129,8 @@ const TaskCard = ({
   onUpdateTaskDueDate,
   areas,
   projects,
-  onProjectAssignment
+  onProjectAssignment,
+  selectedTask
 }: {
   task: Task;
   onTaskClick: (task: Task) => void;
@@ -142,6 +143,7 @@ const TaskCard = ({
     area: string;
   }>;
   onProjectAssignment?: (task: Task, projectId: string) => void;
+  selectedTask?: Task | null;
 }) => {
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("text/plain", task.id);
@@ -155,7 +157,7 @@ const TaskCard = ({
 
   return (
     <div
-      className={cn("bg-card rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", task.completed !== null && "opacity-60")}
+      className={cn("bg-card rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")}
       onClick={() => onTaskClick(task)}
       draggable
       onDragStart={handleDragStart}
