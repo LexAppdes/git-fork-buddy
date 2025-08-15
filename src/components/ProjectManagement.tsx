@@ -281,14 +281,18 @@ export function ProjectManagement({
   // Reset new project form when dialog closes
   useEffect(() => {
     if (!dialogOpen) {
-      setNewProject({
-        title: "",
-        description: "",
-        area: "",
-        startDate: undefined,
-        endDate: undefined,
-        status: "lead"
-      });
+      // Small delay to ensure dialog animation completes before resetting form
+      const timer = setTimeout(() => {
+        setNewProject({
+          title: "",
+          description: "",
+          area: "",
+          startDate: undefined,
+          endDate: undefined,
+          status: "lead"
+        });
+      }, 150);
+      return () => clearTimeout(timer);
     }
   }, [dialogOpen]);
 
