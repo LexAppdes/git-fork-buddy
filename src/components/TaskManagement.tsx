@@ -1428,7 +1428,21 @@ export function TaskManagement() {
                   New Project
                 </Button>
               ) : (
-                <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
+                <Dialog open={isNewTaskDialogOpen} onOpenChange={(open) => {
+                  if (!open) {
+                    // Reset form when closing
+                    setNewTask({
+                      title: "",
+                      description: "",
+                      priority: "medium",
+                      dueDate: undefined,
+                      project: "",
+                      step: undefined,
+                      timeframe: "NOW"
+                    });
+                  }
+                  setIsNewTaskDialogOpen(open);
+                }}>
                   <DialogTrigger asChild>
                     <Button
                       className="gap-2"
