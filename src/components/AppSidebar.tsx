@@ -1,15 +1,30 @@
 import { useState } from "react";
-import { 
-  Menu, 
-  Search, 
-  BookOpen, 
-  Home, 
-  StickyNote, 
-  Tag, 
-  CheckSquare, 
-  Bookmark 
+import {
+  Search,
+  BookOpen,
+  Home,
+  StickyNote,
+  Tag,
+  CheckSquare,
+  Bookmark
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+// Custom sidebar folding icon component
+const SidebarToggleIcon = ({ className }: { className?: string }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    className={className}
+  >
+    <image
+      href="https://cdn.builder.io/api/v1/image/assets%2F81d0632711aa40a0af38f84cc57e8e9a%2F217c45e5072a48e28ca6ead13ebbbad6?format=webp&width=800"
+      width="24"
+      height="24"
+    />
+  </svg>
+);
 
 interface AppSidebarProps {
   activeSection: string;
