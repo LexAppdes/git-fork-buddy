@@ -32,7 +32,7 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
     <div
       className={cn(
         "bg-[#F6F4F1] min-h-screen flex flex-col transition-all duration-300",
-        isCollapsed ? "w-14" : "w-[215px]"
+        isCollapsed ? "w-16" : "w-[215px]"
       )}
     >
       {/* Header with controls */}
