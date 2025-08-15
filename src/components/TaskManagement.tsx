@@ -568,7 +568,20 @@ export function TaskManagement() {
 
   const updateEditingTask = (updates: Partial<Task>) => {
     if (editingTask) {
-      setEditingTask({...editingTask, ...updates});
+      setEditingTask(prev => {
+        if (!prev) return prev;
+
+        // Check if any of the updates actually change the values
+        const hasChanges = Object.keys(updates).some(key => {
+          const typedKey = key as keyof Task;
+          return prev[typedKey] !== updates[typedKey];
+        });
+
+        // Only update if there are actual changes
+        if (!hasChanges) return prev;
+
+        return {...prev, ...updates};
+      });
     }
   };
   const toggleTask = (taskId: string) => {
