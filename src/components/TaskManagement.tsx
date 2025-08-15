@@ -1537,12 +1537,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
                         <Input
                           id="title"
                           value={newTask.title}
-                          onChange={(e) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              title: e.target.value,
-                            }))
-                          }
+                          onChange={handleNewTaskTitleChange}
                           placeholder="Enter task title"
                         />
                       </div>
@@ -1551,12 +1546,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
                         <Textarea
                           id="description"
                           value={newTask.description}
-                          onChange={(e) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              description: e.target.value,
-                            }))
-                          }
+                          onChange={handleNewTaskDescriptionChange}
                           placeholder="Enter task description (optional)"
                           rows={3}
                         />
@@ -1565,12 +1555,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
                         <Label htmlFor="priority">Priority</Label>
                         <Select
                           value={newTask.priority}
-                          onValueChange={(value) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              priority: value as Task["priority"],
-                            }))
-                          }
+                          onValueChange={handleNewTaskPriorityChange}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select priority" />
