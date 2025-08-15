@@ -1429,7 +1429,22 @@ export function TaskManagement() {
                   New Project
                 </Button>
               ) : (
-                <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
+                <Dialog open={isNewTaskDialogOpen} onOpenChange={(open) => {
+                  setIsNewTaskDialogOpen(open);
+                  if (!open) {
+                    // Reset form and increment key for fresh render next time
+                    setNewTask({
+                      title: "",
+                      description: "",
+                      priority: "medium",
+                      dueDate: undefined,
+                      project: "",
+                      step: undefined,
+                      timeframe: "NOW"
+                    });
+                    setNewTaskDialogKey(prev => prev + 1);
+                  }
+                }}>
                   <DialogTrigger asChild>
                     <Button
                       className="gap-2"
@@ -1439,7 +1454,7 @@ export function TaskManagement() {
                       New Task
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
+                  <DialogContent key={newTaskDialogKey} className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle>Create New Task</DialogTitle>
                       <DialogDescription>
