@@ -66,7 +66,7 @@ const Index = () => {
         activeSection={activeSection} 
         onSectionChange={setActiveSection} 
       />
-      <div className={`flex-1 bg-[#fafafa] transition-all duration-300 ${isTaskSidebarOpen ? 'mr-96' : ''}`}>
+      <div className="flex-1 bg-[#fafafa]">
         {renderContent()}
       </div>
     </div>
