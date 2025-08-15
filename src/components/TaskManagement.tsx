@@ -473,25 +473,6 @@ export function TaskManagement() {
     step: undefined as string | undefined,
     timeframe: "NOW" as Task["timeframe"]
   });
-
-  // Reset new task form when dialog closes
-  useEffect(() => {
-    if (!isNewTaskDialogOpen) {
-      // Small delay to ensure dialog animation completes before resetting form
-      const timer = setTimeout(() => {
-        setNewTask({
-          title: "",
-          description: "",
-          priority: "medium",
-          dueDate: undefined,
-          project: "",
-          step: undefined,
-          timeframe: "NOW"
-        });
-      }, 150);
-      return () => clearTimeout(timer);
-    }
-  }, [isNewTaskDialogOpen]);
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
     setEditingTask({...task});
