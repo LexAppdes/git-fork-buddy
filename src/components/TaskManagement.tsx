@@ -726,6 +726,13 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
       setSelectedArea(mockAreas[0].id);
     }
   }, [activeView, selectedArea]);
+
+  // Close sidebar when view changes
+  useEffect(() => {
+    if (isTaskViewOpen) {
+      handleSidebarClose();
+    }
+  }, [activeView]);
   const getPriorityCheckboxColor = (priority: string) => {
     switch (priority) {
       case "urgent":
