@@ -7,6 +7,24 @@ const Index = () => {
 
   const renderContent = () => {
     switch (activeSection) {
+      case "journal":
+        return (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Journal</h2>
+              <p className="text-muted-foreground">Journal section coming soon...</p>
+            </div>
+          </div>
+        );
+      case "home":
+        return (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Home</h2>
+              <p className="text-muted-foreground">Home dashboard coming soon...</p>
+            </div>
+          </div>
+        );
       case "notes":
         return (
           <div className="flex items-center justify-center h-full">
@@ -16,17 +34,26 @@ const Index = () => {
             </div>
           </div>
         );
-      case "whiteboards":
+      case "tags":
         return (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-foreground mb-2">Whiteboards</h2>
-              <p className="text-muted-foreground">Whiteboards section coming soon...</p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Tags</h2>
+              <p className="text-muted-foreground">Tags management coming soon...</p>
             </div>
           </div>
         );
       case "tasks":
         return <TaskManagement />;
+      case "highlights":
+        return (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Highlights</h2>
+              <p className="text-muted-foreground">Highlights section coming soon...</p>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
