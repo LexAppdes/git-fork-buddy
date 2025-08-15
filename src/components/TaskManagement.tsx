@@ -1702,7 +1702,7 @@ export function TaskManagement() {
                   <span className="text-sm text-muted-foreground">Priority:</span>
                   <Select
                     value={editingTask.priority}
-                    onValueChange={(value) => updateEditingTask({ priority: value as Task["priority"] })}
+                    onValueChange={useCallback((value: string) => updateEditingTask({ priority: value as Task["priority"] }), [updateEditingTask])}
                   >
                     <SelectTrigger className="w-24 h-7">
                       <SelectValue />
@@ -1749,7 +1749,7 @@ export function TaskManagement() {
                     <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
                     <Select
                       value={editingTask.timeframe}
-                      onValueChange={(value) => updateEditingTask({ timeframe: value as Task["timeframe"] })}
+                      onValueChange={useCallback((value: string) => updateEditingTask({ timeframe: value as Task["timeframe"] }), [updateEditingTask])}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -1771,14 +1771,14 @@ export function TaskManagement() {
                     <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
                     <Select
                       value={editingTask.project || "none"}
-                      onValueChange={(value) => {
+                      onValueChange={useCallback((value: string) => {
                         const projectId = value === "none" ? undefined : value;
                         const areaId = getAreaFromProject(projectId);
                         updateEditingTask({
                           project: projectId,
                           area: areaId
                         });
-                      }}
+                      }, [updateEditingTask])}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select project" />
