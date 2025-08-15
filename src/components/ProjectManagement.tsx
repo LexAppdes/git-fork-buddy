@@ -978,8 +978,22 @@ export function ProjectManagement({
       </div>
 
       {/* New Project Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+      <Dialog open={dialogOpen} onOpenChange={(open) => {
+        setDialogOpen(open);
+        if (!open) {
+          // Reset form and increment key for fresh render next time
+          setNewProject({
+            title: "",
+            description: "",
+            area: "",
+            startDate: undefined,
+            endDate: undefined,
+            status: "lead"
+          });
+          setNewProjectDialogKey(prev => prev + 1);
+        }
+      }}>
+        <DialogContent key={newProjectDialogKey} className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Create New Project</DialogTitle>
           </DialogHeader>
