@@ -26,6 +26,7 @@ interface Task {
 interface KanbanBoardProps {
   tasks: Task[];
   onTaskClick: (task: Task) => void;
+  selectedTask?: Task | null;
   onToggleTask: (taskId: string) => void;
   onUpdateTaskTimeframe: (
     taskId: string,
