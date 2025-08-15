@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import { TaskDetailsSidebar } from "@/components/TaskDetailsSidebar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -554,7 +555,7 @@ export function TaskManagement() {
     ));
   };
 
-  const handleDialogClose = () => {
+  const handleSidebarClose = () => {
     // Auto-save changes when closing
     if (editingTask) {
       setTasks(prevTasks => prevTasks.map(task =>
@@ -564,6 +565,7 @@ export function TaskManagement() {
     }
     setIsTaskViewOpen(false);
     setIsEditing(false);
+    setEditingTask(null);
   };
 
   const updateEditingTask = useCallback((updates: Partial<Task>) => {
@@ -1666,190 +1668,15 @@ export function TaskManagement() {
         )}
       </div>
 
-      {/* Task Detail Dialog */}
-      <Dialog open={isTaskViewOpen} onOpenChange={setIsTaskViewOpen}>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-3">
-              {editingTask && <>
-                  <div className={cn("w-1 h-6 rounded-full", editingTask.priority === "urgent" ? "bg-destructive" : editingTask.priority === "medium" ? "bg-amber-500" : "bg-muted")} />
-                  <Input
-                    value={editingTask.title}
-                    onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => updateEditingTask({ title: e.target.value }), [updateEditingTask])}
-                    className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0"
-                  />
-                </>}
-            </DialogTitle>
-          </DialogHeader>
-
-          {editingTask && <div className="py-4">
-              {/* Status and Priority Row */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={editingTask.completed !== null}
-                    className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(editingTask.priority))}
-                    onChange={useCallback(() => updateEditingTask({ completed: editingTask.completed ? null : new Date() }), [updateEditingTask, editingTask.completed])}
-                  />
-                  <span className="text-sm font-medium">
-                    {editingTask.completed !== null ? "Completed" : "Pending"}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Priority:</span>
-                  <Select
-                    value={editingTask.priority}
-                    onValueChange={useCallback((value: string) => updateEditingTask({ priority: value as Task["priority"] }), [updateEditingTask])}
-                  >
-                    <SelectTrigger className="w-24 h-7">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="urgent">Urgent</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Two Column Layout */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Left Column */}
-                <div className="space-y-4">
-                  {/* Description */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
-                    <Textarea
-                      value={editingTask.description || ""}
-                      onChange={useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => updateEditingTask({ description: e.target.value }), [updateEditingTask])}
-                      placeholder="Enter task description"
-                      rows={3}
-                    />
-                  </div>
-
-                  {/* Due Date */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
-                    <TaskDateTimePicker
-                      date={editingTask.dueDate}
-                      onDateChange={useCallback((date: Date | undefined) => updateEditingTask({ dueDate: date }), [updateEditingTask])}
-                      placeholder="Pick a date"
-                      align="center"
-                      side="right"
-                      allowClear={true}
-                    />
-                  </div>
-
-                  {/* Timeframe */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
-                    <Select
-                      value={editingTask.timeframe}
-                      onValueChange={useCallback((value: string) => updateEditingTask({ timeframe: value as Task["timeframe"] }), [updateEditingTask])}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="NOW">Now</SelectItem>
-                        <SelectItem value="NEXT">Next</SelectItem>
-                        <SelectItem value="LATER">Later</SelectItem>
-                        <SelectItem value="SOMEDAY">Someday</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Right Column */}
-                <div className="space-y-4">
-                  {/* Project */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
-                    <Select
-                      value={editingTask.project || "none"}
-                      onValueChange={useCallback((value: string) => {
-                        const projectId = value === "none" ? undefined : value;
-                        const areaId = getAreaFromProject(projectId);
-                        updateEditingTask({
-                          project: projectId,
-                          area: areaId
-                        });
-                      }, [updateEditingTask])}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select project" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">No project</SelectItem>
-                        {mockProjects.map((project) => (
-                          <SelectItem key={project.id} value={project.id}>
-                            {project.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Area (read-only, derived from project) */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
-                    <div className="flex items-center gap-2">
-                      {getAreaFromProject(editingTask.project) ? (
-                        <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.color || "bg-muted")}>
-                          {mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.name}
-                        </span>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">No area (no project assigned)</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Created Date */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Created</h4>
-                    <span className="text-sm text-muted-foreground">
-                      {formatDateTime(editingTask.created)}
-                    </span>
-                  </div>
-
-                  {/* Completed Date */}
-                  {editingTask.completed !== null && <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Completed</h4>
-                    <span className="text-sm text-muted-foreground">
-                      {formatDateTime(editingTask.completed)}
-                    </span>
-                  </div>}
-
-                  {/* Task ID */}
-                  <div>
-                    <h4 className="text-sm font-medium text-foreground mb-2">Task ID</h4>
-                    <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
-                      {editingTask.id}
-                    </code>
-                  </div>
-                </div>
-              </div>
-            </div>}
-
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button onClick={() => {
-              // Auto-save changes when closing
-              if (editingTask) {
-                setTasks(prevTasks => prevTasks.map(task =>
-                  task.id === editingTask.id ? editingTask : task
-                ));
-                setSelectedTask(editingTask);
-              }
-              setIsTaskViewOpen(false);
-              setIsEditing(false);
-            }}>
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Task Details Sidebar */}
+      <TaskDetailsSidebar
+        isOpen={isTaskViewOpen}
+        task={editingTask}
+        onClose={handleSidebarClose}
+        onUpdateTask={updateEditingTask}
+        projects={mockProjects}
+        areas={mockAreas}
+        getAreaFromProject={getAreaFromProject}
+      />
     </div>;
 }
