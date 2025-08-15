@@ -41,30 +41,40 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
           "flex items-center",
           isCollapsed ? "flex-col gap-2" : "gap-2"
         )}>
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 hover:bg-black/5 rounded-lg transition-colors"
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <Menu className="w-5 h-5 text-gray-600" />
-          </button>
-
           {!isCollapsed && (
-            <button
-              className="p-2 hover:bg-black/5 rounded-lg transition-colors flex-1 flex items-center justify-center"
-              title="Search"
-            >
-              <Search className="w-5 h-5 text-gray-600" />
-            </button>
+            <>
+              <button
+                className="p-2 hover:bg-black/5 rounded-lg transition-colors flex-1 flex items-center justify-center"
+                title="Search"
+              >
+                <Search className="w-5 h-5 text-gray-600" />
+              </button>
+              <button
+                onClick={() => setIsCollapsed(!isCollapsed)}
+                className="p-2 hover:bg-black/5 rounded-lg transition-colors"
+                title="Collapse sidebar"
+              >
+                <Menu className="w-5 h-5 text-gray-600" />
+              </button>
+            </>
           )}
 
           {isCollapsed && (
-            <button
-              className="p-2 hover:bg-black/5 rounded-lg transition-colors"
-              title="Search"
-            >
-              <Search className="w-5 h-5 text-gray-600" />
-            </button>
+            <>
+              <button
+                onClick={() => setIsCollapsed(!isCollapsed)}
+                className="p-2 hover:bg-black/5 rounded-lg transition-colors"
+                title="Expand sidebar"
+              >
+                <Menu className="w-5 h-5 text-gray-600" />
+              </button>
+              <button
+                className="p-2 hover:bg-black/5 rounded-lg transition-colors"
+                title="Search"
+              >
+                <Search className="w-5 h-5 text-gray-600" />
+              </button>
+            </>
           )}
         </div>
       </div>
