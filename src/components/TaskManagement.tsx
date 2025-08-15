@@ -452,6 +452,7 @@ export function TaskManagement() {
   const [isAreasExpanded, setIsAreasExpanded] = useState(true);
   const [expandedAreas, setExpandedAreas] = useState<Record<string, boolean>>({});
   const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
+  const [newTaskDialogKey, setNewTaskDialogKey] = useState(0);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskViewOpen, setIsTaskViewOpen] = useState(false);
