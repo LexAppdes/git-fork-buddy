@@ -253,6 +253,7 @@ export function ProjectManagement({
 }: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>([...mockProjects]);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
+  const [newProjectDialogKey, setNewProjectDialogKey] = useState(0);
 
   // Use external dialog state if provided
   const dialogOpen = externalDialogOpen !== undefined ? externalDialogOpen : isNewProjectDialogOpen;
@@ -514,9 +515,10 @@ export function ProjectManagement({
                     <div className="flex items-center gap-2">
                       <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-primary transition-all duration-300 rounded-full"
+                          className="h-full bg-primary rounded-full"
                           style={{
-                            width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`
+                            width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`,
+                            transition: 'width 0.3s ease-out'
                           }}
                         />
                       </div>
@@ -554,9 +556,10 @@ export function ProjectManagement({
                       <div className="flex items-center gap-3">
                         <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-primary transition-all duration-300 rounded-full"
+                            className="h-full bg-primary rounded-full"
                             style={{
-                              width: `${editingProject.steps.length > 0 ? (editingProject.steps.filter(s => s.completed).length / editingProject.steps.length) * 100 : 0}%`
+                              width: `${editingProject.steps.length > 0 ? (editingProject.steps.filter(s => s.completed).length / editingProject.steps.length) * 100 : 0}%`,
+                              transition: 'width 0.3s ease-out'
                             }}
                           />
                         </div>
@@ -729,9 +732,10 @@ export function ProjectManagement({
                             <div className="flex items-center gap-2">
                               <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                                 <div
-                                  className="h-full bg-primary transition-all duration-300 rounded-full"
+                                  className="h-full bg-primary rounded-full"
                                   style={{
-                                    width: `${stepTasks.length > 0 ? (stepTasks.filter(t => t.completed !== null).length / stepTasks.length) * 100 : 0}%`
+                                    width: `${stepTasks.length > 0 ? (stepTasks.filter(t => t.completed !== null).length / stepTasks.length) * 100 : 0}%`,
+                                    transition: 'width 0.3s ease-out'
                                   }}
                                 />
                               </div>
@@ -882,13 +886,13 @@ export function ProjectManagement({
                             No step
                           </h3>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-0">
                           {unassignedTasks.map(task => (
                             <div
                               key={task.id}
                               draggable
                               className={cn(
-                                "flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer border border-border",
+                                "flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer",
                                 task.completed !== null && "opacity-60"
                               )}
                               onClick={() => onTaskClick?.(task)}
@@ -974,8 +978,22 @@ export function ProjectManagement({
       </div>
 
       {/* New Project Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+      <Dialog open={dialogOpen} onOpenChange={(open) => {
+        setDialogOpen(open);
+        if (!open) {
+          // Reset form and increment key for fresh render next time
+          setNewProject({
+            title: "",
+            description: "",
+            area: "",
+            startDate: undefined,
+            endDate: undefined,
+            status: "lead"
+          });
+          setNewProjectDialogKey(prev => prev + 1);
+        }
+      }}>
+        <DialogContent key={newProjectDialogKey} className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Create New Project</DialogTitle>
           </DialogHeader>

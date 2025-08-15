@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { DateTimePicker, InlineDateTimePicker } from "@/components/ui/date-time-picker";
+import { TaskDateTimePicker, InlineTaskDateTimePicker } from "@/components/ui/improved-date-time-picker";
 import { format, isToday, isTomorrow, isAfter, startOfDay, endOfDay, isYesterday, differenceInDays, isBefore } from "date-fns";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { Badge } from "@/components/ui/badge";
@@ -429,11 +430,11 @@ const ClickableDueDate = ({
   };
 
   return (
-    <InlineDateTimePicker
+    <InlineTaskDateTimePicker
       date={date}
       onDateChange={(newDate) => onDateChange(taskId, newDate)}
-      align="start"
-      showTime={false}
+      align="center"
+      side="right"
       allowClear={true}
     >
       <span
@@ -442,7 +443,7 @@ const ClickableDueDate = ({
       >
         {formatFunction(date)}
       </span>
-    </InlineDateTimePicker>
+    </InlineTaskDateTimePicker>
   );
 };
 export function TaskManagement() {
@@ -452,6 +453,7 @@ export function TaskManagement() {
   const [isAreasExpanded, setIsAreasExpanded] = useState(true);
   const [expandedAreas, setExpandedAreas] = useState<Record<string, boolean>>({});
   const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
+  const [newTaskDialogKey, setNewTaskDialogKey] = useState(0);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskViewOpen, setIsTaskViewOpen] = useState(false);
@@ -1000,11 +1002,11 @@ export function TaskManagement() {
                     </SelectContent>
                   </Select>
 
-                  <InlineDateTimePicker
+                  <InlineTaskDateTimePicker
                     date={task.dueDate}
                     onDateChange={(date) => updateTaskDueDate(task.id, date)}
-                    align="end"
-                    showTime={false}
+                    align="center"
+                    side="left"
                     allowClear={true}
                   >
                     <Button
@@ -1015,7 +1017,7 @@ export function TaskManagement() {
                     >
                       <CalendarIcon className="w-3 h-3 text-muted-foreground" />
                     </Button>
-                  </InlineDateTimePicker>
+                  </InlineTaskDateTimePicker>
                 </div>
               </div>
               {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
@@ -1428,7 +1430,22 @@ export function TaskManagement() {
                   New Project
                 </Button>
               ) : (
-                <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
+                <Dialog open={isNewTaskDialogOpen} onOpenChange={(open) => {
+                  setIsNewTaskDialogOpen(open);
+                  if (!open) {
+                    // Reset form and increment key for fresh render next time
+                    setNewTask({
+                      title: "",
+                      description: "",
+                      priority: "medium",
+                      dueDate: undefined,
+                      project: "",
+                      step: undefined,
+                      timeframe: "NOW"
+                    });
+                    setNewTaskDialogKey(prev => prev + 1);
+                  }
+                }}>
                   <DialogTrigger asChild>
                     <Button
                       className="gap-2"
@@ -1438,7 +1455,7 @@ export function TaskManagement() {
                       New Task
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
+                  <DialogContent key={newTaskDialogKey} className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle>Create New Task</DialogTitle>
                       <DialogDescription>
@@ -1579,7 +1596,7 @@ export function TaskManagement() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="dueDate">Due Date</Label>
-                        <DateTimePicker
+                        <TaskDateTimePicker
                           date={newTask.dueDate}
                           onDateChange={(date) =>
                             setNewTask((prev) => ({
@@ -1588,8 +1605,8 @@ export function TaskManagement() {
                             }))
                           }
                           placeholder="Pick a date"
-                          align="start"
-                          showTime={true}
+                          align="center"
+                          side="right"
                           allowClear={true}
                         />
                       </div>
@@ -1640,8 +1657,8 @@ export function TaskManagement() {
       </div>
 
       {/* Task Detail Dialog */}
-      <Dialog open={isTaskViewOpen} onOpenChange={(open) => open ? setIsTaskViewOpen(true) : handleDialogClose()}>
-        <DialogContent className="sm:max-w-[500px]">
+      <Dialog open={isTaskViewOpen} onOpenChange={setIsTaskViewOpen}>
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
               {editingTask && <>
@@ -1655,9 +1672,9 @@ export function TaskManagement() {
             </DialogTitle>
           </DialogHeader>
 
-          {editingTask && <div className="space-y-6 py-4">
-              {/* Status and Priority */}
-              <div className="flex items-center gap-4">
+          {editingTask && <div className="py-4">
+              {/* Status and Priority Row */}
+              <div className="flex items-center gap-4 mb-6">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -1688,119 +1705,137 @@ export function TaskManagement() {
                 </div>
               </div>
 
-              {/* Description */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
-                <Textarea
-                  value={editingTask.description || ""}
-                  onChange={(e) => updateEditingTask({ description: e.target.value })}
-                  placeholder="Enter task description"
-                  rows={3}
-                />
-              </div>
+              {/* Two Column Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left Column */}
+                <div className="space-y-4">
+                  {/* Description */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
+                    <Textarea
+                      value={editingTask.description || ""}
+                      onChange={(e) => updateEditingTask({ description: e.target.value })}
+                      placeholder="Enter task description"
+                      rows={3}
+                    />
+                  </div>
 
-              {/* Due Date */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
-                <DateTimePicker
-                  date={editingTask.dueDate}
-                  onDateChange={(date) => updateEditingTask({ dueDate: date })}
-                  placeholder="Pick a date"
-                  align="start"
-                  showTime={true}
-                  allowClear={true}
-                />
-              </div>
+                  {/* Due Date */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
+                    <TaskDateTimePicker
+                      date={editingTask.dueDate}
+                      onDateChange={(date) => updateEditingTask({ dueDate: date })}
+                      placeholder="Pick a date"
+                      align="center"
+                      side="right"
+                      allowClear={true}
+                    />
+                  </div>
 
-
-              {/* Project */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
-                <Select
-                  value={editingTask.project || "none"}
-                  onValueChange={(value) => {
-                    const projectId = value === "none" ? undefined : value;
-                    const areaId = getAreaFromProject(projectId);
-                    updateEditingTask({
-                      project: projectId,
-                      area: areaId
-                    });
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select project" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">No project</SelectItem>
-                    {mockProjects.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Area (read-only, derived from project) */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
-                <div className="flex items-center gap-2">
-                  {getAreaFromProject(editingTask.project) ? (
-                    <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.color || "bg-muted")}>
-                      {mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.name}
-                    </span>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">No area (no project assigned)</span>
-                  )}
+                  {/* Timeframe */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
+                    <Select
+                      value={editingTask.timeframe}
+                      onValueChange={(value) => updateEditingTask({ timeframe: value as Task["timeframe"] })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NOW">Now</SelectItem>
+                        <SelectItem value="NEXT">Next</SelectItem>
+                        <SelectItem value="LATER">Later</SelectItem>
+                        <SelectItem value="SOMEDAY">Someday</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              </div>
 
-              {/* Timeframe */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
-                <Select
-                  value={editingTask.timeframe}
-                  onValueChange={(value) => updateEditingTask({ timeframe: value as Task["timeframe"] })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NOW">Now</SelectItem>
-                    <SelectItem value="NEXT">Next</SelectItem>
-                    <SelectItem value="LATER">Later</SelectItem>
-                    <SelectItem value="SOMEDAY">Someday</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                {/* Right Column */}
+                <div className="space-y-4">
+                  {/* Project */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
+                    <Select
+                      value={editingTask.project || "none"}
+                      onValueChange={(value) => {
+                        const projectId = value === "none" ? undefined : value;
+                        const areaId = getAreaFromProject(projectId);
+                        updateEditingTask({
+                          project: projectId,
+                          area: areaId
+                        });
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select project" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">No project</SelectItem>
+                        {mockProjects.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            {project.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              {/* Created Date */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Created</h4>
-                <span className="text-sm text-muted-foreground">
-                  {formatDateTime(editingTask.created)}
-                </span>
-              </div>
+                  {/* Area (read-only, derived from project) */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
+                    <div className="flex items-center gap-2">
+                      {getAreaFromProject(editingTask.project) ? (
+                        <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.color || "bg-muted")}>
+                          {mockAreas.find(a => a.id === getAreaFromProject(editingTask.project))?.name}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">No area (no project assigned)</span>
+                      )}
+                    </div>
+                  </div>
 
-              {/* Completed Date */}
-              {editingTask.completed !== null && <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Completed</h4>
-                <span className="text-sm text-muted-foreground">
-                  {formatDateTime(editingTask.completed)}
-                </span>
-              </div>}
+                  {/* Created Date */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Created</h4>
+                    <span className="text-sm text-muted-foreground">
+                      {formatDateTime(editingTask.created)}
+                    </span>
+                  </div>
 
-              {/* Task ID */}
-              <div>
-                <h4 className="text-sm font-medium text-foreground mb-2">Task ID</h4>
-                <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
-                  {editingTask.id}
-                </code>
+                  {/* Completed Date */}
+                  {editingTask.completed !== null && <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Completed</h4>
+                    <span className="text-sm text-muted-foreground">
+                      {formatDateTime(editingTask.completed)}
+                    </span>
+                  </div>}
+
+                  {/* Task ID */}
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Task ID</h4>
+                    <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
+                      {editingTask.id}
+                    </code>
+                  </div>
+                </div>
               </div>
             </div>}
 
           <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button onClick={handleDialogClose}>
+            <Button onClick={() => {
+              // Auto-save changes when closing
+              if (editingTask) {
+                setTasks(prevTasks => prevTasks.map(task =>
+                  task.id === editingTask.id ? editingTask : task
+                ));
+                setSelectedTask(editingTask);
+              }
+              setIsTaskViewOpen(false);
+              setIsEditing(false);
+            }}>
               Close
             </Button>
           </div>
