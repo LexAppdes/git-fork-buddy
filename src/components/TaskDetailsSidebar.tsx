@@ -101,7 +101,7 @@ export function TaskDetailsSidebar({
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2F0ff7feed0287480faa22906cf0d03d18%2F9fed35037c8942f2aa181ae25d26611c?format=webp&width=800"
             alt="Close"
-            className="w-6 h-6"
+            className="w-5 h-5"
           />
         </Button>
       </div>
