@@ -4,6 +4,7 @@ import { TaskManagement } from "@/components/TaskManagement";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("tasks");
+  const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
 
   const renderContent = () => {
     switch (activeSection) {
@@ -44,7 +45,7 @@ const Index = () => {
           </div>
         );
       case "tasks":
-        return <TaskManagement />;
+        return <TaskManagement onTaskSidebarChange={setIsTaskSidebarOpen} />;
       case "highlights":
         return (
           <div className="flex items-center justify-center h-full">
@@ -65,7 +66,7 @@ const Index = () => {
         activeSection={activeSection} 
         onSectionChange={setActiveSection} 
       />
-      <div className="flex-1 bg-[#fafafa]">
+      <div className={`flex-1 bg-[#fafafa] transition-all duration-300 ${isTaskSidebarOpen ? 'mr-96' : ''}`}>
         {renderContent()}
       </div>
     </div>
