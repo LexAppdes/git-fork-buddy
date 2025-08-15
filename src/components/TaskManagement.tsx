@@ -1002,11 +1002,11 @@ export function TaskManagement() {
                     </SelectContent>
                   </Select>
 
-                  <InlineDateTimePicker
+                  <InlineTaskDateTimePicker
                     date={task.dueDate}
                     onDateChange={(date) => updateTaskDueDate(task.id, date)}
-                    align="end"
-                    showTime={false}
+                    align="center"
+                    side="left"
                     allowClear={true}
                   >
                     <Button
@@ -1017,7 +1017,7 @@ export function TaskManagement() {
                     >
                       <CalendarIcon className="w-3 h-3 text-muted-foreground" />
                     </Button>
-                  </InlineDateTimePicker>
+                  </InlineTaskDateTimePicker>
                 </div>
               </div>
               {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
