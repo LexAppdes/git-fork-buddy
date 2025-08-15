@@ -1618,12 +1618,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps) {
                         <Label htmlFor="timeframe">Timeframe</Label>
                         <Select
                           value={newTask.timeframe}
-                          onValueChange={(value) =>
-                            setNewTask((prev) => ({
-                              ...prev,
-                              timeframe: value as Task["timeframe"],
-                            }))
-                          }
+                          onValueChange={handleNewTaskTimeframeChange}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select timeframe" />
