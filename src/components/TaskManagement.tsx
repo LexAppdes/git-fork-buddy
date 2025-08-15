@@ -1428,21 +1428,7 @@ export function TaskManagement() {
                   New Project
                 </Button>
               ) : (
-                <Dialog open={isNewTaskDialogOpen} onOpenChange={(open) => {
-                  if (!open) {
-                    // Reset form when closing
-                    setNewTask({
-                      title: "",
-                      description: "",
-                      priority: "medium",
-                      dueDate: undefined,
-                      project: "",
-                      step: undefined,
-                      timeframe: "NOW"
-                    });
-                  }
-                  setIsNewTaskDialogOpen(open);
-                }}>
+                <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
                   <DialogTrigger asChild>
                     <Button
                       className="gap-2"
@@ -1609,7 +1595,19 @@ export function TaskManagement() {
                       </div>
                     </div>
                     <div className="flex justify-end gap-2">
-                      <Button variant="outline" onClick={() => setIsNewTaskDialogOpen(false)}>
+                      <Button variant="outline" onClick={() => {
+                        // Reset form when canceling
+                        setNewTask({
+                          title: "",
+                          description: "",
+                          priority: "medium",
+                          dueDate: undefined,
+                          project: "",
+                          step: undefined,
+                          timeframe: "NOW"
+                        });
+                        setIsNewTaskDialogOpen(false);
+                      }}>
                         Cancel
                       </Button>
                       <Button onClick={createTask} disabled={!newTask.title.trim()}>
