@@ -75,6 +75,7 @@ const mockTasks: Task[] = [{
   priority: "urgent",
   completed: null,
   dueDate: today,
+  dueTime: "09:00",
   area: "work",
   project: "1", // Website Redesign
   created: fiveDaysAgo,
@@ -85,6 +86,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: tomorrow,
+  dueTime: "14:30",
   area: "work",
   project: "2", // Mobile App Development
   created: threeDaysAgo,
@@ -118,6 +120,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: today,
+  dueTime: "07:00",
   area: "health",
   created: today,
   timeframe: "NOW"
@@ -127,6 +130,7 @@ const mockTasks: Task[] = [{
   priority: "urgent",
   completed: null,
   dueDate: today,
+  dueTime: "10:00",
   area: "work",
   created: today,
   timeframe: "NOW"
@@ -136,6 +140,7 @@ const mockTasks: Task[] = [{
   priority: "low",
   completed: null,
   dueDate: today,
+  dueTime: "18:00",
   area: "chores",
   created: yesterday,
   timeframe: "NOW"
@@ -145,6 +150,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: today,
+  dueTime: "20:00",
   area: "psychology",
   created: threeDaysAgo,
   timeframe: "NEXT"
@@ -154,6 +160,7 @@ const mockTasks: Task[] = [{
   priority: "urgent",
   completed: null,
   dueDate: nextWeek,
+  dueTime: "16:00",
   area: "work",
   created: fiveDaysAgo,
   timeframe: "NEXT"
@@ -195,6 +202,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: yesterday,
   dueDate: yesterday,
+  dueTime: "17:00",
   area: "work",
   created: fiveDaysAgo,
   timeframe: "NOW"
@@ -204,6 +212,7 @@ const mockTasks: Task[] = [{
   priority: "urgent",
   completed: null,
   dueDate: yesterday,
+  dueTime: "12:00",
   area: "work",
   created: twoDaysAgo,
   timeframe: "NOW"
@@ -213,6 +222,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: twoDaysAgo,
+  dueTime: "15:30",
   created: fiveDaysAgo,
   timeframe: "NOW"
 }, {
@@ -252,6 +262,8 @@ const mockTasks: Task[] = [{
   title: "Schedule meeting",
   priority: "urgent",
   completed: null,
+  dueDate: tomorrow,
+  dueTime: "11:00",
   area: "work",
   created: today,
   timeframe: "NEXT"
@@ -1208,6 +1220,9 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                              <div className="flex items-center gap-2">
                                {task.project && <span className="text-xs text-gray-500">
                                  {mockProjects.find(p => p.id === task.project)?.title}
+                               </span>}
+                               {task.dueTime && <span className="text-xs text-blue-600 font-medium">
+                                 {task.dueTime}
                                </span>}
                                {task.dueDate && <ClickableDueDate
                                  date={task.dueDate}
