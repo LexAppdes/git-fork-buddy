@@ -138,7 +138,7 @@ export function SimpleDatePicker({
               <Switch
                 id="set-time-simple"
                 checked={includeTime}
-                onCheckedChange={setIncludeTime}
+                onCheckedChange={handleTimeToggle}
               />
               <label 
                 htmlFor="set-time-simple" 
