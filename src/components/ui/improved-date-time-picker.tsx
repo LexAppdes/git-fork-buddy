@@ -433,7 +433,7 @@ export function InlineTaskDateTimePicker({
         onDateChange(newDate);
       }
     }
-  }, [includeTime, startTime, date, onDateChange]);
+  }, [includeTime, startTime, date]);
 
   const handleClear = () => {
     onDateChange(undefined);
