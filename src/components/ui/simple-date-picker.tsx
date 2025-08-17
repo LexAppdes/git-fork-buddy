@@ -25,7 +25,10 @@ export function SimpleDatePicker({
   allowClear = true
 }: SimpleDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [includeTime, setIncludeTime] = useState(false);
+
+  // Auto-detect if time should be included based on existing date
+  const hasExistingTime = date && (date.getHours() !== 0 || date.getMinutes() !== 0 || (date as any).__endTime);
+  const [includeTime, setIncludeTime] = useState(hasExistingTime || false);
   const [startTime, setStartTime] = useState({ hour: 9, minute: 0 });
   const [endTime, setEndTime] = useState({ hour: 10, minute: 0 });
 
