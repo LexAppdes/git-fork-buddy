@@ -264,14 +264,7 @@ export function TaskDetailsSidebar({
             <span className="text-sm text-muted-foreground w-20">Project</span>
             <Select
               value={task.project || "none"}
-              onValueChange={useCallback((value: string) => {
-                const projectId = value === "none" ? undefined : value;
-                const areaId = getAreaFromProject(projectId);
-                onUpdateTask({
-                  project: projectId,
-                  area: areaId
-                });
-              }, [onUpdateTask, getAreaFromProject])}
+              onValueChange={handleProjectChange}
             >
               <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
                 <span className="text-sm font-medium text-foreground">
