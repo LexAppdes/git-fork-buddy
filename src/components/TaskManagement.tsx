@@ -1281,7 +1281,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
   return <div className="bg-[#fafafa]">
       {/* Header with title */}
       <div className="bg-card">
-        <div className="flex items-center justify-between px-6 py-[18px] pb-5 bg-white border-[#e2e2e2]">
+        <div className="flex items-center justify-between px-6 py-3 bg-white border-[#e2e2e2]">
           <nav className="flex items-center gap-1 rounded-lg w-fit">
             {taskViews.map(view => {
             const isActive = activeView === view.id;
