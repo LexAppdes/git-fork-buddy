@@ -145,14 +145,11 @@ export function TaskDetailsSidebar({
             checked={task.completed !== null}
             className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary",
               getPriorityCheckboxColor(task.priority))}
-            onChange={useCallback(() =>
-              onUpdateTask({ completed: task.completed ? null : new Date() }),
-              [onUpdateTask, task.completed])}
+            onChange={handleToggleComplete}
           />
           <Input
             value={task.title}
-            onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) =>
-              onUpdateTask({ title: e.target.value }), [onUpdateTask])}
+            onChange={handleTitleChange}
             className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0 bg-transparent flex-1"
           />
         </div>
