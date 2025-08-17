@@ -111,9 +111,9 @@ export function TaskDetailsSidebar({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col">
         {/* Title and checkbox row */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-4">
           <input
             type="checkbox"
             checked={task.completed !== null}
@@ -132,7 +132,7 @@ export function TaskDetailsSidebar({
         </div>
 
         {/* Properties with horizontal layout */}
-        <div className="space-y-3">
+        <div className="space-y-3 mb-4">
           {/* Timeframe */}
           <div className="flex items-center">
             <span className="text-sm text-muted-foreground w-20">Timeframe</span>
@@ -142,7 +142,7 @@ export function TaskDetailsSidebar({
                 onUpdateTask({ timeframe: value as Task["timeframe"] }), [onUpdateTask])}
             >
               <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
-                <span className="text-sm font-medium text-foreground">
+                <span className={cn("text-xs px-2 py-1 rounded font-medium uppercase", getTimeframeColor(task.timeframe))}>
                   {task.timeframe}
                 </span>
               </SelectTrigger>
@@ -271,15 +271,9 @@ export function TaskDetailsSidebar({
           {/* Due Date */}
           <div className="flex items-center">
             <span className="text-sm text-muted-foreground w-20">Due Date</span>
-            <TaskDateTimePicker
-              date={task.dueDate}
-              onDateChange={useCallback((date: Date | undefined) =>
-                onUpdateTask({ dueDate: date }), [onUpdateTask])}
-              placeholder="Pick a date"
-              align="start"
-              side="left"
-              allowClear={true}
-            />
+            <span className="text-sm font-medium text-foreground">
+              {task.dueDate ? formatDateTime(task.dueDate) : 'No due date'}
+            </span>
           </div>
 
           {/* Completed Date (if task is completed) */}
@@ -294,22 +288,54 @@ export function TaskDetailsSidebar({
         </div>
 
         {/* Divider */}
-        <div className="border-t border-border my-4"></div>
+        <div className="border-t border-border mb-4"></div>
 
-        {/* Description */}
-        <div>
-          <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
-          <Textarea
-            value={task.description || ""}
-            onChange={useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              onUpdateTask({ description: e.target.value }), [onUpdateTask])}
-            placeholder="Enter task description"
-            rows={3}
-          />
+        {/* Tabs */}
+        <div className="flex border-b border-border mb-4">
+          <button
+            onClick={() => setActiveTab("description")}
+            className={cn(
+              "px-4 py-2 text-sm font-medium border-b-2 transition-colors",
+              activeTab === "description"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            Description
+          </button>
+          <button
+            onClick={() => setActiveTab("activity")}
+            className={cn(
+              "px-4 py-2 text-sm font-medium border-b-2 transition-colors",
+              activeTab === "activity"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            Activity
+          </button>
         </div>
 
-        {/* Bottom row: Created and Task ID */}
-        <div className="flex items-center justify-between pt-4 mt-auto">
+        {/* Tab Content */}
+        <div className="flex-1 mb-4">
+          {activeTab === "description" ? (
+            <Textarea
+              value={task.description || ""}
+              onChange={useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                onUpdateTask({ description: e.target.value }), [onUpdateTask])}
+              placeholder="Enter task description"
+              rows={3}
+              className="min-h-[100px]"
+            />
+          ) : (
+            <div className="text-sm text-muted-foreground">
+              Activity feed coming soon...
+            </div>
+          )}
+        </div>
+
+        {/* Bottom row: Created and Task ID - Fixed at bottom */}
+        <div className="flex items-center justify-between pt-4 mt-auto border-t border-border">
           <div className="flex flex-col">
             <span className="text-xs font-medium text-foreground">Created</span>
             <span className="text-xs text-muted-foreground">
