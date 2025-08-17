@@ -72,6 +72,39 @@ const formatDueDateWithInterval = (date: Date, timeInterval?: string) => {
   return dateStr;
 };
 
+const prepareDateForPicker = (date: Date | undefined, timeInterval?: string) => {
+  if (!date) return undefined;
+
+  if (timeInterval) {
+    // Parse the time interval (e.g., "09:00-11:00")
+    const times = timeInterval.split('-');
+    if (times.length === 2) {
+      const [startTime, endTime] = times;
+      const [startHour, startMinute] = startTime.split(':').map(Number);
+      const [endHour, endMinute] = endTime.split(':').map(Number);
+
+      const newDate = new Date(date);
+      newDate.setHours(startHour, startMinute, 0, 0);
+
+      // Store end time as custom property
+      (newDate as any).__endTime = { hour: endHour, minute: endMinute };
+
+      return newDate;
+    } else if (times.length === 1) {
+      // Single time (start only)
+      const [startHour, startMinute] = times[0].split(':').map(Number);
+      const newDate = new Date(date);
+      newDate.setHours(startHour, startMinute, 0, 0);
+      return newDate;
+    }
+  }
+
+  // No time interval, return date with time set to 00:00
+  const newDate = new Date(date);
+  newDate.setHours(0, 0, 0, 0);
+  return newDate;
+};
+
 const getPriorityCheckboxColor = (priority: string) => {
   switch (priority) {
     case "urgent":
