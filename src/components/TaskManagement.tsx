@@ -628,10 +628,37 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
   };
   
   const updateTaskDueDate = useCallback((taskId: string, dueDate: Date | undefined) => {
-    setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
-      ...task,
-      dueDate
-    } : task));
+    setTasks(prevTasks => prevTasks.map(task => {
+      if (task.id === taskId) {
+        if (dueDate) {
+          // Extract time interval from the date object if it has time set
+          const hasTime = dueDate.getHours() !== 0 || dueDate.getMinutes() !== 0 || (dueDate as any).__endTime;
+
+          if (hasTime) {
+            const startHour = dueDate.getHours().toString().padStart(2, '0');
+            const startMinute = dueDate.getMinutes().toString().padStart(2, '0');
+            const startTime = `${startHour}:${startMinute}`;
+
+            let timeInterval = startTime;
+
+            if ((dueDate as any).__endTime) {
+              const endHour = (dueDate as any).__endTime.hour.toString().padStart(2, '0');
+              const endMinute = (dueDate as any).__endTime.minute.toString().padStart(2, '0');
+              const endTime = `${endHour}:${endMinute}`;
+              timeInterval = `${startTime}-${endTime}`;
+            }
+
+            return { ...task, dueDate, timeInterval };
+          } else {
+            // No time, clear the time interval
+            return { ...task, dueDate, timeInterval: undefined };
+          }
+        } else {
+          return { ...task, dueDate: undefined, timeInterval: undefined };
+        }
+      }
+      return task;
+    }));
   }, []);
 
   const handleNewTaskDateChange = useCallback((date: Date | undefined) => {
