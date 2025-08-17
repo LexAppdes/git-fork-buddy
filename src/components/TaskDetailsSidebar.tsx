@@ -46,7 +46,21 @@ interface TaskDetailsSidebarProps {
 }
 
 const formatDateTime = (date: Date) => {
-  return format(date, "dd.MM.yyyy HH:mm");
+  // Only show time if it's not midnight (00:00) or if there's an end time
+  const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0 || (date as any).__endTime;
+
+  if (hasTime) {
+    const timeStr = format(date, "dd.MM.yyyy HH:mm");
+    // Add end time if available
+    if ((date as any).__endTime) {
+      const endTime = (date as any).__endTime;
+      return `${timeStr} - ${endTime.hour.toString().padStart(2, '0')}:${endTime.minute.toString().padStart(2, '0')}`;
+    }
+    return timeStr;
+  } else {
+    // Just show the date without time
+    return format(date, "dd.MM.yyyy");
+  }
 };
 
 const getPriorityCheckboxColor = (priority: string) => {
