@@ -371,7 +371,7 @@ export function TaskDetailsSidebar({
           <div className="flex items-center">
             <span className="text-sm text-muted-foreground w-20">Due Date</span>
             <SimpleDatePicker
-              date={task.dueDate}
+              date={prepareDateForPicker(task.dueDate, task.timeInterval)}
               onDateChange={handleDueDateChange}
               align="start"
               side="left"
