@@ -86,11 +86,11 @@ export function TaskDetailsSidebar({
   areas,
   getAreaFromProject
 }: TaskDetailsSidebarProps) {
+  const [activeTab, setActiveTab] = useState<"description" | "activity">("description");
+
   if (!isOpen || !task) {
     return null;
   }
-
-  const [activeTab, setActiveTab] = useState<"description" | "activity">("description");
 
   return (
     <div className="fixed right-0 top-0 h-full w-96 bg-white border-l border-border z-50 overflow-hidden flex flex-col">
