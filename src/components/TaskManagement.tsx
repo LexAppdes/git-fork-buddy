@@ -587,7 +587,14 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       // Only update if there are actual changes
       if (!hasChanges) return prev;
 
-      return {...prev, ...updates};
+      const updatedTask = {...prev, ...updates};
+
+      // Immediately sync changes to the main tasks array
+      setTasks(prevTasks => prevTasks.map(task =>
+        task.id === prev.id ? updatedTask : task
+      ));
+
+      return updatedTask;
     });
   }, []);
   const toggleTask = (taskId: string) => {
