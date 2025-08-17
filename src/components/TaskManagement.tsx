@@ -75,7 +75,7 @@ const mockTasks: Task[] = [{
   priority: "urgent",
   completed: null,
   dueDate: today,
-  dueTime: "09:00",
+  timeInterval: "09:00-11:00",
   area: "work",
   project: "1", // Website Redesign
   created: fiveDaysAgo,
