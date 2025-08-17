@@ -1228,8 +1228,8 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                                {task.project && <span className="text-xs text-gray-500">
                                  {mockProjects.find(p => p.id === task.project)?.title}
                                </span>}
-                               {task.dueTime && <span className="text-xs text-blue-600 font-medium">
-                                 {task.dueTime}
+                               {task.timeInterval && <span className="text-xs text-blue-600 font-medium">
+                                 {task.timeInterval}
                                </span>}
                                {task.dueDate && <ClickableDueDate
                                  date={task.dueDate}
