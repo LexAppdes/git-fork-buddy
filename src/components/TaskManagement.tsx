@@ -12,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { DateTimePicker, InlineDateTimePicker } from "@/components/ui/date-time-picker";
-import { TaskDateTimePicker } from "@/components/ui/improved-date-time-picker";
 import { SimpleDatePicker, SimpleDatePickerButton } from "@/components/ui/simple-date-picker";
 import { format, isToday, isTomorrow, isAfter, startOfDay, endOfDay, isYesterday, differenceInDays, isBefore } from "date-fns";
 import { KanbanBoard } from "@/components/KanbanBoard";
