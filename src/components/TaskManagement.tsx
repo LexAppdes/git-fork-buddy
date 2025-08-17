@@ -1288,7 +1288,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       description: "",
       priority: "medium",
       dueDate: undefined,
-      dueTime: undefined,
+      timeInterval: undefined,
       project: "",
       step: undefined,
       timeframe: "NOW"
