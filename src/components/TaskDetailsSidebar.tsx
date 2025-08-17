@@ -137,8 +137,34 @@ export function TaskDetailsSidebar({
   const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) =>
     onUpdateTask({ description: e.target.value }), [onUpdateTask]);
 
-  const handleDueDateChange = useCallback((date: Date | undefined) =>
-    onUpdateTask({ dueDate: date }), [onUpdateTask]);
+  const handleDueDateChange = useCallback((date: Date | undefined) => {
+    if (date) {
+      // Extract time interval from the date object if it has time set
+      const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0 || (date as any).__endTime;
+
+      if (hasTime) {
+        const startHour = date.getHours().toString().padStart(2, '0');
+        const startMinute = date.getMinutes().toString().padStart(2, '0');
+        const startTime = `${startHour}:${startMinute}`;
+
+        let timeInterval = startTime;
+
+        if ((date as any).__endTime) {
+          const endHour = (date as any).__endTime.hour.toString().padStart(2, '0');
+          const endMinute = (date as any).__endTime.minute.toString().padStart(2, '0');
+          const endTime = `${endHour}:${endMinute}`;
+          timeInterval = `${startTime}-${endTime}`;
+        }
+
+        onUpdateTask({ dueDate: date, timeInterval });
+      } else {
+        // No time, clear the time interval
+        onUpdateTask({ dueDate: date, timeInterval: undefined });
+      }
+    } else {
+      onUpdateTask({ dueDate: undefined, timeInterval: undefined });
+    }
+  }, [onUpdateTask]);
 
   if (!isOpen || !task) {
     return null;
