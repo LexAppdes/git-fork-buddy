@@ -86,6 +86,8 @@ export function TaskDetailsSidebar({
   areas,
   getAreaFromProject
 }: TaskDetailsSidebarProps) {
+  const [activeTab, setActiveTab] = useState<"description" | "activity">("description");
+
   if (!isOpen || !task) {
     return null;
   }
