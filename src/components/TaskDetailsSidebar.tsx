@@ -15,6 +15,7 @@ interface Task {
   priority: "low" | "medium" | "urgent";
   completed: Date | null;
   dueDate?: Date;
+  timeInterval?: string; // time interval in HH:MM-HH:MM format
   area?: string;
   project?: string;
   step?: string;
@@ -61,6 +62,47 @@ const formatDateTime = (date: Date) => {
     // Just show the date without time
     return format(date, "dd.MM.yyyy");
   }
+};
+
+const formatDueDateWithInterval = (date: Date, timeInterval?: string) => {
+  const dateStr = format(date, "dd.MM.yyyy");
+  if (timeInterval) {
+    return `${dateStr} ${timeInterval}`;
+  }
+  return dateStr;
+};
+
+const prepareDateForPicker = (date: Date | undefined, timeInterval?: string) => {
+  if (!date) return undefined;
+
+  if (timeInterval) {
+    // Parse the time interval (e.g., "09:00-11:00")
+    const times = timeInterval.split('-');
+    if (times.length === 2) {
+      const [startTime, endTime] = times;
+      const [startHour, startMinute] = startTime.split(':').map(Number);
+      const [endHour, endMinute] = endTime.split(':').map(Number);
+
+      const newDate = new Date(date);
+      newDate.setHours(startHour, startMinute, 0, 0);
+
+      // Store end time as custom property
+      (newDate as any).__endTime = { hour: endHour, minute: endMinute };
+
+      return newDate;
+    } else if (times.length === 1) {
+      // Single time (start only)
+      const [startHour, startMinute] = times[0].split(':').map(Number);
+      const newDate = new Date(date);
+      newDate.setHours(startHour, startMinute, 0, 0);
+      return newDate;
+    }
+  }
+
+  // No time interval, return date with time set to 00:00
+  const newDate = new Date(date);
+  newDate.setHours(0, 0, 0, 0);
+  return newDate;
 };
 
 const getPriorityCheckboxColor = (priority: string) => {
@@ -128,8 +170,34 @@ export function TaskDetailsSidebar({
   const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) =>
     onUpdateTask({ description: e.target.value }), [onUpdateTask]);
 
-  const handleDueDateChange = useCallback((date: Date | undefined) =>
-    onUpdateTask({ dueDate: date }), [onUpdateTask]);
+  const handleDueDateChange = useCallback((date: Date | undefined) => {
+    if (date) {
+      // Extract time interval from the date object if it has time set
+      const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0 || (date as any).__endTime;
+
+      if (hasTime) {
+        const startHour = date.getHours().toString().padStart(2, '0');
+        const startMinute = date.getMinutes().toString().padStart(2, '0');
+        const startTime = `${startHour}:${startMinute}`;
+
+        let timeInterval = startTime;
+
+        if ((date as any).__endTime) {
+          const endHour = (date as any).__endTime.hour.toString().padStart(2, '0');
+          const endMinute = (date as any).__endTime.minute.toString().padStart(2, '0');
+          const endTime = `${endHour}:${endMinute}`;
+          timeInterval = `${startTime}-${endTime}`;
+        }
+
+        onUpdateTask({ dueDate: date, timeInterval });
+      } else {
+        // No time, clear the time interval
+        onUpdateTask({ dueDate: date, timeInterval: undefined });
+      }
+    } else {
+      onUpdateTask({ dueDate: undefined, timeInterval: undefined });
+    }
+  }, [onUpdateTask]);
 
   if (!isOpen || !task) {
     return null;
@@ -303,13 +371,13 @@ export function TaskDetailsSidebar({
           <div className="flex items-center">
             <span className="text-sm text-muted-foreground w-20">Due Date</span>
             <SimpleDatePicker
-              date={task.dueDate}
+              date={prepareDateForPicker(task.dueDate, task.timeInterval)}
               onDateChange={handleDueDateChange}
               align="start"
               side="left"
             >
               <span className="text-sm font-medium text-foreground cursor-pointer hover:text-primary">
-                {task.dueDate ? formatDateTime(task.dueDate) : 'No due date'}
+                {task.dueDate ? formatDueDateWithInterval(task.dueDate, task.timeInterval) : 'No due date'}
               </span>
             </SimpleDatePicker>
           </div>

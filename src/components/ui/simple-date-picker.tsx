@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
@@ -25,9 +25,16 @@ export function SimpleDatePicker({
   allowClear = true
 }: SimpleDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
+
   const [includeTime, setIncludeTime] = useState(false);
   const [startTime, setStartTime] = useState({ hour: 9, minute: 0 });
   const [endTime, setEndTime] = useState({ hour: 10, minute: 0 });
+
+  // Auto-detect if time should be included based on existing date
+  useEffect(() => {
+    const hasExistingTime = date && (date.getHours() !== 0 || date.getMinutes() !== 0 || (date as any).__endTime);
+    setIncludeTime(hasExistingTime || false);
+  }, [date]);
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (selectedDate) {

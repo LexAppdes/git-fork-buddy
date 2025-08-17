@@ -24,6 +24,7 @@ interface Task {
   priority: "low" | "medium" | "urgent";
   completed: Date | null; // null = not completed, Date = completion timestamp
   dueDate?: Date;
+  timeInterval?: string; // time interval in HH:MM-HH:MM format
   area?: string;
   project?: string;
   step?: string;
@@ -74,6 +75,7 @@ const mockTasks: Task[] = [{
   priority: "urgent",
   completed: null,
   dueDate: today,
+  timeInterval: "09:00-11:00",
   area: "work",
   project: "1", // Website Redesign
   created: fiveDaysAgo,
@@ -84,6 +86,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: tomorrow,
+  timeInterval: "14:30-16:00",
   area: "work",
   project: "2", // Mobile App Development
   created: threeDaysAgo,
@@ -117,6 +120,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: today,
+  timeInterval: "07:00-08:00",
   area: "health",
   created: today,
   timeframe: "NOW"
@@ -126,6 +130,7 @@ const mockTasks: Task[] = [{
   priority: "urgent",
   completed: null,
   dueDate: today,
+  timeInterval: "10:00-10:30",
   area: "work",
   created: today,
   timeframe: "NOW"
@@ -135,6 +140,7 @@ const mockTasks: Task[] = [{
   priority: "low",
   completed: null,
   dueDate: today,
+  timeInterval: "18:00-19:30",
   area: "chores",
   created: yesterday,
   timeframe: "NOW"
@@ -144,6 +150,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: today,
+  timeInterval: "20:00-21:00",
   area: "psychology",
   created: threeDaysAgo,
   timeframe: "NEXT"
@@ -153,6 +160,7 @@ const mockTasks: Task[] = [{
   priority: "urgent",
   completed: null,
   dueDate: nextWeek,
+  timeInterval: "14:00-16:00",
   area: "work",
   created: fiveDaysAgo,
   timeframe: "NEXT"
@@ -194,6 +202,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: yesterday,
   dueDate: yesterday,
+  timeInterval: "16:00-17:00",
   area: "work",
   created: fiveDaysAgo,
   timeframe: "NOW"
@@ -203,6 +212,7 @@ const mockTasks: Task[] = [{
   priority: "urgent",
   completed: null,
   dueDate: yesterday,
+  timeInterval: "12:00-13:00",
   area: "work",
   created: twoDaysAgo,
   timeframe: "NOW"
@@ -212,6 +222,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: twoDaysAgo,
+  timeInterval: "15:30-17:00",
   created: fiveDaysAgo,
   timeframe: "NOW"
 }, {
@@ -251,6 +262,8 @@ const mockTasks: Task[] = [{
   title: "Schedule meeting",
   priority: "urgent",
   completed: null,
+  dueDate: tomorrow,
+  timeInterval: "11:00-12:00",
   area: "work",
   created: today,
   timeframe: "NEXT"
@@ -476,6 +489,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     description: "",
     priority: "medium" as Task["priority"],
     dueDate: undefined as Date | undefined,
+    timeInterval: undefined as string | undefined,
     project: "",
     step: undefined as string | undefined,
     timeframe: "NOW" as Task["timeframe"]
@@ -496,6 +510,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       priority: "medium",
       completed: null,
       dueDate: undefined,
+      timeInterval: undefined,
       area: getAreaFromProject(projectId),
       project: projectId,
       step: stepId,
@@ -522,6 +537,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       priority: newTask.priority,
       completed: null,
       dueDate: newTask.dueDate,
+      timeInterval: newTask.timeInterval,
       area: getAreaFromProject(newTask.project),
       project: newTask.project,
       step: newTask.step,
@@ -535,6 +551,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       description: "",
       priority: "medium",
       dueDate: undefined,
+      timeInterval: undefined,
       project: "",
       step: undefined,
       timeframe: "NOW"
@@ -865,7 +882,10 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                    {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-center gap-3">
                         <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
-                                                  <div className="flex-1">
+                        {task.timeInterval && <span className="text-muted-foreground bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">
+                          {task.timeInterval}
+                        </span>}
+                        <div className="flex-1">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
                                 <h4 className={cn("text-card-foreground", task.completed !== null && "line-through")}>
@@ -1199,6 +1219,9 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                    {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                        <div className="flex items-center gap-3">
                          <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                         {task.timeInterval && <span className="text-muted-foreground bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">
+                           {task.timeInterval}
+                         </span>}
                          <div className="flex-1">
                            <div className="flex items-center justify-between">
                              <h4 className={cn("text-card-foreground", task.completed !== null && "line-through")}>
@@ -1238,6 +1261,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       priority: newTask.priority,
       completed: null,
       dueDate: newTask.dueDate,
+      timeInterval: newTask.timeInterval,
       area: areaId,
       project: projectId,
       step: newTask.step,
@@ -1251,6 +1275,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       description: "",
       priority: "medium",
       dueDate: undefined,
+      timeInterval: undefined,
       project: "",
       step: undefined,
       timeframe: "NOW"
@@ -1263,6 +1288,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       description: "",
       priority: "medium",
       dueDate: undefined,
+      timeInterval: undefined,
       project: "",
       step: undefined,
       timeframe: "NOW"
@@ -1518,6 +1544,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                       description: "",
                       priority: "medium",
                       dueDate: undefined,
+                      timeInterval: undefined,
                       project: "",
                       step: undefined,
                       timeframe: "NOW"
