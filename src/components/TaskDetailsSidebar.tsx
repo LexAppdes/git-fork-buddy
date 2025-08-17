@@ -114,6 +114,9 @@ export function TaskDetailsSidebar({
   const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) =>
     onUpdateTask({ description: e.target.value }), [onUpdateTask]);
 
+  const handleDueDateChange = useCallback((date: Date | undefined) =>
+    onUpdateTask({ dueDate: date }), [onUpdateTask]);
+
   if (!isOpen || !task) {
     return null;
   }
