@@ -318,7 +318,7 @@ export function TaskDetailsSidebar({
               side="left"
             >
               <span className="text-sm font-medium text-foreground cursor-pointer hover:text-primary">
-                {task.dueDate ? formatDateTime(task.dueDate) : 'No due date'}
+                {task.dueDate ? formatDueDateWithInterval(task.dueDate, task.timeInterval) : 'No due date'}
               </span>
             </SimpleDatePicker>
           </div>
