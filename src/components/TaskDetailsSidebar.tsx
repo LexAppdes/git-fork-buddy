@@ -336,9 +336,8 @@ export function TaskDetailsSidebar({
             <Textarea
               value={task.description || ""}
               onChange={handleDescriptionChange}
-              placeholder="Enter task description"
               rows={3}
-              className="min-h-[100px]"
+              className="min-h-[100px] bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0"
             />
           ) : (
             <div className="text-sm text-muted-foreground">
