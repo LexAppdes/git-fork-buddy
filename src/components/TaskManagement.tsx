@@ -1078,7 +1078,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                     </SelectContent>
                   </Select>
 
-                  <InlineTaskDateTimePicker
+                  <SimpleDatePicker
                     date={task.dueDate}
                     onDateChange={(date) => updateTaskDueDate(task.id, date)}
                     align="center"
@@ -1093,7 +1093,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                     >
                       <CalendarIcon className="w-3 h-3 text-muted-foreground" />
                     </Button>
-                  </InlineTaskDateTimePicker>
+                  </SimpleDatePicker>
                 </div>
               </div>
             </div>
