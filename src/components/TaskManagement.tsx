@@ -1153,7 +1153,6 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                   </span>
                 </div>
               </div>
-              {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
             </div>
           </div>
         </div>)}
