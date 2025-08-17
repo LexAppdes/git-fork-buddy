@@ -288,16 +288,16 @@ export function TaskDetailsSidebar({
           {/* Due Date */}
           <div className="flex items-center">
             <span className="text-sm text-muted-foreground w-20">Due Date</span>
-            <InlineDateTimePicker
+            <InlineTaskDateTimePicker
               date={task.dueDate}
               onDateChange={handleDueDateChange}
               align="start"
-              showTime={true}
+              side="left"
             >
               <span className="text-sm font-medium text-foreground cursor-pointer hover:text-primary">
                 {task.dueDate ? formatDateTime(task.dueDate) : 'No due date'}
               </span>
-            </InlineDateTimePicker>
+            </InlineTaskDateTimePicker>
           </div>
 
           {/* Completed Date (if task is completed) */}
