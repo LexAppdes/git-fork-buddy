@@ -117,8 +117,8 @@ export function TaskDetailsSidebar({
         {/* Properties with horizontal layout */}
         <div className="space-y-3">
           {/* Timeframe */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Timeframe</span>
+          <div className="flex items-center">
+            <span className="text-sm text-muted-foreground w-20">Timeframe</span>
             <Select
               value={task.timeframe}
               onValueChange={useCallback((value: string) =>
@@ -139,8 +139,8 @@ export function TaskDetailsSidebar({
           </div>
 
           {/* Priority */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Priority</span>
+          <div className="flex items-center">
+            <span className="text-sm text-muted-foreground w-20">Priority</span>
             <Select
               value={task.priority}
               onValueChange={useCallback((value: string) =>
@@ -205,8 +205,8 @@ export function TaskDetailsSidebar({
           </div>
 
           {/* Area */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Area</span>
+          <div className="flex items-center">
+            <span className="text-sm text-muted-foreground w-20">Area</span>
             <div>
               {getAreaFromProject(task.project) ? (
                 <span className={cn(
@@ -222,8 +222,8 @@ export function TaskDetailsSidebar({
           </div>
 
           {/* Project */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Project</span>
+          <div className="flex items-center">
+            <span className="text-sm text-muted-foreground w-20">Project</span>
             <Select
               value={task.project || "none"}
               onValueChange={useCallback((value: string) => {
@@ -252,8 +252,8 @@ export function TaskDetailsSidebar({
           </div>
 
           {/* Due Date */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Due Date</span>
+          <div className="flex items-center">
+            <span className="text-sm text-muted-foreground w-20">Due Date</span>
             <TaskDateTimePicker
               date={task.dueDate}
               onDateChange={useCallback((date: Date | undefined) =>
@@ -267,8 +267,8 @@ export function TaskDetailsSidebar({
 
           {/* Completed Date (if task is completed) */}
           {task.completed !== null && (
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Completed</span>
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground w-20">Completed</span>
               <span className="text-sm font-medium text-foreground">
                 {formatDateTime(task.completed)}
               </span>
