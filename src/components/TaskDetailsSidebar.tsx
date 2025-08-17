@@ -305,7 +305,7 @@ export function TaskDetailsSidebar({
         <div className="border-t border-border mb-4"></div>
 
         {/* Tabs */}
-        <div className="flex border-b border-border mb-4">
+        <div className="flex mb-4">
           <button
             onClick={() => setActiveTab("description")}
             className={cn(
