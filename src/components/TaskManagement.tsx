@@ -537,6 +537,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       priority: newTask.priority,
       completed: null,
       dueDate: newTask.dueDate,
+      dueTime: newTask.dueTime,
       area: getAreaFromProject(newTask.project),
       project: newTask.project,
       step: newTask.step,
