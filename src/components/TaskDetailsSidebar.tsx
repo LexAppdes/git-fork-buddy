@@ -335,8 +335,7 @@ export function TaskDetailsSidebar({
           {activeTab === "description" ? (
             <Textarea
               value={task.description || ""}
-              onChange={useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                onUpdateTask({ description: e.target.value }), [onUpdateTask])}
+              onChange={handleDescriptionChange}
               placeholder="Enter task description"
               rows={3}
               className="min-h-[100px]"
