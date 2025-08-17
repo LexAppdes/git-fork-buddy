@@ -88,6 +88,32 @@ export function TaskDetailsSidebar({
 }: TaskDetailsSidebarProps) {
   const [activeTab, setActiveTab] = useState<"description" | "activity">("description");
 
+  // Define all callbacks at the top level
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =>
+    onUpdateTask({ title: e.target.value }), [onUpdateTask]);
+
+  const handleToggleComplete = useCallback(() =>
+    onUpdateTask({ completed: task?.completed ? null : new Date() }),
+    [onUpdateTask, task?.completed]);
+
+  const handleTimeframeChange = useCallback((value: string) =>
+    onUpdateTask({ timeframe: value as Task["timeframe"] }), [onUpdateTask]);
+
+  const handlePriorityChange = useCallback((value: string) =>
+    onUpdateTask({ priority: value as Task["priority"] }), [onUpdateTask]);
+
+  const handleProjectChange = useCallback((value: string) => {
+    const projectId = value === "none" ? undefined : value;
+    const areaId = getAreaFromProject(projectId);
+    onUpdateTask({
+      project: projectId,
+      area: areaId
+    });
+  }, [onUpdateTask, getAreaFromProject]);
+
+  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) =>
+    onUpdateTask({ description: e.target.value }), [onUpdateTask]);
+
   if (!isOpen || !task) {
     return null;
   }
