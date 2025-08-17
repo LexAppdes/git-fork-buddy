@@ -489,7 +489,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     description: "",
     priority: "medium" as Task["priority"],
     dueDate: undefined as Date | undefined,
-    dueTime: undefined as string | undefined,
+    timeInterval: undefined as string | undefined,
     project: "",
     step: undefined as string | undefined,
     timeframe: "NOW" as Task["timeframe"]
