@@ -510,6 +510,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       priority: "medium",
       completed: null,
       dueDate: undefined,
+      dueTime: undefined,
       area: getAreaFromProject(projectId),
       project: projectId,
       step: stepId,
