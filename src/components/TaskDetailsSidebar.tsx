@@ -64,6 +64,14 @@ const formatDateTime = (date: Date) => {
   }
 };
 
+const formatDueDateWithInterval = (date: Date, timeInterval?: string) => {
+  const dateStr = format(date, "dd.MM.yyyy");
+  if (timeInterval) {
+    return `${dateStr} ${timeInterval}`;
+  }
+  return dateStr;
+};
+
 const getPriorityCheckboxColor = (priority: string) => {
   switch (priority) {
     case "urgent":
