@@ -77,16 +77,8 @@ export function TaskDetailsSidebar({
 
   return (
     <div className="fixed right-0 top-0 h-full w-96 bg-white border-l border-border z-50 overflow-hidden flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <Input
-            value={task.title}
-            onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => 
-              onUpdateTask({ title: e.target.value }), [onUpdateTask])}
-            className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0 bg-transparent"
-          />
-        </div>
+      {/* Header with close button only */}
+      <div className="flex items-center justify-end p-4 border-b border-border">
         <Button
           variant="ghost"
           size="sm"
@@ -102,22 +94,31 @@ export function TaskDetailsSidebar({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {/* Status and Priority Row */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={task.completed !== null}
-              className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", 
-                getPriorityCheckboxColor(task.priority))}
-              onChange={useCallback(() => 
-                onUpdateTask({ completed: task.completed ? null : new Date() }), 
-                [onUpdateTask, task.completed])}
-            />
-          </div>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* Title and checkbox row */}
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={task.completed !== null}
+            className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary",
+              getPriorityCheckboxColor(task.priority))}
+            onChange={useCallback(() =>
+              onUpdateTask({ completed: task.completed ? null : new Date() }),
+              [onUpdateTask, task.completed])}
+          />
+          <Input
+            value={task.title}
+            onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) =>
+              onUpdateTask({ title: e.target.value }), [onUpdateTask])}
+            className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0 bg-transparent flex-1"
+          />
+        </div>
 
-          <div className="flex items-center gap-2">
+        {/* Properties with left-right layout */}
+        <div className="space-y-3">
+          {/* Priority */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground">Priority</span>
             <Select
               value={task.priority}
               onValueChange={useCallback((value: string) =>
@@ -180,123 +181,126 @@ export function TaskDetailsSidebar({
               </SelectContent>
             </Select>
           </div>
+
+          {/* Timeframe */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground">Timeframe</span>
+            <Select
+              value={task.timeframe}
+              onValueChange={useCallback((value: string) =>
+                onUpdateTask({ timeframe: value as Task["timeframe"] }), [onUpdateTask])}
+            >
+              <SelectTrigger className="w-24">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="NOW">Now</SelectItem>
+                <SelectItem value="NEXT">Next</SelectItem>
+                <SelectItem value="LATER">Later</SelectItem>
+                <SelectItem value="SOMEDAY">Someday</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Due Date */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground">Due Date</span>
+            <TaskDateTimePicker
+              date={task.dueDate}
+              onDateChange={useCallback((date: Date | undefined) =>
+                onUpdateTask({ dueDate: date }), [onUpdateTask])}
+              placeholder="Pick a date"
+              align="center"
+              side="left"
+              allowClear={true}
+            />
+          </div>
+
+          {/* Project */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground">Project</span>
+            <Select
+              value={task.project || "none"}
+              onValueChange={useCallback((value: string) => {
+                const projectId = value === "none" ? undefined : value;
+                const areaId = getAreaFromProject(projectId);
+                onUpdateTask({
+                  project: projectId,
+                  area: areaId
+                });
+              }, [onUpdateTask, getAreaFromProject])}
+            >
+              <SelectTrigger className="w-32">
+                <SelectValue placeholder="Select project" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No project</SelectItem>
+                {projects.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Area */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground">Area</span>
+            <div className="flex items-center gap-2">
+              {getAreaFromProject(task.project) ? (
+                <span className={cn(
+                  "text-xs text-white px-2 py-1 rounded",
+                  areas.find(a => a.id === getAreaFromProject(task.project))?.color || "bg-muted"
+                )}>
+                  {areas.find(a => a.id === getAreaFromProject(task.project))?.name}
+                </span>
+              ) : (
+                <span className="text-sm text-muted-foreground">No area</span>
+              )}
+            </div>
+          </div>
+
+          {/* Completed Date (if task is completed) */}
+          {task.completed !== null && (
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-foreground">Completed</span>
+              <span className="text-sm text-muted-foreground">
+                {formatDateTime(task.completed)}
+              </span>
+            </div>
+          )}
         </div>
+
+        {/* Divider */}
+        <div className="border-t border-border my-4"></div>
 
         {/* Description */}
         <div>
           <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
           <Textarea
             value={task.description || ""}
-            onChange={useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => 
+            onChange={useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) =>
               onUpdateTask({ description: e.target.value }), [onUpdateTask])}
             placeholder="Enter task description"
             rows={3}
           />
         </div>
 
-        {/* Due Date */}
-        <div>
-          <h4 className="text-sm font-medium text-foreground mb-2">Due Date</h4>
-          <TaskDateTimePicker
-            date={task.dueDate}
-            onDateChange={useCallback((date: Date | undefined) => 
-              onUpdateTask({ dueDate: date }), [onUpdateTask])}
-            placeholder="Pick a date"
-            align="center"
-            side="left"
-            allowClear={true}
-          />
-        </div>
-
-        {/* Timeframe */}
-        <div>
-          <h4 className="text-sm font-medium text-foreground mb-2">Timeframe</h4>
-          <Select
-            value={task.timeframe}
-            onValueChange={useCallback((value: string) => 
-              onUpdateTask({ timeframe: value as Task["timeframe"] }), [onUpdateTask])}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="NOW">Now</SelectItem>
-              <SelectItem value="NEXT">Next</SelectItem>
-              <SelectItem value="LATER">Later</SelectItem>
-              <SelectItem value="SOMEDAY">Someday</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Project */}
-        <div>
-          <h4 className="text-sm font-medium text-foreground mb-2">Project</h4>
-          <Select
-            value={task.project || "none"}
-            onValueChange={useCallback((value: string) => {
-              const projectId = value === "none" ? undefined : value;
-              const areaId = getAreaFromProject(projectId);
-              onUpdateTask({
-                project: projectId,
-                area: areaId
-              });
-            }, [onUpdateTask, getAreaFromProject])}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select project" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">No project</SelectItem>
-              {projects.map((project) => (
-                <SelectItem key={project.id} value={project.id}>
-                  {project.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Area (read-only, derived from project) */}
-        <div>
-          <h4 className="text-sm font-medium text-foreground mb-2">Area</h4>
-          <div className="flex items-center gap-2">
-            {getAreaFromProject(task.project) ? (
-              <span className={cn(
-                "text-xs text-white px-2 py-1 rounded",
-                areas.find(a => a.id === getAreaFromProject(task.project))?.color || "bg-muted"
-              )}>
-                {areas.find(a => a.id === getAreaFromProject(task.project))?.name}
-              </span>
-            ) : (
-              <span className="text-sm text-muted-foreground">No area (no project assigned)</span>
-            )}
-          </div>
-        </div>
-
-        {/* Created Date */}
-        <div>
-          <h4 className="text-sm font-medium text-foreground mb-2">Created</h4>
-          <span className="text-sm text-muted-foreground">
-            {formatDateTime(task.created)}
-          </span>
-        </div>
-
-        {/* Completed Date */}
-        {task.completed !== null && (
-          <div>
-            <h4 className="text-sm font-medium text-foreground mb-2">Completed</h4>
-            <span className="text-sm text-muted-foreground">
-              {formatDateTime(task.completed)}
+        {/* Bottom row: Created and Task ID */}
+        <div className="flex items-center justify-between pt-4 mt-auto">
+          <div className="flex flex-col">
+            <span className="text-xs font-medium text-foreground">Created</span>
+            <span className="text-xs text-muted-foreground">
+              {formatDateTime(task.created)}
             </span>
           </div>
-        )}
-
-        {/* Task ID */}
-        <div>
-          <h4 className="text-sm font-medium text-foreground mb-2">Task ID</h4>
-          <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
-            {task.id}
-          </code>
+          <div className="flex flex-col items-end">
+            <span className="text-xs font-medium text-foreground">Task ID</span>
+            <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
+              {task.id}
+            </code>
+          </div>
         </div>
       </div>
     </div>
