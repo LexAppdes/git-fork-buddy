@@ -62,6 +62,21 @@ const getPriorityCheckboxColor = (priority: string) => {
   }
 };
 
+const getTimeframeColor = (timeframe: string) => {
+  switch (timeframe) {
+    case "NOW":
+      return "bg-red-500 text-white";
+    case "NEXT":
+      return "bg-amber-500 text-white";
+    case "LATER":
+      return "bg-blue-500 text-white";
+    case "SOMEDAY":
+      return "bg-green-500 text-white";
+    default:
+      return "bg-muted text-muted-foreground";
+  }
+};
+
 export function TaskDetailsSidebar({
   isOpen,
   task,
