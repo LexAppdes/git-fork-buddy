@@ -5,7 +5,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { X } from "lucide-react";
+import { X, Calendar } from "lucide-react";
 
 interface SimpleDatePickerProps {
   date?: Date;
