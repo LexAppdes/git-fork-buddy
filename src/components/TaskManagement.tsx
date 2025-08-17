@@ -918,8 +918,8 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                                 {getAreaFromProject(task.project) && <span className={cn("text-xs text-white px-2 py-1 rounded", mockAreas.find(a => a.id === getAreaFromProject(task.project))?.color || "bg-muted")}>
                                     {mockAreas.find(a => a.id === getAreaFromProject(task.project))?.name}
                                   </span>}
-                                {task.dueTime && <span className="text-xs text-blue-600 font-medium">
-                                  {task.dueTime}
+                                {task.timeInterval && <span className="text-xs text-blue-600 font-medium">
+                                  {task.timeInterval}
                                 </span>}
                                 {task.dueDate && <ClickableDueDate
                                   date={task.dueDate}
