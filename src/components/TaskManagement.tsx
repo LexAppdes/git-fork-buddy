@@ -1292,9 +1292,31 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                                {task.title}
                              </h4>
                              <div className="flex items-center gap-2">
-                               {task.project && <span className="text-xs text-gray-500">
-                                 {mockProjects.find(p => p.id === task.project)?.title}
-                               </span>}
+                               {task.project ? (
+                                 <span className="text-xs text-gray-500">
+                                   {mockProjects.find(p => p.id === task.project)?.title}
+                                 </span>
+                               ) : (
+                                 <Select
+                                   value="none"
+                                   onValueChange={(value) => handleProjectAssignment(task, value)}
+                                 >
+                                   <SelectTrigger
+                                     className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded flex items-center justify-center [&_svg:last-child]:hidden"
+                                     onClick={(e) => e.stopPropagation()}
+                                   >
+                                     <Folder className="w-3 h-3 text-muted-foreground" />
+                                   </SelectTrigger>
+                                   <SelectContent onClick={(e) => e.stopPropagation()}>
+                                     <SelectItem value="none">No project</SelectItem>
+                                     {mockProjects.map((project) => (
+                                       <SelectItem key={project.id} value={project.id}>
+                                         {project.title}
+                                       </SelectItem>
+                                     ))}
+                                   </SelectContent>
+                                 </Select>
+                               )}
                                {task.dueDate && <ClickableDueDate
                                  date={task.dueDate}
                                  timeInterval={task.timeInterval}
