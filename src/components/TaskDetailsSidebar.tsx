@@ -182,8 +182,7 @@ export function TaskDetailsSidebar({
             <span className="text-sm text-muted-foreground w-20">Priority</span>
             <Select
               value={task.priority}
-              onValueChange={useCallback((value: string) =>
-                onUpdateTask({ priority: value as Task["priority"] }), [onUpdateTask])}
+              onValueChange={handlePriorityChange}
             >
               <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
                 <img
