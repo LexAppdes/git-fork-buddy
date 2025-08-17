@@ -461,12 +461,14 @@ const formatDateTime = (date: Date) => {
 
 const ClickableDueDate = ({
   date,
+  timeInterval,
   taskId,
   onDateChange,
   formatFunction = formatSimpleDate,
   className = "text-xs text-muted-foreground"
 }: {
   date: Date;
+  timeInterval?: string;
   taskId: string;
   onDateChange: (taskId: string, date: Date | undefined) => void;
   formatFunction?: (date: Date) => string;
@@ -478,7 +480,7 @@ const ClickableDueDate = ({
 
   return (
     <SimpleDatePicker
-      date={date}
+      date={prepareDateForPicker(date, timeInterval)}
       onDateChange={(newDate) => onDateChange(taskId, newDate)}
       align="center"
       side="right"
