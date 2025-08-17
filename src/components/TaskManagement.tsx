@@ -86,7 +86,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: tomorrow,
-  dueTime: "14:30",
+  timeInterval: "14:30-16:00",
   area: "work",
   project: "2", // Mobile App Development
   created: threeDaysAgo,
