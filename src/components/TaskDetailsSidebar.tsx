@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TaskDateTimePicker, InlineTaskDateTimePicker } from "@/components/ui/improved-date-time-picker";
+import { InlineDateTimePicker } from "@/components/ui/date-time-picker";
 import { format } from "date-fns";
 
 interface Task {
