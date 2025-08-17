@@ -292,7 +292,7 @@ export function TaskDetailsSidebar({
               date={task.dueDate}
               onDateChange={handleDueDateChange}
               align="start"
-              side="bottom"
+              side="left"
             >
               <span className="text-sm font-medium text-foreground cursor-pointer hover:text-primary">
                 {task.dueDate ? formatDateTime(task.dueDate) : 'No due date'}
