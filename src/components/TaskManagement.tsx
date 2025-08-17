@@ -1045,7 +1045,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                 </h3>
                 <div className="flex items-center gap-2 ml-2">
                   {task.project ? (
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                    <span className="text-xs text-gray-500">
                       {mockProjects.find(p => p.id === task.project)?.title}
                     </span>
                   ) : (
@@ -1119,7 +1119,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                   </h3>
                 <div className="flex items-center gap-2 ml-2">
                   {task.project ? (
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                    <span className="text-xs text-gray-500">
                       {mockProjects.find(p => p.id === task.project)?.title}
                     </span>
                   ) : (
@@ -1205,7 +1205,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                                {task.title}
                              </h4>
                              <div className="flex items-center gap-2">
-                               {task.project && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                               {task.project && <span className="text-xs text-gray-500">
                                  {mockProjects.find(p => p.id === task.project)?.title}
                                </span>}
                                {task.dueDate && <ClickableDueDate
