@@ -15,6 +15,7 @@ interface Task {
   priority: "low" | "medium" | "urgent";
   completed: Date | null;
   dueDate?: Date;
+  timeInterval?: string; // time interval in HH:MM-HH:MM format
   area?: string;
   project?: string;
   step?: string;
