@@ -1637,7 +1637,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="dueDate">Due Date</Label>
-                        <TaskDateTimePicker
+                        <SimpleDatePickerButton
                           date={newTask.dueDate}
                           onDateChange={handleNewTaskDateChange}
                           placeholder="Pick a date"
