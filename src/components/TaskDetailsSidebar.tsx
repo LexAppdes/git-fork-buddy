@@ -150,7 +150,7 @@ export function TaskDetailsSidebar({
           <Input
             value={task.title}
             onChange={handleTitleChange}
-            className="text-lg font-semibold border-none p-0 h-auto focus-visible:ring-0 bg-transparent flex-1"
+            className="text-lg leading-[22px] font-semibold border-none p-0 h-auto focus-visible:ring-0 bg-transparent flex-1"
           />
         </div>
 
