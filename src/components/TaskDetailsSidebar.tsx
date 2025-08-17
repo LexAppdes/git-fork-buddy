@@ -161,8 +161,7 @@ export function TaskDetailsSidebar({
             <span className="text-sm text-muted-foreground w-20">Timeframe</span>
             <Select
               value={task.timeframe}
-              onValueChange={useCallback((value: string) =>
-                onUpdateTask({ timeframe: value as Task["timeframe"] }), [onUpdateTask])}
+              onValueChange={handleTimeframeChange}
             >
               <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
                 <span className={cn("text-xs px-2 py-1 rounded font-medium uppercase", getTimeframeColor(task.timeframe))}>
