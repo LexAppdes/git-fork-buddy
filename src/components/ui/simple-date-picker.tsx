@@ -26,18 +26,18 @@ export function SimpleDatePicker({
 }: SimpleDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [includeTime, setIncludeTime] = useState(false);
+  const [startTime, setStartTime] = useState({ hour: 9, minute: 0 });
+  const [endTime, setEndTime] = useState({ hour: 10, minute: 0 });
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (selectedDate) {
-      if (includeTime && date) {
-        // Preserve existing time if time is enabled
+      if (includeTime) {
+        // When time is enabled, store both start and end times in the date object
+        // We'll use a custom property to store the end time
         const newDate = new Date(selectedDate);
-        newDate.setHours(date.getHours(), date.getMinutes(), 0, 0);
-        onDateChange(newDate);
-      } else if (includeTime) {
-        // Set default time (9:00 AM) if no existing time
-        const newDate = new Date(selectedDate);
-        newDate.setHours(9, 0, 0, 0);
+        newDate.setHours(startTime.hour, startTime.minute, 0, 0);
+        // Store end time as a custom property
+        (newDate as any).__endTime = { hour: endTime.hour, minute: endTime.minute };
         onDateChange(newDate);
       } else {
         // No time - set to start of day
@@ -50,10 +50,24 @@ export function SimpleDatePicker({
     }
   };
 
-  const handleTimeChange = (hours: number, minutes: number) => {
+  const handleStartTimeChange = (hours: number, minutes: number) => {
+    setStartTime({ hour: hours, minute: minutes });
     if (date) {
       const newDate = new Date(date);
       newDate.setHours(hours, minutes, 0, 0);
+      // Preserve end time
+      (newDate as any).__endTime = { hour: endTime.hour, minute: endTime.minute };
+      onDateChange(newDate);
+    }
+  };
+
+  const handleEndTimeChange = (hours: number, minutes: number) => {
+    setEndTime({ hour: hours, minute: minutes });
+    if (date) {
+      const newDate = new Date(date);
+      newDate.setHours(startTime.hour, startTime.minute, 0, 0);
+      // Store end time
+      (newDate as any).__endTime = { hour: hours, minute: minutes };
       onDateChange(newDate);
     }
   };
@@ -63,8 +77,11 @@ export function SimpleDatePicker({
     setIsOpen(false);
   };
 
-  const currentHour = date ? date.getHours() : 9;
-  const currentMinute = date ? date.getMinutes() : 0;
+  // Initialize times from existing date
+  const currentStartHour = date ? date.getHours() : startTime.hour;
+  const currentStartMinute = date ? date.getMinutes() : startTime.minute;
+  const currentEndHour = date && (date as any).__endTime ? (date as any).__endTime.hour : endTime.hour;
+  const currentEndMinute = date && (date as any).__endTime ? (date as any).__endTime.minute : endTime.minute;
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = [0, 15, 30, 45];
