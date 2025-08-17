@@ -221,7 +221,7 @@ const TaskCard = ({
           </div>
           <div className="flex items-center">
             {task.project ? (
-              <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
+              <span className="text-xs text-gray-500">
                 {projects?.find(p => p.id === task.project)?.title || 'Project'}
               </span>
             ) : (
