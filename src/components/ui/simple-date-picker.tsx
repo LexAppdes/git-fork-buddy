@@ -126,15 +126,16 @@ export function SimpleDatePicker({
           {/* Time Selection */}
           {includeTime && (
             <div className="space-y-3">
+              {/* Start Time */}
               <div>
                 <label className="text-xs font-medium text-muted-foreground mb-2 block">
-                  Time
+                  Start Time
                 </label>
                 <div className="flex items-center space-x-1">
                   <Select
-                    value={currentHour.toString()}
-                    onValueChange={(value) => 
-                      handleTimeChange(parseInt(value), currentMinute)
+                    value={currentStartHour.toString()}
+                    onValueChange={(value) =>
+                      handleStartTimeChange(parseInt(value), currentStartMinute)
                     }
                   >
                     <SelectTrigger className="w-16 h-8">
@@ -150,9 +151,53 @@ export function SimpleDatePicker({
                   </Select>
                   <span className="text-sm">:</span>
                   <Select
-                    value={currentMinute.toString()}
-                    onValueChange={(value) => 
-                      handleTimeChange(currentHour, parseInt(value))
+                    value={currentStartMinute.toString()}
+                    onValueChange={(value) =>
+                      handleStartTimeChange(currentStartHour, parseInt(value))
+                    }
+                  >
+                    <SelectTrigger className="w-16 h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {minutes.map((minute) => (
+                        <SelectItem key={minute} value={minute.toString()}>
+                          {minute.toString().padStart(2, '0')}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* End Time */}
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-2 block">
+                  End Time
+                </label>
+                <div className="flex items-center space-x-1">
+                  <Select
+                    value={currentEndHour.toString()}
+                    onValueChange={(value) =>
+                      handleEndTimeChange(parseInt(value), currentEndMinute)
+                    }
+                  >
+                    <SelectTrigger className="w-16 h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {hours.map((hour) => (
+                        <SelectItem key={hour} value={hour.toString()}>
+                          {hour.toString().padStart(2, '0')}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <span className="text-sm">:</span>
+                  <Select
+                    value={currentEndMinute.toString()}
+                    onValueChange={(value) =>
+                      handleEndTimeChange(currentEndHour, parseInt(value))
                     }
                   >
                     <SelectTrigger className="w-16 h-8">
