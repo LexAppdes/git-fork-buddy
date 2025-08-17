@@ -124,7 +124,7 @@ export function TaskDetailsSidebar({
   return (
     <div className="fixed right-0 top-0 h-full w-96 bg-white border-l border-border z-50 overflow-hidden flex flex-col">
       {/* Header with close button only */}
-      <div className="flex items-center justify-end p-4 border-b border-border">
+      <div className="flex items-center justify-end p-3 border-b border-border">
         <Button
           variant="ghost"
           size="sm"
