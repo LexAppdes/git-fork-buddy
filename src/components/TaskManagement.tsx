@@ -222,7 +222,7 @@ const mockTasks: Task[] = [{
   priority: "medium",
   completed: null,
   dueDate: twoDaysAgo,
-  dueTime: "15:30",
+  timeInterval: "15:30-17:00",
   created: fiveDaysAgo,
   timeframe: "NOW"
 }, {
