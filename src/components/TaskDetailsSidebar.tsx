@@ -114,104 +114,100 @@ export function TaskDetailsSidebar({
           />
         </div>
 
-        {/* Properties with left-aligned layout */}
+        {/* Properties with horizontal layout */}
         <div className="space-y-3">
           {/* Timeframe */}
-          <div>
+          <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Timeframe</span>
-            <div className="mt-1">
-              <Select
-                value={task.timeframe}
-                onValueChange={useCallback((value: string) =>
-                  onUpdateTask({ timeframe: value as Task["timeframe"] }), [onUpdateTask])}
-              >
-                <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
-                  <span className="text-sm font-medium text-foreground">
-                    {task.timeframe}
-                  </span>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="NOW">NOW</SelectItem>
-                  <SelectItem value="NEXT">NEXT</SelectItem>
-                  <SelectItem value="LATER">LATER</SelectItem>
-                  <SelectItem value="SOMEDAY">SOMEDAY</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select
+              value={task.timeframe}
+              onValueChange={useCallback((value: string) =>
+                onUpdateTask({ timeframe: value as Task["timeframe"] }), [onUpdateTask])}
+            >
+              <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
+                <span className="text-sm font-medium text-foreground">
+                  {task.timeframe}
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="NOW">NOW</SelectItem>
+                <SelectItem value="NEXT">NEXT</SelectItem>
+                <SelectItem value="LATER">LATER</SelectItem>
+                <SelectItem value="SOMEDAY">SOMEDAY</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Priority */}
-          <div>
+          <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Priority</span>
-            <div className="mt-1">
-              <Select
-                value={task.priority}
-                onValueChange={useCallback((value: string) =>
-                  onUpdateTask({ priority: value as Task["priority"] }), [onUpdateTask])}
-              >
-                <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
-                    alt="Priority flag"
-                    className="w-5 h-5"
-                    style={{
-                      filter: task.priority === "urgent"
-                        ? "brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(7434%) hue-rotate(2deg) brightness(102%) contrast(107%)"
-                        : task.priority === "medium"
-                        ? "brightness(0) saturate(100%) invert(70%) sepia(70%) saturate(421%) hue-rotate(13deg) brightness(104%) contrast(94%)"
-                        : "brightness(0) saturate(100%) invert(47%) sepia(96%) saturate(1288%) hue-rotate(204deg) brightness(97%) contrast(94%)"
-                    }}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">
-                    <div className="flex items-center gap-2">
-                      <img
-                        src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
-                        alt="Low priority"
-                        className="w-4 h-4"
-                        style={{
-                          filter: "brightness(0) saturate(100%) invert(47%) sepia(96%) saturate(1288%) hue-rotate(204deg) brightness(97%) contrast(94%)"
-                        }}
-                      />
-                      <span>Low</span>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="medium">
-                    <div className="flex items-center gap-2">
-                      <img
-                        src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
-                        alt="Medium priority"
-                        className="w-4 h-4"
-                        style={{
-                          filter: "brightness(0) saturate(100%) invert(70%) sepia(70%) saturate(421%) hue-rotate(13deg) brightness(104%) contrast(94%)"
-                        }}
-                      />
-                      <span>Medium</span>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="urgent">
-                    <div className="flex items-center gap-2">
-                      <img
-                        src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
-                        alt="High priority"
-                        className="w-4 h-4"
-                        style={{
-                          filter: "brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(7434%) hue-rotate(2deg) brightness(102%) contrast(107%)"
-                        }}
-                      />
-                      <span>High</span>
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select
+              value={task.priority}
+              onValueChange={useCallback((value: string) =>
+                onUpdateTask({ priority: value as Task["priority"] }), [onUpdateTask])}
+            >
+              <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
+                  alt="Priority flag"
+                  className="w-5 h-5"
+                  style={{
+                    filter: task.priority === "urgent"
+                      ? "brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(7434%) hue-rotate(2deg) brightness(102%) contrast(107%)"
+                      : task.priority === "medium"
+                      ? "brightness(0) saturate(100%) invert(70%) sepia(70%) saturate(421%) hue-rotate(13deg) brightness(104%) contrast(94%)"
+                      : "brightness(0) saturate(100%) invert(47%) sepia(96%) saturate(1288%) hue-rotate(204deg) brightness(97%) contrast(94%)"
+                  }}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="low">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
+                      alt="Low priority"
+                      className="w-4 h-4"
+                      style={{
+                        filter: "brightness(0) saturate(100%) invert(47%) sepia(96%) saturate(1288%) hue-rotate(204deg) brightness(97%) contrast(94%)"
+                      }}
+                    />
+                    <span>Low</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="medium">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
+                      alt="Medium priority"
+                      className="w-4 h-4"
+                      style={{
+                        filter: "brightness(0) saturate(100%) invert(70%) sepia(70%) saturate(421%) hue-rotate(13deg) brightness(104%) contrast(94%)"
+                      }}
+                    />
+                    <span>Medium</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="urgent">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F871cdad99f0e4f7383e2724856d9c17b%2F63cf4952854846e5994e15d4c2b9fc7e?format=webp&width=800"
+                      alt="High priority"
+                      className="w-4 h-4"
+                      style={{
+                        filter: "brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(7434%) hue-rotate(2deg) brightness(102%) contrast(107%)"
+                      }}
+                    />
+                    <span>High</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Area */}
-          <div>
+          <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Area</span>
-            <div className="mt-1">
+            <div>
               {getAreaFromProject(task.project) ? (
                 <span className={cn(
                   "text-xs text-white px-2 py-1 rounded",
@@ -226,62 +222,56 @@ export function TaskDetailsSidebar({
           </div>
 
           {/* Project */}
-          <div>
+          <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Project</span>
-            <div className="mt-1">
-              <Select
-                value={task.project || "none"}
-                onValueChange={useCallback((value: string) => {
-                  const projectId = value === "none" ? undefined : value;
-                  const areaId = getAreaFromProject(projectId);
-                  onUpdateTask({
-                    project: projectId,
-                    area: areaId
-                  });
-                }, [onUpdateTask, getAreaFromProject])}
-              >
-                <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
-                  <span className="text-sm font-medium text-foreground">
-                    {task.project ? projects.find(p => p.id === task.project)?.title || 'Unknown Project' : 'No project'}
-                  </span>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No project</SelectItem>
-                  {projects.map((project) => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <Select
+              value={task.project || "none"}
+              onValueChange={useCallback((value: string) => {
+                const projectId = value === "none" ? undefined : value;
+                const areaId = getAreaFromProject(projectId);
+                onUpdateTask({
+                  project: projectId,
+                  area: areaId
+                });
+              }, [onUpdateTask, getAreaFromProject])}
+            >
+              <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
+                <span className="text-sm font-medium text-foreground">
+                  {task.project ? projects.find(p => p.id === task.project)?.title || 'Unknown Project' : 'No project'}
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No project</SelectItem>
+                {projects.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Due Date */}
-          <div>
+          <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Due Date</span>
-            <div className="mt-1">
-              <TaskDateTimePicker
-                date={task.dueDate}
-                onDateChange={useCallback((date: Date | undefined) =>
-                  onUpdateTask({ dueDate: date }), [onUpdateTask])}
-                placeholder="Pick a date"
-                align="start"
-                side="left"
-                allowClear={true}
-              />
-            </div>
+            <TaskDateTimePicker
+              date={task.dueDate}
+              onDateChange={useCallback((date: Date | undefined) =>
+                onUpdateTask({ dueDate: date }), [onUpdateTask])}
+              placeholder="Pick a date"
+              align="start"
+              side="left"
+              allowClear={true}
+            />
           </div>
 
           {/* Completed Date (if task is completed) */}
           {task.completed !== null && (
-            <div>
+            <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Completed</span>
-              <div className="mt-1">
-                <span className="text-sm font-medium text-foreground">
-                  {formatDateTime(task.completed)}
-                </span>
-              </div>
+              <span className="text-sm font-medium text-foreground">
+                {formatDateTime(task.completed)}
+              </span>
             </div>
           )}
         </div>
