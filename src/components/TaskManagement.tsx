@@ -24,6 +24,7 @@ interface Task {
   priority: "low" | "medium" | "urgent";
   completed: Date | null; // null = not completed, Date = completion timestamp
   dueDate?: Date;
+  dueTime?: string; // time in HH:MM format
   area?: string;
   project?: string;
   step?: string;
