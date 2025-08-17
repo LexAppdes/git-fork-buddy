@@ -266,7 +266,8 @@ const KanbanColumn = ({
   onUpdateTaskDueDate,
   areas,
   projects,
-  onProjectAssignment
+  onProjectAssignment,
+  selectedTask
 }: {
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
   tasks: Task[];
@@ -281,6 +282,7 @@ const KanbanColumn = ({
     area: string;
   }>;
   onProjectAssignment?: (task: Task, projectId: string) => void;
+  selectedTask?: Task | null;
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -426,6 +428,7 @@ export function KanbanBoard({
             areas={areas}
             projects={projects}
             onProjectAssignment={onProjectAssignment}
+            selectedTask={selectedTask}
           />
         ))}
       </div>

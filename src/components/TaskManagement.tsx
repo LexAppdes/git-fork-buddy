@@ -989,11 +989,10 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                                 </span>}
                               <span className={cn("text-xs px-2 py-1 rounded font-medium uppercase", getTimeframeColor(task.timeframe))}>
                                 {task.timeframe}
-                              </span>
-                            </div>
+                            </span>
                           </div>
-                          {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
                         </div>
+                      </div>
                       </div>
                     </div>)}
                 </div>}
@@ -1096,7 +1095,6 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                   </InlineTaskDateTimePicker>
                 </div>
               </div>
-              {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
             </div>
           </div>
         </div>)}
@@ -1155,7 +1153,6 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                   </span>
                 </div>
               </div>
-              {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
             </div>
           </div>
         </div>)}
@@ -1210,11 +1207,10 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                                  onDateChange={updateTaskDueDate}
                                  formatFunction={formatTodayViewDate}
                                  className={cn("text-xs text-muted-foreground font-medium", isTaskOverdue(task) && "text-red-500")}
-                               />}
-                             </div>
+                             />}
                            </div>
-                           {task.description && <p className="text-sm text-muted-foreground mt-1">{task.description}</p>}
                          </div>
+                       </div>
                        </div>
                      </div>)}
                 </div>}
