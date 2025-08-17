@@ -1229,6 +1229,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                   {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
                       <ClickableDueDate
                         date={task.dueDate}
+                        timeInterval={task.timeInterval}
                         taskId={task.id}
                         onDateChange={updateTaskDueDate}
                         formatFunction={formatTaskDate}
