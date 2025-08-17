@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TaskDateTimePicker } from "@/components/ui/improved-date-time-picker";
+import { SimpleDatePicker } from "@/components/ui/simple-date-picker";
 import { format } from "date-fns";
 
 interface Task {
@@ -46,7 +46,21 @@ interface TaskDetailsSidebarProps {
 }
 
 const formatDateTime = (date: Date) => {
-  return format(date, "dd.MM.yyyy HH:mm");
+  // Only show time if it's not midnight (00:00) or if there's an end time
+  const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0 || (date as any).__endTime;
+
+  if (hasTime) {
+    const timeStr = format(date, "dd.MM.yyyy HH:mm");
+    // Add end time if available
+    if ((date as any).__endTime) {
+      const endTime = (date as any).__endTime;
+      return `${timeStr} - ${endTime.hour.toString().padStart(2, '0')}:${endTime.minute.toString().padStart(2, '0')}`;
+    }
+    return timeStr;
+  } else {
+    // Just show the date without time
+    return format(date, "dd.MM.yyyy");
+  }
 };
 
 const getPriorityCheckboxColor = (priority: string) => {
@@ -114,6 +128,9 @@ export function TaskDetailsSidebar({
   const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) =>
     onUpdateTask({ description: e.target.value }), [onUpdateTask]);
 
+  const handleDueDateChange = useCallback((date: Date | undefined) =>
+    onUpdateTask({ dueDate: date }), [onUpdateTask]);
+
   if (!isOpen || !task) {
     return null;
   }
@@ -121,7 +138,7 @@ export function TaskDetailsSidebar({
   return (
     <div className="fixed right-0 top-0 h-full w-96 bg-white border-l border-border z-50 overflow-hidden flex flex-col">
       {/* Header with close button only */}
-      <div className="flex items-center justify-end p-4 border-b border-border">
+      <div className="flex items-center justify-end p-3 border-b border-border">
         <Button
           variant="ghost"
           size="sm"
@@ -285,9 +302,16 @@ export function TaskDetailsSidebar({
           {/* Due Date */}
           <div className="flex items-center">
             <span className="text-sm text-muted-foreground w-20">Due Date</span>
-            <span className="text-sm font-medium text-foreground">
-              {task.dueDate ? formatDateTime(task.dueDate) : 'No due date'}
-            </span>
+            <SimpleDatePicker
+              date={task.dueDate}
+              onDateChange={handleDueDateChange}
+              align="start"
+              side="left"
+            >
+              <span className="text-sm font-medium text-foreground cursor-pointer hover:text-primary">
+                {task.dueDate ? formatDateTime(task.dueDate) : 'No due date'}
+              </span>
+            </SimpleDatePicker>
           </div>
 
           {/* Completed Date (if task is completed) */}

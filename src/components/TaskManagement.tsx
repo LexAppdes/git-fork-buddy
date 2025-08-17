@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { DateTimePicker, InlineDateTimePicker } from "@/components/ui/date-time-picker";
-import { TaskDateTimePicker, InlineTaskDateTimePicker } from "@/components/ui/improved-date-time-picker";
+import { SimpleDatePicker, SimpleDatePickerButton } from "@/components/ui/simple-date-picker";
 import { format, isToday, isTomorrow, isAfter, startOfDay, endOfDay, isYesterday, differenceInDays, isBefore } from "date-fns";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { Badge } from "@/components/ui/badge";
@@ -431,7 +431,7 @@ const ClickableDueDate = ({
   };
 
   return (
-    <InlineTaskDateTimePicker
+    <SimpleDatePicker
       date={date}
       onDateChange={(newDate) => onDateChange(taskId, newDate)}
       align="center"
@@ -444,7 +444,7 @@ const ClickableDueDate = ({
       >
         {formatFunction(date)}
       </span>
-    </InlineTaskDateTimePicker>
+    </SimpleDatePicker>
   );
 };
 interface TaskManagementProps {
@@ -587,7 +587,14 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       // Only update if there are actual changes
       if (!hasChanges) return prev;
 
-      return {...prev, ...updates};
+      const updatedTask = {...prev, ...updates};
+
+      // Immediately sync changes to the main tasks array
+      setTasks(prevTasks => prevTasks.map(task =>
+        task.id === prev.id ? updatedTask : task
+      ));
+
+      return updatedTask;
     });
   }, []);
   const toggleTask = (taskId: string) => {
@@ -867,7 +874,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                               </div>
                               <div className="flex items-center gap-2">
                                 {task.project ? (
-                                  <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                                  <span className="text-xs text-gray-500">
                                     {mockProjects.find(p => p.id === task.project)?.title}
                                   </span>
                                 ) : (
@@ -960,7 +967,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                             </h4>
                             <div className="flex items-center gap-2 ml-2">
                               {task.project ? (
-                                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                                <span className="text-xs text-gray-500">
                                   {mockProjects.find(p => p.id === task.project)?.title}
                                 </span>
                               ) : (
@@ -1038,7 +1045,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                 </h3>
                 <div className="flex items-center gap-2 ml-2">
                   {task.project ? (
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                    <span className="text-xs text-gray-500">
                       {mockProjects.find(p => p.id === task.project)?.title}
                     </span>
                   ) : (
@@ -1077,7 +1084,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                     </SelectContent>
                   </Select>
 
-                  <InlineTaskDateTimePicker
+                  <SimpleDatePicker
                     date={task.dueDate}
                     onDateChange={(date) => updateTaskDueDate(task.id, date)}
                     align="center"
@@ -1092,7 +1099,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                     >
                       <CalendarIcon className="w-3 h-3 text-muted-foreground" />
                     </Button>
-                  </InlineTaskDateTimePicker>
+                  </SimpleDatePicker>
                 </div>
               </div>
             </div>
@@ -1112,7 +1119,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                   </h3>
                 <div className="flex items-center gap-2 ml-2">
                   {task.project ? (
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                    <span className="text-xs text-gray-500">
                       {mockProjects.find(p => p.id === task.project)?.title}
                     </span>
                   ) : (
@@ -1198,7 +1205,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                                {task.title}
                              </h4>
                              <div className="flex items-center gap-2">
-                               {task.project && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                               {task.project && <span className="text-xs text-gray-500">
                                  {mockProjects.find(p => p.id === task.project)?.title}
                                </span>}
                                {task.dueDate && <ClickableDueDate
@@ -1281,7 +1288,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
   return <div className="bg-[#fafafa]">
       {/* Header with title */}
       <div className="bg-card">
-        <div className="flex items-center justify-between px-6 py-[18px] pb-5 bg-white border-[#e2e2e2]">
+        <div className="flex items-center justify-between px-6 py-3 bg-white border-[#e2e2e2]">
           <nav className="flex items-center gap-1 rounded-lg w-fit">
             {taskViews.map(view => {
             const isActive = activeView === view.id;
@@ -1636,7 +1643,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="dueDate">Due Date</Label>
-                        <TaskDateTimePicker
+                        <SimpleDatePickerButton
                           date={newTask.dueDate}
                           onDateChange={handleNewTaskDateChange}
                           placeholder="Pick a date"
