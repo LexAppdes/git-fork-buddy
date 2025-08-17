@@ -181,3 +181,51 @@ export function SimpleDatePicker({
     </Popover>
   );
 }
+
+// Button version of the date picker
+interface SimpleDatePickerButtonProps {
+  date?: Date;
+  onDateChange: (date: Date | undefined) => void;
+  placeholder?: string;
+  className?: string;
+  align?: "start" | "center" | "end";
+  side?: "top" | "right" | "bottom" | "left";
+  allowClear?: boolean;
+}
+
+export function SimpleDatePickerButton({
+  date,
+  onDateChange,
+  placeholder = "Pick a date",
+  className,
+  align = "center",
+  side = "right",
+  allowClear = true
+}: SimpleDatePickerButtonProps) {
+  return (
+    <SimpleDatePicker
+      date={date}
+      onDateChange={onDateChange}
+      align={align}
+      side={side}
+      allowClear={allowClear}
+    >
+      <Button
+        variant="outline"
+        className={cn(
+          "w-full justify-start text-left font-normal",
+          !date && "text-muted-foreground",
+          className
+        )}
+      >
+        {date ? (
+          date.getHours() !== 0 || date.getMinutes() !== 0 ?
+            `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` :
+            date.toLocaleDateString()
+        ) : (
+          <span>{placeholder}</span>
+        )}
+      </Button>
+    </SimpleDatePicker>
+  );
+}
