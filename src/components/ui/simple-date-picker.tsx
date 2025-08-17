@@ -281,7 +281,8 @@ export function SimpleDatePickerButton({
         )}
       >
         {date ? (
-          date.getHours() !== 0 || date.getMinutes() !== 0 ?
+          // Only show time if it's not midnight (00:00) or if there's an end time
+          date.getHours() !== 0 || date.getMinutes() !== 0 || (date as any).__endTime ?
             `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}${
               (date as any).__endTime ?
                 ` - ${(date as any).__endTime.hour.toString().padStart(2, '0')}:${(date as any).__endTime.minute.toString().padStart(2, '0')}` :
