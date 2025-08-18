@@ -234,4 +234,25 @@
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
   }
+
+  /* Universal 1.5px border override for all priority checkboxes */
+  input[type="checkbox"].priority-checkbox.checkbox-urgent,
+  input[type="checkbox"].priority-checkbox.checkbox-medium,
+  input[type="checkbox"].priority-checkbox.checkbox-low {
+    border-width: 1.5px !important;
+  }
+
+  /* Ensure checked states also have 1.5px borders */
+  input[type="checkbox"].priority-checkbox.checkbox-urgent:checked,
+  input[type="checkbox"].priority-checkbox.checkbox-medium:checked,
+  input[type="checkbox"].priority-checkbox.checkbox-low:checked {
+    border-width: 1.5px !important;
+  }
+
+  /* Ensure cancelled states also have 1.5px borders */
+  input[type="checkbox"].priority-checkbox.checkbox-urgent.cancelled,
+  input[type="checkbox"].priority-checkbox.checkbox-medium.cancelled,
+  input[type="checkbox"].priority-checkbox.checkbox-low.cancelled {
+    border-width: 1.5px !important;
+  }
 }
