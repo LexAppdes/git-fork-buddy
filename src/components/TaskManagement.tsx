@@ -675,9 +675,29 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     });
   }, []);
   const toggleTask = (taskId: string) => {
+    setTasks(prevTasks => prevTasks.map(task => {
+      if (task.id === taskId) {
+        // Cycle: unchecked -> checked -> unchecked
+        if (task.cancelled !== null) {
+          // If cancelled, go to unchecked
+          return { ...task, cancelled: null, completed: null };
+        } else if (task.completed === null) {
+          // If unchecked, go to checked
+          return { ...task, completed: new Date(), cancelled: null };
+        } else {
+          // If checked, go to unchecked
+          return { ...task, completed: null, cancelled: null };
+        }
+      }
+      return task;
+    }));
+  };
+
+  const cancelTask = (taskId: string) => {
     setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
       ...task,
-      completed: task.completed === null ? new Date() : null
+      completed: null,
+      cancelled: new Date()
     } : task));
   };
   const updateTaskTimeframe = (taskId: string, timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => {
