@@ -449,15 +449,6 @@ export function TaskDetailsSidebar({
           )}
         </div>
 
-        {/* Bottom row: Task ID only - Fixed at bottom */}
-        <div className="flex items-center justify-end pt-4 mt-auto">
-          <div className="flex flex-col items-end">
-            <span className="text-xs font-medium text-foreground">Task ID</span>
-            <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
-              {task.id}
-            </code>
-          </div>
-        </div>
       </div>
     </div>
   );
