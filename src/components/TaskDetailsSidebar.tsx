@@ -212,6 +212,14 @@ export function TaskDetailsSidebar({
     }
   }, [onUpdateTask]);
 
+  const handleCancelTask = useCallback(() => {
+    onUpdateTask({ cancelled: new Date(), completed: null });
+  }, [onUpdateTask]);
+
+  const handleClearDueDate = useCallback(() => {
+    onUpdateTask({ dueDate: undefined, timeInterval: undefined });
+  }, [onUpdateTask]);
+
   if (!isOpen || !task) {
     return null;
   }
