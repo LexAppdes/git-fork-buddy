@@ -436,10 +436,10 @@ export function TaskDetailsSidebar({
                 Activity feed coming soon...
               </div>
 
-              {/* Created info in Activity tab */}
+              {/* Task creation info in Activity tab */}
               <div className="pt-3 border-t">
                 <div className="flex flex-col">
-                  <span className="text-xs font-medium text-foreground">Created</span>
+                  <span className="text-xs font-medium text-foreground">Task #{task.id} created</span>
                   <span className="text-xs text-muted-foreground">
                     {formatDateTime(task.created)}
                   </span>
