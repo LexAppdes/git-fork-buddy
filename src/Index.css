@@ -190,7 +190,7 @@
   input[type="checkbox"].checkbox-medium.cancelled,
   input[type="checkbox"].checkbox-low.cancelled {
     background-color: #6b7280;
-    border: 1px solid #6b7280;
+    border: 1.5px solid #6b7280 !important;
   }
 
   /* Focus states */
