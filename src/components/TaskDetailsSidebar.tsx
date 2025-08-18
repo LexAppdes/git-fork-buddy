@@ -150,9 +150,20 @@ export function TaskDetailsSidebar({
   const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =>
     onUpdateTask({ title: e.target.value }), [onUpdateTask]);
 
-  const handleToggleComplete = useCallback(() =>
-    onUpdateTask({ completed: task?.completed ? null : new Date() }),
-    [onUpdateTask, task?.completed]);
+  const handleToggleComplete = useCallback(() => {
+    if (!task) return;
+    // Cycle: unchecked -> checked -> unchecked
+    if (task.cancelled !== null) {
+      // If cancelled, go to unchecked
+      onUpdateTask({ cancelled: null, completed: null });
+    } else if (task.completed === null) {
+      // If unchecked, go to checked
+      onUpdateTask({ completed: new Date(), cancelled: null });
+    } else {
+      // If checked, go to unchecked
+      onUpdateTask({ completed: null, cancelled: null });
+    }
+  }, [onUpdateTask, task]);
 
   const handleTimeframeChange = useCallback((value: string) =>
     onUpdateTask({ timeframe: value as Task["timeframe"] }), [onUpdateTask]);
