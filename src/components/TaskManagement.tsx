@@ -880,26 +880,32 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
   const filterAndSortTasks = (tasks: Task[]) => {
     // Apply completion filter for all views except completed view
     let filteredTasks = tasks;
+    const isTaskDone = (task: Task) => task.completed !== null || task.cancelled !== null;
+
     if (activeView === "today" && showCompleted) {
       // In Today view, when showing completed tasks, only show those completed today
       filteredTasks = tasks.filter(task =>
-        (task.completed === null && task.dueDate && task.dueDate <= endOfDay(new Date())) ||
-        (task.completed !== null && isToday(task.completed))
+        (!isTaskDone(task) && task.dueDate && task.dueDate <= endOfDay(new Date())) ||
+        ((task.completed !== null && isToday(task.completed)) || (task.cancelled !== null && isToday(task.cancelled)))
       );
-          } else if (activeView === "upcoming" && showCompleted) {
-        // In Upcoming view, when showing completed tasks, only show those completed today or later
-        filteredTasks = tasks.filter(task =>
-        task.completed === null ||
-        (task.completed !== null && task.completed >= startOfDay(new Date()))
+    } else if (activeView === "upcoming" && showCompleted) {
+      // In Upcoming view, when showing completed tasks, only show those completed today or later
+      filteredTasks = tasks.filter(task =>
+        !isTaskDone(task) ||
+        ((task.completed !== null && task.completed >= startOfDay(new Date())) ||
+         (task.cancelled !== null && task.cancelled >= startOfDay(new Date())))
       );
-          } else if (activeView !== "completed" && !showCompleted) {
-        filteredTasks = tasks.filter(task => task.completed === null);
+    } else if (activeView !== "completed" && !showCompleted) {
+      filteredTasks = tasks.filter(task => !isTaskDone(task));
     }
+
     return [...filteredTasks].sort((a, b) => {
       // Primary sort: For all views except "completed", unchecked tasks come first
       if (activeView !== "completed") {
-        if (a.completed !== b.completed) {
-          return a.completed ? 1 : -1; // unchecked first, checked last
+        const aIsDone = isTaskDone(a);
+        const bIsDone = isTaskDone(b);
+        if (aIsDone !== bIsDone) {
+          return aIsDone ? 1 : -1; // unchecked first, done tasks last
         }
       }
 
