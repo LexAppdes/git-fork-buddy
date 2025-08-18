@@ -1009,7 +1009,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                         <div className="flex-1">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <h4 className={cn("text-card-foreground", task.completed !== null && "line-through")}>
+                                <h4 className={cn("text-card-foreground", (task.completed !== null || task.cancelled !== null) && "line-through")}>
                                   {task.title}
                                 </h4>
                               </div>
