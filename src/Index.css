@@ -172,6 +172,27 @@
     line-height: 1;
   }
 
+  /* Cross mark for cancelled state */
+  input[type="checkbox"].priority-checkbox.cancelled::after {
+    content: "×";
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1;
+  }
+
+  /* All cancelled checkboxes are gray */
+  input[type="checkbox"].checkbox-urgent.cancelled,
+  input[type="checkbox"].checkbox-medium.cancelled,
+  input[type="checkbox"].checkbox-low.cancelled {
+    background-color: #6b7280;
+    border: 1px solid #6b7280;
+  }
+
   /* Focus states */
   input[type="checkbox"].priority-checkbox:focus {
     box-shadow: 0 0 0 2px hsl(var(--ring));
