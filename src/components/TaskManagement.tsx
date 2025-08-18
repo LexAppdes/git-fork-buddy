@@ -1477,7 +1477,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       case "inbox":
         return tasks.filter(task => !task.dueDate && !task.area);
       case "completed":
-        return tasks.filter(task => task.completed !== null);
+        return tasks.filter(task => task.completed !== null || task.cancelled !== null);
       default:
         return tasks;
     }
