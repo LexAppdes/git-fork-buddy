@@ -218,6 +218,7 @@ interface Task {
   description?: string;
   priority: "low" | "medium" | "urgent";
   completed: Date | null;
+  cancelled: Date | null;
   dueDate?: Date;
   area?: string;
   project?: string;
