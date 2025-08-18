@@ -1105,8 +1105,8 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
               {isExpanded && <div className="space-y-0 animate-fade-in">
                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-center gap-3">
-                        {task.completed && <span className="text-xs text-muted-foreground font-medium w-12 text-right">
-                          {formatCompletedTime(task.completed)}
+                        {(task.completed || task.cancelled) && <span className="text-xs text-muted-foreground font-medium w-12 text-right">
+                          {formatCompletedTime(task.completed || task.cancelled!)}
                         </span>}
                         <input type="checkbox" checked={task.completed !== null || task.cancelled !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority, task.cancelled !== null))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
