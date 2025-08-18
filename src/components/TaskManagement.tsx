@@ -864,16 +864,17 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       handleSidebarClose();
     }
   }, [activeView]);
-  const getPriorityCheckboxColor = (priority: string) => {
+  const getPriorityCheckboxColor = (priority: string, cancelled: boolean = false) => {
+    const baseClasses = cancelled ? "cancelled" : "";
     switch (priority) {
       case "urgent":
-        return "priority-checkbox checkbox-urgent";
+        return `priority-checkbox checkbox-urgent ${baseClasses}`.trim();
       case "medium":
-        return "priority-checkbox checkbox-medium";
+        return `priority-checkbox checkbox-medium ${baseClasses}`.trim();
       case "low":
-        return "priority-checkbox checkbox-low";
+        return `priority-checkbox checkbox-low ${baseClasses}`.trim();
       default:
-        return "priority-checkbox checkbox-medium";
+        return `priority-checkbox checkbox-medium ${baseClasses}`.trim();
     }
   };
   const filterAndSortTasks = (tasks: Task[]) => {
