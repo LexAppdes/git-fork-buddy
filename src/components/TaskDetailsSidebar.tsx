@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Calendar } from "lucide-react";
+import { Calendar, Play, CalendarDays, ChevronRight, FastForward, CalendarX, Archive, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -232,10 +232,11 @@ export function TaskDetailsSidebar({
               getPriorityCheckboxColor(task.priority))}
             onChange={handleToggleComplete}
           />
-          <Input
+          <input
+            type="text"
             value={task.title}
             onChange={handleTitleChange}
-            className="text-lg leading-[22px] font-semibold border-none p-0 h-auto focus-visible:ring-0 bg-transparent flex-1"
+            className="text-[18px] leading-[22px] font-semibold border-none p-0 h-auto focus:outline-none bg-transparent flex-1"
           />
         </div>
 
@@ -338,9 +339,7 @@ export function TaskDetailsSidebar({
                 )}>
                   {areas.find(a => a.id === getAreaFromProject(task.project))?.name}
                 </span>
-              ) : (
-                <span className="text-sm text-muted-foreground">No area</span>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -351,9 +350,9 @@ export function TaskDetailsSidebar({
               value={task.project || "none"}
               onValueChange={handleProjectChange}
             >
-              <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
+              <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden min-w-[60px] min-h-[20px]">
                 <span className="text-sm font-medium text-foreground">
-                  {task.project ? projects.find(p => p.id === task.project)?.title || 'Unknown Project' : 'No project'}
+                  {task.project ? projects.find(p => p.id === task.project)?.title || 'Unknown Project' : ''}
                 </span>
               </SelectTrigger>
               <SelectContent>
@@ -432,27 +431,95 @@ export function TaskDetailsSidebar({
               className="min-h-[100px] bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0"
             />
           ) : (
-            <div className="text-sm text-muted-foreground">
-              Activity feed coming soon...
+            <div>
+              {/* Task creation info in Activity tab */}
+              <div className="pt-3 border-t">
+                <div className="flex flex-col">
+                  <span className="text-xs font-medium text-foreground">Task #{task.id} created</span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatDateTime(task.created)}
+                  </span>
+                </div>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Bottom row: Created and Task ID - Fixed at bottom */}
-        <div className="flex items-center justify-between pt-4 mt-auto">
-          <div className="flex flex-col">
-            <span className="text-xs font-medium text-foreground">Created</span>
-            <span className="text-xs text-muted-foreground">
-              {formatDateTime(task.created)}
-            </span>
-          </div>
-          <div className="flex flex-col items-end">
-            <span className="text-xs font-medium text-foreground">Task ID</span>
-            <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
-              {task.id}
-            </code>
+        {/* Action buttons section */}
+        <div className="border-t border-border pt-4 mt-4">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {/* Start time tracking */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Start time tracking"
+            >
+              <Play className="w-4 h-4" />
+            </Button>
+
+            {/* Set today as due date */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Set today as due date"
+            >
+              <CalendarDays className="w-4 h-4" />
+            </Button>
+
+            {/* Change due date to tomorrow */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Change due date to tomorrow"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+
+            {/* Postpone due date to 1 week from now */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Postpone due date to 1 week from now"
+            >
+              <FastForward className="w-4 h-4" />
+            </Button>
+
+            {/* Clear due date completely */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Clear due date completely"
+            >
+              <CalendarX className="w-4 h-4" />
+            </Button>
+
+            {/* Cancel the task (archive) */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Cancel the task (archive)"
+            >
+              <Archive className="w-4 h-4" />
+            </Button>
+
+            {/* Delete the task completely */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted text-destructive hover:text-destructive"
+              title="Delete the task completely"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
           </div>
         </div>
+
       </div>
     </div>
   );

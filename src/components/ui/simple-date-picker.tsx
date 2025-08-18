@@ -79,6 +79,25 @@ export function SimpleDatePicker({
     }
   };
 
+  const handleTimeToggle = (checked: boolean) => {
+    setIncludeTime(checked);
+
+    if (!checked && date) {
+      // When toggling time off, clear the time but keep the date
+      const newDate = new Date(date);
+      newDate.setHours(0, 0, 0, 0);
+      // Remove the end time property
+      delete (newDate as any).__endTime;
+      onDateChange(newDate);
+    } else if (checked && date) {
+      // When toggling time on, apply the current start/end times
+      const newDate = new Date(date);
+      newDate.setHours(startTime.hour, startTime.minute, 0, 0);
+      (newDate as any).__endTime = { hour: endTime.hour, minute: endTime.minute };
+      onDateChange(newDate);
+    }
+  };
+
   const handleClear = () => {
     onDateChange(undefined);
     setIsOpen(false);
@@ -119,7 +138,7 @@ export function SimpleDatePicker({
               <Switch
                 id="set-time-simple"
                 checked={includeTime}
-                onCheckedChange={setIncludeTime}
+                onCheckedChange={handleTimeToggle}
               />
               <label 
                 htmlFor="set-time-simple" 

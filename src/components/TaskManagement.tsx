@@ -394,6 +394,39 @@ const formatSimpleDate = (date: Date) => {
   return format(date, "dd.MM.yy");
 };
 
+const prepareDateForPicker = (date: Date | undefined, timeInterval?: string) => {
+  if (!date) return undefined;
+
+  if (timeInterval) {
+    // Parse the time interval (e.g., "09:00-11:00")
+    const times = timeInterval.split('-');
+    if (times.length === 2) {
+      const [startTime, endTime] = times;
+      const [startHour, startMinute] = startTime.split(':').map(Number);
+      const [endHour, endMinute] = endTime.split(':').map(Number);
+
+      const newDate = new Date(date);
+      newDate.setHours(startHour, startMinute, 0, 0);
+
+      // Store end time as custom property
+      (newDate as any).__endTime = { hour: endHour, minute: endMinute };
+
+      return newDate;
+    } else if (times.length === 1) {
+      // Single time (start only)
+      const [startHour, startMinute] = times[0].split(':').map(Number);
+      const newDate = new Date(date);
+      newDate.setHours(startHour, startMinute, 0, 0);
+      return newDate;
+    }
+  }
+
+  // No time interval, return date with time set to 00:00
+  const newDate = new Date(date);
+  newDate.setHours(0, 0, 0, 0);
+  return newDate;
+};
+
 const formatCreatedDate = (date: Date) => {
   return format(date, "dd.MM.yyyy");
 };
@@ -428,12 +461,14 @@ const formatDateTime = (date: Date) => {
 
 const ClickableDueDate = ({
   date,
+  timeInterval,
   taskId,
   onDateChange,
   formatFunction = formatSimpleDate,
   className = "text-xs text-muted-foreground"
 }: {
   date: Date;
+  timeInterval?: string;
   taskId: string;
   onDateChange: (taskId: string, date: Date | undefined) => void;
   formatFunction?: (date: Date) => string;
@@ -445,7 +480,7 @@ const ClickableDueDate = ({
 
   return (
     <SimpleDatePicker
-      date={date}
+      date={prepareDateForPicker(date, timeInterval)}
       onDateChange={(newDate) => onDateChange(taskId, newDate)}
       align="center"
       side="right"
@@ -628,10 +663,37 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
   };
   
   const updateTaskDueDate = useCallback((taskId: string, dueDate: Date | undefined) => {
-    setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? {
-      ...task,
-      dueDate
-    } : task));
+    setTasks(prevTasks => prevTasks.map(task => {
+      if (task.id === taskId) {
+        if (dueDate) {
+          // Extract time interval from the date object if it has time set
+          const hasTime = dueDate.getHours() !== 0 || dueDate.getMinutes() !== 0 || (dueDate as any).__endTime;
+
+          if (hasTime) {
+            const startHour = dueDate.getHours().toString().padStart(2, '0');
+            const startMinute = dueDate.getMinutes().toString().padStart(2, '0');
+            const startTime = `${startHour}:${startMinute}`;
+
+            let timeInterval = startTime;
+
+            if ((dueDate as any).__endTime) {
+              const endHour = (dueDate as any).__endTime.hour.toString().padStart(2, '0');
+              const endMinute = (dueDate as any).__endTime.minute.toString().padStart(2, '0');
+              const endTime = `${endHour}:${endMinute}`;
+              timeInterval = `${startTime}-${endTime}`;
+            }
+
+            return { ...task, dueDate, timeInterval };
+          } else {
+            // No time, clear the time interval
+            return { ...task, dueDate, timeInterval: undefined };
+          }
+        } else {
+          return { ...task, dueDate: undefined, timeInterval: undefined };
+        }
+      }
+      return task;
+    }));
   }, []);
 
   const handleNewTaskDateChange = useCallback((date: Date | undefined) => {
@@ -882,9 +944,22 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                    {tasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                       <div className="flex items-center gap-3">
                         <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
-                        {task.timeInterval && <span className="text-muted-foreground bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">
-                          {task.timeInterval}
-                        </span>}
+                        {task.timeInterval &&
+                          <SimpleDatePicker
+                            date={prepareDateForPicker(task.dueDate, task.timeInterval)}
+                            onDateChange={(newDate) => updateTaskDueDate(task.id, newDate)}
+                            align="center"
+                            side="right"
+                            allowClear={true}
+                          >
+                            <span
+                              className="text-muted-foreground bg-[rgba(238,235,231,1)] px-1.5 py-0.5 rounded text-[10px] cursor-pointer hover:bg-gray-200 transition-colors"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {task.timeInterval}
+                            </span>
+                          </SimpleDatePicker>
+                        }
                         <div className="flex-1">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
@@ -923,6 +998,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                                   </span>}
                                 {task.dueDate && <ClickableDueDate
                                   date={task.dueDate}
+                                  timeInterval={task.timeInterval}
                                   taskId={task.id}
                                   onDateChange={updateTaskDueDate}
                                   formatFunction={(date) => format(date, "dd.MM")}
@@ -1166,6 +1242,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                   {task.dueDate && <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">
                       <ClickableDueDate
                         date={task.dueDate}
+                        timeInterval={task.timeInterval}
                         taskId={task.id}
                         onDateChange={updateTaskDueDate}
                         formatFunction={formatTaskDate}
@@ -1219,20 +1296,56 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                    {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                        <div className="flex items-center gap-3">
                          <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
-                         {task.timeInterval && <span className="text-muted-foreground bg-gray-100 px-1.5 py-0.5 rounded text-[10px]">
-                           {task.timeInterval}
-                         </span>}
+                         {task.timeInterval &&
+                           <SimpleDatePicker
+                             date={prepareDateForPicker(task.dueDate, task.timeInterval)}
+                             onDateChange={(newDate) => updateTaskDueDate(task.id, newDate)}
+                             align="center"
+                             side="right"
+                             allowClear={true}
+                           >
+                             <span
+                               className="text-muted-foreground bg-[rgba(238,235,231,1)] px-1.5 py-0.5 rounded text-[10px] cursor-pointer hover:bg-gray-200 transition-colors"
+                               onClick={(e) => e.stopPropagation()}
+                             >
+                               {task.timeInterval}
+                             </span>
+                           </SimpleDatePicker>
+                         }
                          <div className="flex-1">
                            <div className="flex items-center justify-between">
                              <h4 className={cn("text-card-foreground", task.completed !== null && "line-through")}>
                                {task.title}
                              </h4>
                              <div className="flex items-center gap-2">
-                               {task.project && <span className="text-xs text-gray-500">
-                                 {mockProjects.find(p => p.id === task.project)?.title}
-                               </span>}
+                               {task.project ? (
+                                 <span className="text-xs text-gray-500">
+                                   {mockProjects.find(p => p.id === task.project)?.title}
+                                 </span>
+                               ) : (
+                                 <Select
+                                   value="none"
+                                   onValueChange={(value) => handleProjectAssignment(task, value)}
+                                 >
+                                   <SelectTrigger
+                                     className="h-6 w-6 p-0 border-none bg-transparent hover:bg-muted rounded flex items-center justify-center [&_svg:last-child]:hidden"
+                                     onClick={(e) => e.stopPropagation()}
+                                   >
+                                     <Folder className="w-3 h-3 text-muted-foreground" />
+                                   </SelectTrigger>
+                                   <SelectContent onClick={(e) => e.stopPropagation()}>
+                                     <SelectItem value="none">No project</SelectItem>
+                                     {mockProjects.map((project) => (
+                                       <SelectItem key={project.id} value={project.id}>
+                                         {project.title}
+                                       </SelectItem>
+                                     ))}
+                                   </SelectContent>
+                                 </Select>
+                               )}
                                {task.dueDate && <ClickableDueDate
                                  date={task.dueDate}
+                                 timeInterval={task.timeInterval}
                                  taskId={task.id}
                                  onDateChange={updateTaskDueDate}
                                  formatFunction={formatTodayViewDate}
@@ -1318,7 +1431,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
           <nav className="flex items-center gap-1 rounded-lg w-fit">
             {taskViews.map(view => {
             const isActive = activeView === view.id;
-            return <button key={view.id} onClick={() => setActiveView(view.id)} className={cn("flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 nav-button-hover", isActive ? "text-foreground shadow-soft nav-button-active" : "text-muted-foreground hover:text-foreground")}>
+            return <button key={view.id} onClick={() => setActiveView(view.id)} className={cn("flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 nav-button-hover", isActive ? "text-foreground nav-button-active" : "text-muted-foreground hover:text-foreground")}>
                   <span>{view.label}</span>
                 </button>;
           })}

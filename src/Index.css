@@ -15,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 230 15% 15%;
 
-    --primary: 235 85% 65%;
+    --primary: 0 0% 19%;
     --primary-foreground: 0 0% 100%;
     --primary-hover: 235 85% 60%;
 
@@ -126,28 +126,28 @@
     -moz-appearance: none;
     width: 16px;
     height: 16px;
-    border-radius: 2px;
+    border-radius: 4px;
     position: relative;
     cursor: pointer;
     outline: none;
-    margin-top: 2px;
+    overflow: hidden;
   }
 
   /* Urgent priority - red border when unchecked */
   input[type="checkbox"].checkbox-urgent {
-    border: 2px solid hsl(var(--task-urgent));
+    border: 1px solid hsl(var(--task-urgent));
     background-color: transparent;
   }
 
   /* Medium priority - amber border when unchecked */
   input[type="checkbox"].checkbox-medium {
-    border: 2px solid hsl(var(--task-medium));
+    border: 1px solid hsl(var(--task-medium));
     background-color: transparent;
   }
 
   /* Low priority - green border when unchecked */
   input[type="checkbox"].checkbox-low {
-    border: 2px solid hsl(var(--task-low));
+    border: 1px solid hsl(var(--task-low));
     background-color: transparent;
   }
 
@@ -156,7 +156,7 @@
   input[type="checkbox"].checkbox-medium:checked,
   input[type="checkbox"].checkbox-low:checked {
     background-color: hsl(142 76% 36%);
-    border: 2px solid hsl(142 76% 36%);
+    border: 1px solid hsl(142 76% 36%);
   }
 
   /* Checkmark for checked state */
@@ -195,7 +195,7 @@
   }
 
   .nav-button-active {
-    background-color: #F3F3F3 !important;
+    background-color: #f6f4f1 !important;
   }
 
   /* Performance optimizations to prevent ResizeObserver loops */
