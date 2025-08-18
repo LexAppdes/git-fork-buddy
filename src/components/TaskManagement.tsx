@@ -1067,10 +1067,11 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       </div>;
   };
   const renderCompletedView = () => {
-    const completedTasks = tasks.filter(task => task.completed !== null);
+    const completedTasks = tasks.filter(task => task.completed !== null || task.cancelled !== null);
     const tasksByDate = completedTasks.reduce((acc, task) => {
-      if (!task.completed) return acc;
-      const dateKey = format(task.completed, "yyyy-MM-dd");
+      const completionDate = task.completed || task.cancelled;
+      if (!completionDate) return acc;
+      const dateKey = format(completionDate, "yyyy-MM-dd");
       if (!acc[dateKey]) {
         acc[dateKey] = [];
       }
