@@ -445,6 +445,81 @@ export function TaskDetailsSidebar({
           )}
         </div>
 
+        {/* Action buttons section */}
+        <div className="border-t border-border pt-4 mt-4">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {/* Start time tracking */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Start time tracking"
+            >
+              <Play className="w-4 h-4" />
+            </Button>
+
+            {/* Set today as due date */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Set today as due date"
+            >
+              <CalendarDays className="w-4 h-4" />
+            </Button>
+
+            {/* Change due date to tomorrow */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Change due date to tomorrow"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+
+            {/* Postpone due date to 1 week from now */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Postpone due date to 1 week from now"
+            >
+              <FastForward className="w-4 h-4" />
+            </Button>
+
+            {/* Clear due date completely */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Clear due date completely"
+            >
+              <CalendarX className="w-4 h-4" />
+            </Button>
+
+            {/* Cancel the task (archive) */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted"
+              title="Cancel the task (archive)"
+            >
+              <Archive className="w-4 h-4" />
+            </Button>
+
+            {/* Delete the task completely */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-10 h-10 p-0 hover:bg-muted text-destructive hover:text-destructive"
+              title="Delete the task completely"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
       </div>
     </div>
   );
