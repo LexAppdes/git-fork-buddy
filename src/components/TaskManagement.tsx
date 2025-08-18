@@ -87,6 +87,7 @@ const mockTasks: Task[] = [{
   title: "Prepare presentation slides",
   priority: "medium",
   completed: null,
+  cancelled: null,
   dueDate: tomorrow,
   timeInterval: "14:30-16:00",
   area: "work",
@@ -98,6 +99,7 @@ const mockTasks: Task[] = [{
   title: "Call dentist for appointment",
   priority: "low",
   completed: null,
+  cancelled: null,
   area: "health",
   created: oneWeekAgo,
   timeframe: "LATER"
@@ -106,6 +108,7 @@ const mockTasks: Task[] = [{
   title: "Plan weekend trip",
   priority: "low",
   completed: yesterday,
+  cancelled: null,
   created: oneWeekAgo,
   timeframe: "SOMEDAY"
 }, {
@@ -113,6 +116,7 @@ const mockTasks: Task[] = [{
   title: "Update project documentation",
   priority: "medium",
   completed: null,
+  cancelled: null,
   area: "work",
   created: fiveDaysAgo,
   timeframe: "LATER"
@@ -121,6 +125,7 @@ const mockTasks: Task[] = [{
   title: "Morning workout",
   priority: "medium",
   completed: null,
+  cancelled: null,
   dueDate: today,
   timeInterval: "07:00-08:00",
   area: "health",
