@@ -953,7 +953,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                             allowClear={true}
                           >
                             <span
-                              className="text-muted-foreground bg-gray-100 px-1.5 py-0.5 rounded text-[10px] cursor-pointer hover:bg-gray-200 transition-colors"
+                              className="text-muted-foreground bg-[rgba(238,235,231,1)] px-1.5 py-0.5 rounded text-[10px] cursor-pointer hover:bg-gray-200 transition-colors"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {task.timeInterval}
@@ -1305,7 +1305,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                              allowClear={true}
                            >
                              <span
-                               className="text-muted-foreground bg-gray-100 px-1.5 py-0.5 rounded text-[10px] cursor-pointer hover:bg-gray-200 transition-colors"
+                               className="text-muted-foreground bg-[rgba(238,235,231,1)] px-1.5 py-0.5 rounded text-[10px] cursor-pointer hover:bg-gray-200 transition-colors"
                                onClick={(e) => e.stopPropagation()}
                              >
                                {task.timeInterval}
