@@ -135,7 +135,7 @@
 
   /* Urgent priority - red border when unchecked */
   input[type="checkbox"].checkbox-urgent {
-    border: 1px solid hsl(var(--task-urgent));
+    border: 1.5px solid hsl(var(--task-urgent));
     background-color: transparent;
   }
 
