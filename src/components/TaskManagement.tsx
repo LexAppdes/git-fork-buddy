@@ -1158,16 +1158,18 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
   };
   const renderInboxView = () => {
     let inboxTasks = tasks.filter(task => !task.dueDate && !task.area);
+    const isTaskDone = (task: Task) => task.completed !== null || task.cancelled !== null;
 
     // Apply completion filter
     if (showCompleted) {
       // In Inbox view, when showing completed tasks, only show those completed today
       inboxTasks = inboxTasks.filter(task =>
-        task.completed === null ||
-        (task.completed !== null && isToday(task.completed))
+        !isTaskDone(task) ||
+        ((task.completed !== null && isToday(task.completed)) ||
+         (task.cancelled !== null && isToday(task.cancelled)))
       );
     } else {
-      inboxTasks = inboxTasks.filter(task => task.completed === null);
+      inboxTasks = inboxTasks.filter(task => !isTaskDone(task));
     }
 
     // Sort by created date, newest first, with uncompleted tasks first
