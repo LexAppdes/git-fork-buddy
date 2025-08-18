@@ -777,7 +777,7 @@ export function ProjectManagement({
                             >
                               <input
                                 type="checkbox"
-                                checked={task.completed !== null}
+                                checked={task.completed !== null || task.cancelled !== null}
                                 className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))}
                                 onChange={() => onToggleTask?.(task.id)}
                                 onClick={(e) => e.stopPropagation()}
@@ -908,7 +908,7 @@ export function ProjectManagement({
                             >
                               <input
                                 type="checkbox"
-                                checked={task.completed !== null}
+                                checked={task.completed !== null || task.cancelled !== null}
                                 className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))}
                                 onChange={() => onToggleTask?.(task.id)}
                                 onClick={(e) => e.stopPropagation()}
