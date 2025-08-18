@@ -109,7 +109,7 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
                     "w-full flex items-center rounded-lg text-left transition-all duration-200",
                     isCollapsed
                       ? "justify-center p-2.5"
-                      : "gap-3 px-3 py-2.5",
+                      : "gap-3 px-3 py-2",
                     isActive
                       ? "bg-[#EEEBE7] text-[#F4642B]"
                       : "text-gray-700 hover:bg-[#EEEBE7] hover:text-[#F4642B]"
@@ -118,7 +118,7 @@ export function AppSidebar({ activeSection, onSectionChange }: AppSidebarProps) 
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
                   {!isCollapsed && (
-                    <span className="font-medium">{item.label}</span>
+                    <span className="font-medium text-sm">{item.label}</span>
                   )}
                 </button>
               </li>
