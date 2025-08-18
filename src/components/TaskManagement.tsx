@@ -75,6 +75,7 @@ const mockTasks: Task[] = [{
   title: "Review quarterly reports",
   priority: "urgent",
   completed: null,
+  cancelled: null,
   dueDate: today,
   timeInterval: "09:00-11:00",
   area: "work",
