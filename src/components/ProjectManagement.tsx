@@ -160,16 +160,17 @@ const getStatusLabel = (status: string) => {
   }
 };
 
-const getPriorityCheckboxColor = (priority: string) => {
+const getPriorityCheckboxColor = (priority: string, cancelled: boolean = false) => {
+  const baseClasses = cancelled ? "cancelled" : "";
   switch (priority) {
     case "urgent":
-      return "priority-checkbox checkbox-urgent";
+      return `priority-checkbox checkbox-urgent ${baseClasses}`.trim();
     case "medium":
-      return "priority-checkbox checkbox-medium";
+      return `priority-checkbox checkbox-medium ${baseClasses}`.trim();
     case "low":
-      return "priority-checkbox checkbox-low";
+      return `priority-checkbox checkbox-low ${baseClasses}`.trim();
     default:
-      return "priority-checkbox checkbox-medium";
+      return `priority-checkbox checkbox-medium ${baseClasses}`.trim();
   }
 };
 
@@ -218,6 +219,7 @@ interface Task {
   description?: string;
   priority: "low" | "medium" | "urgent";
   completed: Date | null;
+  cancelled: Date | null;
   dueDate?: Date;
   area?: string;
   project?: string;
@@ -762,7 +764,7 @@ export function ProjectManagement({
                               draggable
                               className={cn(
                                 "flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer",
-                                task.completed !== null && "opacity-60"
+                                (task.completed !== null || task.cancelled !== null) && "opacity-60"
                               )}
                               onClick={() => onTaskClick?.(task)}
                               onDragStart={(e) => {
@@ -775,8 +777,8 @@ export function ProjectManagement({
                             >
                               <input
                                 type="checkbox"
-                                checked={task.completed !== null}
-                                className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))}
+                                checked={task.completed !== null || task.cancelled !== null}
+                                className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority, task.cancelled !== null))}
                                 onChange={() => onToggleTask?.(task.id)}
                                 onClick={(e) => e.stopPropagation()}
                               />
@@ -784,7 +786,7 @@ export function ProjectManagement({
                                 <div className="flex items-center justify-between">
                                   <h5 className={cn(
                                     "text-sm font-medium text-foreground truncate",
-                                    task.completed !== null && "line-through"
+                                    (task.completed !== null || task.cancelled !== null) && "line-through"
                                   )}>
                                     {task.title}
                                   </h5>
@@ -893,7 +895,7 @@ export function ProjectManagement({
                               draggable
                               className={cn(
                                 "flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer",
-                                task.completed !== null && "opacity-60"
+                                (task.completed !== null || task.cancelled !== null) && "opacity-60"
                               )}
                               onClick={() => onTaskClick?.(task)}
                               onDragStart={(e) => {
@@ -906,8 +908,8 @@ export function ProjectManagement({
                             >
                               <input
                                 type="checkbox"
-                                checked={task.completed !== null}
-                                className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))}
+                                checked={task.completed !== null || task.cancelled !== null}
+                                className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority, task.cancelled !== null))}
                                 onChange={() => onToggleTask?.(task.id)}
                                 onClick={(e) => e.stopPropagation()}
                               />
@@ -915,7 +917,7 @@ export function ProjectManagement({
                                 <div className="flex items-center justify-between">
                                   <h5 className={cn(
                                     "text-sm font-medium text-foreground truncate",
-                                    task.completed !== null && "line-through"
+                                    (task.completed !== null || task.cancelled !== null) && "line-through"
                                   )}>
                                     {task.title}
                                   </h5>

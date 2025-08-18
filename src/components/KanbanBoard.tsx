@@ -16,6 +16,7 @@ interface Task {
   description?: string;
   priority: "low" | "medium" | "urgent";
   completed: Date | null; // null = not completed, Date = completion timestamp
+  cancelled: Date | null; // null = not cancelled, Date = cancellation timestamp
   dueDate?: Date;
   area?: string;
   project?: string;
@@ -48,16 +49,17 @@ interface KanbanBoardProps {
   onProjectAssignment?: (task: Task, projectId: string) => void;
 }
 
-const getPriorityCheckboxColor = (priority: string) => {
+const getPriorityCheckboxColor = (priority: string, cancelled: boolean = false) => {
+  const baseClasses = cancelled ? "cancelled" : "";
   switch (priority) {
     case "urgent":
-      return "priority-checkbox checkbox-urgent";
+      return `priority-checkbox checkbox-urgent ${baseClasses}`.trim();
     case "medium":
-      return "priority-checkbox checkbox-medium";
+      return `priority-checkbox checkbox-medium ${baseClasses}`.trim();
     case "low":
-      return "priority-checkbox checkbox-low";
+      return `priority-checkbox checkbox-low ${baseClasses}`.trim();
     default:
-      return "priority-checkbox checkbox-medium";
+      return `priority-checkbox checkbox-medium ${baseClasses}`.trim();
   }
 };
 
@@ -81,7 +83,7 @@ const formatSimpleDate = (date: Date) => {
 };
 
 const isTaskOverdue = (task: Task) => {
-  if (!task.dueDate || task.completed !== null) return false;
+  if (!task.dueDate || task.completed !== null || task.cancelled !== null) return false;
   return isBefore(task.dueDate, startOfDay(new Date()));
 };
 
@@ -157,7 +159,7 @@ const TaskCard = ({
 
   return (
     <div
-      className={cn("bg-card rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")}
+      className={cn("bg-card rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mb-2", (task.completed !== null || task.cancelled !== null) && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")}
       onClick={() => onTaskClick(task)}
       draggable
       onDragStart={handleDragStart}
@@ -165,13 +167,13 @@ const TaskCard = ({
       <div className="flex items-start gap-3 mb-2">
         <input
           type="checkbox"
-          checked={task.completed !== null}
-          className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority))}
+          checked={task.completed !== null || task.cancelled !== null}
+          className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary", getPriorityCheckboxColor(task.priority, task.cancelled !== null))}
           onChange={() => onToggleTask(task.id)}
           onClick={e => e.stopPropagation()}
         />
         <div className="flex-1">
-          <h4 className={cn("text-card-foreground text-sm", task.completed !== null && "line-through")}>
+          <h4 className={cn("text-card-foreground text-sm", (task.completed !== null || task.cancelled !== null) && "line-through")}>
             {task.title}
           </h4>
           {task.description && (

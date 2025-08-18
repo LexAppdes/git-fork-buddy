@@ -14,6 +14,7 @@ interface Task {
   description?: string;
   priority: "low" | "medium" | "urgent";
   completed: Date | null;
+  cancelled: Date | null;
   dueDate?: Date;
   timeInterval?: string; // time interval in HH:MM-HH:MM format
   area?: string;
@@ -105,16 +106,17 @@ const prepareDateForPicker = (date: Date | undefined, timeInterval?: string) => 
   return newDate;
 };
 
-const getPriorityCheckboxColor = (priority: string) => {
+const getPriorityCheckboxColor = (priority: string, cancelled: boolean = false) => {
+  const baseClasses = cancelled ? "cancelled" : "";
   switch (priority) {
     case "urgent":
-      return "priority-checkbox checkbox-urgent";
+      return `priority-checkbox checkbox-urgent ${baseClasses}`.trim();
     case "medium":
-      return "priority-checkbox checkbox-medium";
+      return `priority-checkbox checkbox-medium ${baseClasses}`.trim();
     case "low":
-      return "priority-checkbox checkbox-low";
+      return `priority-checkbox checkbox-low ${baseClasses}`.trim();
     default:
-      return "priority-checkbox checkbox-medium";
+      return `priority-checkbox checkbox-medium ${baseClasses}`.trim();
   }
 };
 
@@ -148,9 +150,20 @@ export function TaskDetailsSidebar({
   const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =>
     onUpdateTask({ title: e.target.value }), [onUpdateTask]);
 
-  const handleToggleComplete = useCallback(() =>
-    onUpdateTask({ completed: task?.completed ? null : new Date() }),
-    [onUpdateTask, task?.completed]);
+  const handleToggleComplete = useCallback(() => {
+    if (!task) return;
+    // Cycle: unchecked -> checked -> unchecked
+    if (task.cancelled !== null) {
+      // If cancelled, go to unchecked
+      onUpdateTask({ cancelled: null, completed: null });
+    } else if (task.completed === null) {
+      // If unchecked, go to checked
+      onUpdateTask({ completed: new Date(), cancelled: null });
+    } else {
+      // If checked, go to unchecked
+      onUpdateTask({ completed: null, cancelled: null });
+    }
+  }, [onUpdateTask, task]);
 
   const handleTimeframeChange = useCallback((value: string) =>
     onUpdateTask({ timeframe: value as Task["timeframe"] }), [onUpdateTask]);
@@ -199,6 +212,14 @@ export function TaskDetailsSidebar({
     }
   }, [onUpdateTask]);
 
+  const handleCancelTask = useCallback(() => {
+    onUpdateTask({ cancelled: new Date(), completed: null });
+  }, [onUpdateTask]);
+
+  const handleClearDueDate = useCallback(() => {
+    onUpdateTask({ dueDate: undefined, timeInterval: undefined });
+  }, [onUpdateTask]);
+
   if (!isOpen || !task) {
     return null;
   }
@@ -227,9 +248,9 @@ export function TaskDetailsSidebar({
         <div className="flex items-center gap-3 mb-4">
           <input
             type="checkbox"
-            checked={task.completed !== null}
+            checked={task.completed !== null || task.cancelled !== null}
             className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary",
-              getPriorityCheckboxColor(task.priority))}
+              getPriorityCheckboxColor(task.priority, task.cancelled !== null))}
             onChange={handleToggleComplete}
           />
           <input
@@ -390,6 +411,16 @@ export function TaskDetailsSidebar({
               </span>
             </div>
           )}
+
+          {/* Cancelled Date (if task is cancelled) */}
+          {task.cancelled !== null && (
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground w-20">Cancelled</span>
+              <span className="text-sm font-medium text-foreground">
+                {formatDateTime(task.cancelled)}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Divider */}
@@ -494,6 +525,7 @@ export function TaskDetailsSidebar({
               size="sm"
               className="w-10 h-10 p-0 hover:bg-muted"
               title="Clear due date completely"
+              onClick={handleClearDueDate}
             >
               <CalendarX className="w-4 h-4" />
             </Button>
@@ -504,6 +536,7 @@ export function TaskDetailsSidebar({
               size="sm"
               className="w-10 h-10 p-0 hover:bg-muted"
               title="Cancel the task (archive)"
+              onClick={handleCancelTask}
             >
               <Archive className="w-4 h-4" />
             </Button>

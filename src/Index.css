@@ -135,19 +135,19 @@
 
   /* Urgent priority - red border when unchecked */
   input[type="checkbox"].checkbox-urgent {
-    border: 1.5px solid hsl(var(--task-urgent));
+    border: 1.5px solid hsl(var(--task-urgent)) !important;
     background-color: transparent;
   }
 
   /* Medium priority - amber border when unchecked */
   input[type="checkbox"].checkbox-medium {
-    border: 1px solid hsl(var(--task-medium));
+    border: 1.5px solid hsl(var(--task-medium)) !important;
     background-color: transparent;
   }
 
   /* Low priority - green border when unchecked */
   input[type="checkbox"].checkbox-low {
-    border: 1px solid hsl(var(--task-low));
+    border: 1.5px solid hsl(var(--task-low)) !important;
     background-color: transparent;
   }
 
@@ -156,7 +156,7 @@
   input[type="checkbox"].checkbox-medium:checked,
   input[type="checkbox"].checkbox-low:checked {
     background-color: hsl(142 76% 36%);
-    border: 1px solid hsl(142 76% 36%);
+    border: 1.5px solid hsl(142 76% 36%) !important;
   }
 
   /* Checkmark for checked state */
@@ -170,6 +170,27 @@
     top: 50%;
     transform: translate(-50%, -50%);
     line-height: 1;
+  }
+
+  /* Cross mark for cancelled state */
+  input[type="checkbox"].priority-checkbox.cancelled::after {
+    content: "×";
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1;
+  }
+
+  /* All cancelled checkboxes are gray */
+  input[type="checkbox"].checkbox-urgent.cancelled,
+  input[type="checkbox"].checkbox-medium.cancelled,
+  input[type="checkbox"].checkbox-low.cancelled {
+    background-color: #6b7280;
+    border: 1.5px solid #6b7280 !important;
   }
 
   /* Focus states */
@@ -212,5 +233,26 @@
   .scroll-smooth {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Universal 1.5px border override for all priority checkboxes */
+  input[type="checkbox"].priority-checkbox.checkbox-urgent,
+  input[type="checkbox"].priority-checkbox.checkbox-medium,
+  input[type="checkbox"].priority-checkbox.checkbox-low {
+    border-width: 1.5px !important;
+  }
+
+  /* Ensure checked states also have 1.5px borders */
+  input[type="checkbox"].priority-checkbox.checkbox-urgent:checked,
+  input[type="checkbox"].priority-checkbox.checkbox-medium:checked,
+  input[type="checkbox"].priority-checkbox.checkbox-low:checked {
+    border-width: 1.5px !important;
+  }
+
+  /* Ensure cancelled states also have 1.5px borders */
+  input[type="checkbox"].priority-checkbox.checkbox-urgent.cancelled,
+  input[type="checkbox"].priority-checkbox.checkbox-medium.cancelled,
+  input[type="checkbox"].priority-checkbox.checkbox-low.cancelled {
+    border-width: 1.5px !important;
   }
 }
