@@ -284,6 +284,7 @@ const mockTasks: Task[] = [{
   title: "Schedule meeting",
   priority: "urgent",
   completed: null,
+  cancelled: null,
   dueDate: tomorrow,
   timeInterval: "11:00-12:00",
   area: "work",
