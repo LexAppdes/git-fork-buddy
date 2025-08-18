@@ -446,7 +446,7 @@ export function TaskDetailsSidebar({
         </div>
 
         {/* Action buttons section */}
-        <div className="border-t border-border pt-4 mt-4">
+        <div className="mt-4 bg-[#f6f4f1] rounded-lg overflow-hidden py-1" style={{ border: '1px 0px 0px none rgb(228, 228, 231)' }}>
           <div className="flex flex-wrap gap-2 justify-center">
             {/* Start time tracking */}
             <Button
