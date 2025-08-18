@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Calendar } from "lucide-react";
+import { Calendar, Play, CalendarDays, ChevronRight, FastForward, CalendarX, Archive, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
