@@ -1350,7 +1350,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
               </button>
 
               {isExpanded && <div className="space-y-0 animate-fade-in pb-2">
-                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", (task.completed !== null || task.cancelled !== null) && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
+                   {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-gray-50 transition-all duration-200 mx-3 cursor-pointer", (task.completed !== null || task.cancelled !== null) && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                        <div className="flex items-center gap-3">
                          <input type="checkbox" checked={task.completed !== null || task.cancelled !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority, task.cancelled !== null))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                          {task.timeInterval &&
