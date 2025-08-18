@@ -135,19 +135,19 @@
 
   /* Urgent priority - red border when unchecked */
   input[type="checkbox"].checkbox-urgent {
-    border: 1.5px solid hsl(var(--task-urgent));
+    border: 1.5px solid hsl(var(--task-urgent)) !important;
     background-color: transparent;
   }
 
   /* Medium priority - amber border when unchecked */
   input[type="checkbox"].checkbox-medium {
-    border: 1px solid hsl(var(--task-medium));
+    border: 1.5px solid hsl(var(--task-medium)) !important;
     background-color: transparent;
   }
 
   /* Low priority - green border when unchecked */
   input[type="checkbox"].checkbox-low {
-    border: 1px solid hsl(var(--task-low));
+    border: 1.5px solid hsl(var(--task-low)) !important;
     background-color: transparent;
   }
 
@@ -156,7 +156,7 @@
   input[type="checkbox"].checkbox-medium:checked,
   input[type="checkbox"].checkbox-low:checked {
     background-color: hsl(142 76% 36%);
-    border: 1px solid hsl(142 76% 36%);
+    border: 1.5px solid hsl(142 76% 36%) !important;
   }
 
   /* Checkmark for checked state */
