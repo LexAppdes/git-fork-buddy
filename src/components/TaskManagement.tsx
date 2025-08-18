@@ -1341,15 +1341,15 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
         const areaColor = area?.color || 'bg-muted';
         const isExpanded = expandedAreas[areaId] !== false; // default to expanded
 
-        return <div key={areaId} className="space-y-0">
-              <button onClick={() => toggleArea(areaId)} className="flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors w-full text-left group">
+        return <div key={areaId} className="bg-white rounded-[10px] overflow-hidden shadow-sm border border-gray-100">
+              <button onClick={() => toggleArea(areaId)} className="flex items-center gap-2 hover:bg-muted/50 p-3 transition-colors w-full text-left group">
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
                 <div className={cn("w-3 h-3 rounded-full", areaColor)} />
                 <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{areaName}</h3>
                 <span className="text-sm text-muted-foreground">({tasks.length})</span>
               </button>
-              
-              {isExpanded && <div className="space-y-0 animate-fade-in">
+
+              {isExpanded && <div className="space-y-0 animate-fade-in pb-2">
                    {filterAndSortTasks(tasks).map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 ml-6 cursor-pointer", (task.completed !== null || task.cancelled !== null) && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
                        <div className="flex items-center gap-3">
                          <input type="checkbox" checked={task.completed !== null || task.cancelled !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority, task.cancelled !== null))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
