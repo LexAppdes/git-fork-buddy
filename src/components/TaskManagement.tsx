@@ -1175,8 +1175,10 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     // Sort by created date, newest first, with uncompleted tasks first
     const sortedTasks = [...inboxTasks].sort((a, b) => {
       // Primary sort: uncompleted tasks first
-      if (a.completed !== b.completed) {
-        return a.completed ? 1 : -1;
+      const aIsDone = isTaskDone(a);
+      const bIsDone = isTaskDone(b);
+      if (aIsDone !== bIsDone) {
+        return aIsDone ? 1 : -1;
       }
       // Secondary sort: by created date, newest first
       return b.created.getTime() - a.created.getTime();
