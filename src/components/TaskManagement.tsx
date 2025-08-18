@@ -238,6 +238,7 @@ const mockTasks: Task[] = [{
   title: "Very overdue task",
   priority: "medium",
   completed: null,
+  cancelled: null,
   dueDate: twoDaysAgo,
   timeInterval: "15:30-17:00",
   created: fiveDaysAgo,
@@ -247,6 +248,7 @@ const mockTasks: Task[] = [{
   title: "Random idea to explore",
   priority: "low",
   completed: null,
+  cancelled: null,
   area: "fun",
   created: yesterday,
   timeframe: "SOMEDAY"
@@ -255,6 +257,7 @@ const mockTasks: Task[] = [{
   title: "Unorganized task",
   priority: "medium",
   completed: null,
+  cancelled: null,
   area: "self-care",
   created: today,
   timeframe: "LATER"
@@ -263,6 +266,7 @@ const mockTasks: Task[] = [{
   title: "Quick note to self",
   priority: "low",
   completed: null,
+  cancelled: null,
   area: "psychology",
   created: threeDaysAgo,
   timeframe: "SOMEDAY"
@@ -271,6 +275,7 @@ const mockTasks: Task[] = [{
   title: "Learn new skill",
   priority: "medium",
   completed: null,
+  cancelled: null,
   area: "self-care",
   created: today,
   timeframe: "NOW"
