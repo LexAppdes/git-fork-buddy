@@ -786,7 +786,7 @@ export function ProjectManagement({
                                 <div className="flex items-center justify-between">
                                   <h5 className={cn(
                                     "text-sm font-medium text-foreground truncate",
-                                    task.completed !== null && "line-through"
+                                    (task.completed !== null || task.cancelled !== null) && "line-through"
                                   )}>
                                     {task.title}
                                   </h5>
@@ -917,7 +917,7 @@ export function ProjectManagement({
                                 <div className="flex items-center justify-between">
                                   <h5 className={cn(
                                     "text-sm font-medium text-foreground truncate",
-                                    task.completed !== null && "line-through"
+                                    (task.completed !== null || task.cancelled !== null) && "line-through"
                                   )}>
                                     {task.title}
                                   </h5>
