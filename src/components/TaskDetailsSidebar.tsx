@@ -411,6 +411,16 @@ export function TaskDetailsSidebar({
               </span>
             </div>
           )}
+
+          {/* Cancelled Date (if task is cancelled) */}
+          {task.cancelled !== null && (
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground w-20">Cancelled</span>
+              <span className="text-sm font-medium text-foreground">
+                {formatDateTime(task.cancelled)}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Divider */}
