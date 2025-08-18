@@ -232,10 +232,11 @@ export function TaskDetailsSidebar({
               getPriorityCheckboxColor(task.priority))}
             onChange={handleToggleComplete}
           />
-          <Input
+          <input
+            type="text"
             value={task.title}
             onChange={handleTitleChange}
-            className="text-[18px] leading-[22px] font-semibold border-none p-0 h-auto focus-visible:ring-0 bg-transparent flex-1"
+            className="text-[18px] leading-[22px] font-semibold border-none p-0 h-auto focus:outline-none bg-transparent flex-1"
           />
         </div>
 
@@ -349,7 +350,7 @@ export function TaskDetailsSidebar({
               value={task.project || "none"}
               onValueChange={handleProjectChange}
             >
-              <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
+              <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden min-w-[60px] min-h-[20px]">
                 <span className="text-sm font-medium text-foreground">
                   {task.project ? projects.find(p => p.id === task.project)?.title || 'Unknown Project' : ''}
                 </span>
