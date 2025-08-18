@@ -23,6 +23,7 @@ interface Task {
   description?: string;
   priority: "low" | "medium" | "urgent";
   completed: Date | null; // null = not completed, Date = completion timestamp
+  cancelled: Date | null; // null = not cancelled, Date = cancellation timestamp
   dueDate?: Date;
   timeInterval?: string; // time interval in HH:MM-HH:MM format
   area?: string;
