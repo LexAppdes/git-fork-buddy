@@ -895,7 +895,7 @@ export function ProjectManagement({
                               draggable
                               className={cn(
                                 "flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-all duration-200 cursor-pointer",
-                                task.completed !== null && "opacity-60"
+                                (task.completed !== null || task.cancelled !== null) && "opacity-60"
                               )}
                               onClick={() => onTaskClick?.(task)}
                               onDragStart={(e) => {
