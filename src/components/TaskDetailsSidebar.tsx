@@ -235,7 +235,7 @@ export function TaskDetailsSidebar({
           <Input
             value={task.title}
             onChange={handleTitleChange}
-            className="text-lg leading-[22px] font-semibold border-none p-0 h-auto focus-visible:ring-0 bg-transparent flex-1"
+            className="text-[18px] leading-[22px] font-semibold border-none p-0 h-auto focus-visible:ring-0 bg-transparent flex-1"
           />
         </div>
 
@@ -338,9 +338,7 @@ export function TaskDetailsSidebar({
                 )}>
                   {areas.find(a => a.id === getAreaFromProject(task.project))?.name}
                 </span>
-              ) : (
-                <span className="text-sm text-muted-foreground">No area</span>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -353,7 +351,7 @@ export function TaskDetailsSidebar({
             >
               <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
                 <span className="text-sm font-medium text-foreground">
-                  {task.project ? projects.find(p => p.id === task.project)?.title || 'Unknown Project' : 'No project'}
+                  {task.project ? projects.find(p => p.id === task.project)?.title || 'Unknown Project' : ''}
                 </span>
               </SelectTrigger>
               <SelectContent>
@@ -432,20 +430,26 @@ export function TaskDetailsSidebar({
               className="min-h-[100px] bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0"
             />
           ) : (
-            <div className="text-sm text-muted-foreground">
-              Activity feed coming soon...
+            <div className="space-y-3">
+              <div className="text-sm text-muted-foreground">
+                Activity feed coming soon...
+              </div>
+
+              {/* Created info in Activity tab */}
+              <div className="pt-3 border-t">
+                <div className="flex flex-col">
+                  <span className="text-xs font-medium text-foreground">Created</span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatDateTime(task.created)}
+                  </span>
+                </div>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Bottom row: Created and Task ID - Fixed at bottom */}
-        <div className="flex items-center justify-between pt-4 mt-auto">
-          <div className="flex flex-col">
-            <span className="text-xs font-medium text-foreground">Created</span>
-            <span className="text-xs text-muted-foreground">
-              {formatDateTime(task.created)}
-            </span>
-          </div>
+        {/* Bottom row: Task ID only - Fixed at bottom */}
+        <div className="flex items-center justify-end pt-4 mt-auto">
           <div className="flex flex-col items-end">
             <span className="text-xs font-medium text-foreground">Task ID</span>
             <code className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded font-mono">
