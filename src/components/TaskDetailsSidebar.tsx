@@ -240,9 +240,9 @@ export function TaskDetailsSidebar({
         <div className="flex items-center gap-3 mb-4">
           <input
             type="checkbox"
-            checked={task.completed !== null}
+            checked={task.completed !== null || task.cancelled !== null}
             className={cn("w-4 h-4 text-primary rounded border-border focus:ring-primary",
-              getPriorityCheckboxColor(task.priority))}
+              getPriorityCheckboxColor(task.priority, task.cancelled !== null))}
             onChange={handleToggleComplete}
           />
           <input
