@@ -1174,7 +1174,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     });
 
     return <div className="space-y-0">
-      {sortedTasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", task.completed !== null && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
+      {sortedTasks.map(task => <div key={task.id} className={cn("rounded-lg p-2 hover:bg-card  hover:shadow-soft transition-all duration-200 cursor-pointer", (task.completed !== null || task.cancelled !== null) && "opacity-60", selectedTask?.id === task.id && "bg-primary/10 border border-primary/20")} onClick={() => handleTaskClick(task)}>
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground font-medium w-20 text-right">
               {formatCreatedDate(task.created)}
