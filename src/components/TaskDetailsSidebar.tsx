@@ -515,6 +515,7 @@ export function TaskDetailsSidebar({
               size="sm"
               className="w-10 h-10 p-0 hover:bg-muted"
               title="Clear due date completely"
+              onClick={handleClearDueDate}
             >
               <CalendarX className="w-4 h-4" />
             </Button>
@@ -525,6 +526,7 @@ export function TaskDetailsSidebar({
               size="sm"
               className="w-10 h-10 p-0 hover:bg-muted"
               title="Cancel the task (archive)"
+              onClick={handleCancelTask}
             >
               <Archive className="w-4 h-4" />
             </Button>
