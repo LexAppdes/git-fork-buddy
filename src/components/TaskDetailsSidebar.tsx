@@ -431,11 +431,7 @@ export function TaskDetailsSidebar({
               className="min-h-[100px] bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0"
             />
           ) : (
-            <div className="space-y-3">
-              <div className="text-sm text-muted-foreground">
-                Activity feed coming soon...
-              </div>
-
+            <div>
               {/* Task creation info in Activity tab */}
               <div className="pt-3 border-t">
                 <div className="flex flex-col">
