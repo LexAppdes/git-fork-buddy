@@ -195,7 +195,7 @@
   }
 
   .nav-button-active {
-    background-color: #F3F3F3 !important;
+    background-color: #f6f4f1 !important;
   }
 
   /* Performance optimizations to prevent ResizeObserver loops */
