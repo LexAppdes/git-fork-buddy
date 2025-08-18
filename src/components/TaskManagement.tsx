@@ -1101,7 +1101,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                         {task.completed && <span className="text-xs text-muted-foreground font-medium w-12 text-right">
                           {formatCompletedTime(task.completed)}
                         </span>}
-                        <input type="checkbox" checked={task.completed !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
+                        <input type="checkbox" checked={task.completed !== null || task.cancelled !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority, task.cancelled !== null))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
                             <h4 className="text-card-foreground line-through">
