@@ -1182,7 +1182,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
             <input type="checkbox" checked={task.completed !== null || task.cancelled !== null} className={cn("w-4 h-4 rounded focus:ring-2", getPriorityCheckboxColor(task.priority, task.cancelled !== null))} onChange={() => toggleTask(task.id)} onClick={e => e.stopPropagation()} />
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <h3 className={cn("text-card-foreground", task.completed !== null && "line-through")}>
+                <h3 className={cn("text-card-foreground", (task.completed !== null || task.cancelled !== null) && "line-through")}>
                   {task.title}
                 </h3>
                 <div className="flex items-center gap-2 ml-2">
