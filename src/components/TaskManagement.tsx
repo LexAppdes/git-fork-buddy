@@ -1431,7 +1431,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
           <nav className="flex items-center gap-1 rounded-lg w-fit">
             {taskViews.map(view => {
             const isActive = activeView === view.id;
-            return <button key={view.id} onClick={() => setActiveView(view.id)} className={cn("flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 nav-button-hover", isActive ? "text-foreground shadow-soft nav-button-active" : "text-muted-foreground hover:text-foreground")}>
+            return <button key={view.id} onClick={() => setActiveView(view.id)} className={cn("flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 nav-button-hover", isActive ? "text-foreground nav-button-active" : "text-muted-foreground hover:text-foreground")}>
                   <span>{view.label}</span>
                 </button>;
           })}
