@@ -974,7 +974,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     const toggleGroup = (groupId: string) => {
       setExpandedAreas(prev => ({
         ...prev,
-        [groupId]: !prev[groupId]
+        [groupId]: prev[groupId] !== false ? false : true
       }));
     };
     return <div className="space-y-6">
@@ -1084,7 +1084,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     const toggleGroup = (dateKey: string) => {
       setExpandedAreas(prev => ({
         ...prev,
-        [dateKey]: !prev[dateKey]
+        [dateKey]: prev[dateKey] !== false ? false : true
       }));
     };
     return <div className="space-y-6">
@@ -1331,7 +1331,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     const toggleArea = (areaId: string) => {
       setExpandedAreas(prev => ({
         ...prev,
-        [areaId]: !prev[areaId]
+        [areaId]: prev[areaId] !== false ? false : true
       }));
     };
     return <div className="space-y-6">
