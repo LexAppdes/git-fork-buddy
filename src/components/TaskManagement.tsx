@@ -974,7 +974,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     const toggleGroup = (groupId: string) => {
       setExpandedAreas(prev => ({
         ...prev,
-        [groupId]: !prev[groupId]
+        [groupId]: prev[groupId] !== false ? false : true
       }));
     };
     return <div className="space-y-6">
@@ -1084,7 +1084,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     const toggleGroup = (dateKey: string) => {
       setExpandedAreas(prev => ({
         ...prev,
-        [dateKey]: !prev[dateKey]
+        [dateKey]: prev[dateKey] !== false ? false : true
       }));
     };
     return <div className="space-y-6">
@@ -1157,7 +1157,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       </div>;
   };
   const renderInboxView = () => {
-    let inboxTasks = tasks.filter(task => !task.dueDate && !task.area);
+    let inboxTasks = tasks.filter(task => !task.dueDate && !task.project);
     const isTaskDone = (task: Task) => task.completed !== null || task.cancelled !== null;
 
     // Apply completion filter
@@ -1319,7 +1319,35 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
         </div>)}
     </div>;
   const renderTodayView = () => {
-    const todayTasks = tasks.filter(task => task.dueDate && task.dueDate <= endOfDay(new Date()));
+    const todayTasks = tasks.filter(task => {
+      const today = new Date();
+      const taskDueDate = task.dueDate;
+      const isTaskDone = task.completed !== null || task.cancelled !== null;
+
+      // Tasks completed today: always include (regardless of due date)
+      if (task.completed && isToday(task.completed)) return true;
+      if (task.cancelled && isToday(task.cancelled)) return true;
+
+      // Must have a due date for the remaining logic
+      if (!taskDueDate) return false;
+
+      // Tasks due today: include all (completed or not)
+      if (isToday(taskDueDate)) return true;
+
+      // Overdue tasks: only include if unchecked
+      if (taskDueDate < startOfDay(today) && !isTaskDone) return true;
+
+      return false;
+    });
+
+    // Debug logging
+    console.log('Today view render - showCompleted:', showCompleted);
+    console.log('Total todayTasks:', todayTasks.length);
+    console.log('TodayTasks by completion:', {
+      completed: todayTasks.filter(t => t.completed !== null).length,
+      cancelled: todayTasks.filter(t => t.cancelled !== null).length,
+      uncompleted: todayTasks.filter(t => t.completed === null && t.cancelled === null).length
+    });
     const tasksByArea = todayTasks.reduce((acc, task) => {
       const areaId = getAreaFromProject(task.project) || 'no-area';
       if (!acc[areaId]) {
@@ -1331,7 +1359,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     const toggleArea = (areaId: string) => {
       setExpandedAreas(prev => ({
         ...prev,
-        [areaId]: !prev[areaId]
+        [areaId]: prev[areaId] !== false ? false : true
       }));
     };
     return <div className="space-y-6">
@@ -1345,8 +1373,33 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
               <button onClick={() => toggleArea(areaId)} className="flex items-center gap-2 hover:bg-muted/50 p-3 transition-colors w-full text-left group">
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
                 <div className={cn("w-3 h-3 rounded-full", areaColor)} />
-                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{areaName}</h3>
-                <span className="text-sm text-muted-foreground">({tasks.length})</span>
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors flex-1">{areaName}</h3>
+
+                {/* Progress bar and task numbers */}
+                <div className="flex items-center gap-2">
+                  {(() => {
+                    // Count from the original todayTasks for this area, not the display-filtered tasks
+                    const originalAreaTasks = todayTasks.filter(t => (getAreaFromProject(t.project) || 'no-area') === areaId);
+                    const completedCount = originalAreaTasks.filter(t => t.completed !== null || t.cancelled !== null).length;
+                    const totalCount = originalAreaTasks.length;
+                    return (
+                      <>
+                        <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-primary rounded-full"
+                            style={{
+                              width: `${totalCount > 0 ? (completedCount / totalCount) * 100 : 0}%`,
+                              transition: 'width 0.3s ease-out'
+                            }}
+                          />
+                        </div>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                          {completedCount} / {totalCount}
+                        </span>
+                      </>
+                    );
+                  })()}
+                </div>
               </button>
 
               {isExpanded && <div className="space-y-0 animate-fade-in pb-2">
@@ -1465,9 +1518,13 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       timeframe: "NOW"
     });
   };
-  const renderAreasView = () => <div className="h-full">
-      <KanbanBoard tasks={filterAndSortTasks(tasks)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} />
+  const renderAreasView = () => {
+    // Only show tasks that have a project assigned (which gives them an area)
+    const tasksWithProjects = tasks.filter(task => task.project);
+    return <div className="h-full">
+      <KanbanBoard tasks={filterAndSortTasks(tasksWithProjects)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} />
     </div>;
+  };
   const getFilteredTasks = () => {
     switch (activeView) {
       case "today":

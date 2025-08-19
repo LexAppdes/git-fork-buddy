@@ -402,25 +402,6 @@ export function TaskDetailsSidebar({
             </SimpleDatePicker>
           </div>
 
-          {/* Completed Date (if task is completed) */}
-          {task.completed !== null && (
-            <div className="flex items-center">
-              <span className="text-sm text-muted-foreground w-20">Completed</span>
-              <span className="text-sm font-medium text-foreground">
-                {formatDateTime(task.completed)}
-              </span>
-            </div>
-          )}
-
-          {/* Cancelled Date (if task is cancelled) */}
-          {task.cancelled !== null && (
-            <div className="flex items-center">
-              <span className="text-sm text-muted-foreground w-20">Cancelled</span>
-              <span className="text-sm font-medium text-foreground">
-                {formatDateTime(task.cancelled)}
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Divider */}
@@ -462,14 +443,44 @@ export function TaskDetailsSidebar({
               className="min-h-[100px] bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0"
             />
           ) : (
-            <div>
-              {/* Task creation info in Activity tab */}
-              <div className="pt-3 border-t">
-                <div className="flex flex-col">
-                  <span className="text-xs font-medium text-foreground">Task #{task.id} created</span>
-                  <span className="text-xs text-muted-foreground">
-                    {formatDateTime(task.created)}
-                  </span>
+            <div className="space-y-4">
+              {/* Activity timeline - show events in chronological order */}
+              <div className="space-y-3">
+                {/* Task completion event */}
+                {task.completed !== null && (
+                  <div className="flex items-start gap-3 pb-3 border-b border-border">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-foreground">Task completed</span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatDateTime(task.completed)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Task cancellation event */}
+                {task.cancelled !== null && (
+                  <div className="flex items-start gap-3 pb-3 border-b border-border">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-foreground">Task cancelled</span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatDateTime(task.cancelled)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Task creation event - always shown last (earliest) */}
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-foreground">Task #{task.id} created</span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDateTime(task.created)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
