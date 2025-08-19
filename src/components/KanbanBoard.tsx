@@ -164,7 +164,7 @@ const TaskCard = ({
       draggable
       onDragStart={handleDragStart}
     >
-      <div className="flex items-start gap-3 mb-2">
+      <div className="flex items-center gap-3 mb-2">
         <input
           type="checkbox"
           checked={task.completed !== null || task.cancelled !== null}
