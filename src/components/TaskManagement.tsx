@@ -1341,6 +1341,11 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
         const areaColor = area?.color || 'bg-muted';
         const isExpanded = expandedAreas[areaId] !== false; // default to expanded
 
+        // Debug logging for No area group
+        if (areaId === 'no-area') {
+          console.log('No area tasks:', tasks.map(t => ({ id: t.id, title: t.title, completed: t.completed, cancelled: t.cancelled, project: t.project, area: getAreaFromProject(t.project) })));
+        }
+
         return <div key={areaId} className="bg-white rounded-[10px] overflow-hidden shadow-sm border border-gray-100">
               <button onClick={() => toggleArea(areaId)} className="flex items-center gap-2 hover:bg-muted/50 p-3 transition-colors w-full text-left group">
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
