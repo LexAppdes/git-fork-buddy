@@ -1320,12 +1320,16 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     </div>;
   const renderTodayView = () => {
     const todayTasks = tasks.filter(task => {
-      // Must have a due date to appear in Today view
-      if (!task.dueDate) return false;
-
       const today = new Date();
       const taskDueDate = task.dueDate;
       const isTaskDone = task.completed !== null || task.cancelled !== null;
+
+      // Tasks completed today: always include (regardless of due date)
+      if (task.completed && isToday(task.completed)) return true;
+      if (task.cancelled && isToday(task.cancelled)) return true;
+
+      // Must have a due date for the remaining logic
+      if (!taskDueDate) return false;
 
       // Tasks due today: include all (completed or not)
       if (isToday(taskDueDate)) return true;
