@@ -1345,8 +1345,23 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
               <button onClick={() => toggleArea(areaId)} className="flex items-center gap-2 hover:bg-muted/50 p-3 transition-colors w-full text-left group">
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> : <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />}
                 <div className={cn("w-3 h-3 rounded-full", areaColor)} />
-                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{areaName}</h3>
-                <span className="text-sm text-muted-foreground">({tasks.length})</span>
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors flex-1">{areaName}</h3>
+
+                {/* Progress bar and task numbers */}
+                <div className="flex items-center gap-2">
+                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary rounded-full"
+                      style={{
+                        width: `${tasks.length > 0 ? (tasks.filter(t => t.completed !== null || t.cancelled !== null).length / tasks.length) * 100 : 0}%`,
+                        transition: 'width 0.3s ease-out'
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                    {tasks.filter(t => t.completed !== null || t.cancelled !== null).length} / {tasks.length}
+                  </span>
+                </div>
               </button>
 
               {isExpanded && <div className="space-y-0 animate-fade-in pb-2">
