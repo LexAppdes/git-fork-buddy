@@ -496,12 +496,14 @@ export function ProjectManagement({
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <div
-                      className={cn("w-3 h-3 rounded-full shrink-0", getStatusCircleColor(project.status))}
-                      title={getStatusLabel(project.status)}
-                    />
+                    <div className="flex items-center gap-2 flex-1">
+                      <div
+                        className={cn("w-3 h-3 rounded-full shrink-0", getStatusCircleColor(project.status))}
+                        title={getStatusLabel(project.status)}
+                      />
+                      <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
 
                   <div className="space-y-2 text-xs">
                     <div className="text-muted-foreground truncate">
