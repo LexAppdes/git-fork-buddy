@@ -1368,18 +1368,35 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
 
                 {/* Progress bar and task numbers */}
                 <div className="flex items-center gap-2">
-                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full"
-                      style={{
-                        width: `${tasks.length > 0 ? (tasks.filter(t => t.completed !== null || t.cancelled !== null).length / tasks.length) * 100 : 0}%`,
-                        transition: 'width 0.3s ease-out'
-                      }}
-                    />
-                  </div>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    {tasks.filter(t => t.completed !== null || t.cancelled !== null).length} / {tasks.length}
-                  </span>
+                  {(() => {
+                    const completedCount = tasks.filter(t => t.completed !== null || t.cancelled !== null).length;
+                    const totalCount = tasks.length;
+                    // Debug logging
+                    if (areaId === 'no-area') {
+                      console.log('No area progress calculation:', {
+                        areaId,
+                        totalTasks: totalCount,
+                        completedTasks: completedCount,
+                        taskTitles: tasks.map(t => ({ title: t.title, completed: !!t.completed, cancelled: !!t.cancelled }))
+                      });
+                    }
+                    return (
+                      <>
+                        <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-primary rounded-full"
+                            style={{
+                              width: `${totalCount > 0 ? (completedCount / totalCount) * 100 : 0}%`,
+                              transition: 'width 0.3s ease-out'
+                            }}
+                          />
+                        </div>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                          {completedCount} / {totalCount}
+                        </span>
+                      </>
+                    );
+                  })()}
                 </div>
               </button>
 
