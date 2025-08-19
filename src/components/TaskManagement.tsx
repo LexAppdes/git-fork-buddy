@@ -1369,17 +1369,10 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                 {/* Progress bar and task numbers */}
                 <div className="flex items-center gap-2">
                   {(() => {
-                    const completedCount = tasks.filter(t => t.completed !== null || t.cancelled !== null).length;
-                    const totalCount = tasks.length;
-                    // Debug logging
-                    if (areaId === 'no-area') {
-                      console.log('No area progress calculation:', {
-                        areaId,
-                        totalTasks: totalCount,
-                        completedTasks: completedCount,
-                        taskTitles: tasks.map(t => ({ title: t.title, completed: !!t.completed, cancelled: !!t.cancelled }))
-                      });
-                    }
+                    // Count from the original todayTasks for this area, not the display-filtered tasks
+                    const originalAreaTasks = todayTasks.filter(t => (getAreaFromProject(t.project) || 'no-area') === areaId);
+                    const completedCount = originalAreaTasks.filter(t => t.completed !== null || t.cancelled !== null).length;
+                    const totalCount = originalAreaTasks.length;
                     return (
                       <>
                         <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
