@@ -1415,9 +1415,10 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
                              allowClear={true}
                            >
                              <span
-                               className="text-muted-foreground bg-white px-1.5 py-0.5 rounded text-[10px] cursor-pointer hover:bg-gray-200 transition-colors"
-                               onClick={(e) => e.stopPropagation()}
-                             >
+                              className="text-muted-foreground px-1.5 py-0.5 rounded text-[10px] cursor-pointer hover:bg-gray-200 transition-colors"
+                              style={{ backgroundColor: "#f6f4f1" }}
+                              onClick={(e) => e.stopPropagation()}
+                            >
                                {task.timeInterval}
                              </span>
                            </SimpleDatePicker>
