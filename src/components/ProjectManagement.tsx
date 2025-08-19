@@ -497,10 +497,50 @@ export function ProjectManagement({
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 flex-1">
-                      <div
-                        className={cn("w-3 h-3 rounded-full shrink-0", getStatusCircleColor(project.status))}
-                        title={getStatusLabel(project.status)}
-                      />
+                      <Select
+                        value={project.status}
+                        onValueChange={(newStatus) => {
+                          setProjects(prevProjects => prevProjects.map(p =>
+                            p.id === project.id ? { ...p, status: newStatus as Project["status"] } : p
+                          ));
+                        }}
+                      >
+                        <SelectTrigger
+                          className="w-3 h-3 p-0 border-none bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0 [&>svg]:hidden"
+                          onClick={(e) => e.stopPropagation()}
+                          title={`Change status from ${getStatusLabel(project.status)}`}
+                        >
+                          <div
+                            className={cn("w-3 h-3 rounded-full shrink-0 cursor-pointer hover:scale-110 transition-transform", getStatusCircleColor(project.status))}
+                          />
+                        </SelectTrigger>
+                        <SelectContent onClick={(e) => e.stopPropagation()}>
+                          <SelectItem value="lead">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 rounded-full bg-red-500" />
+                              <span>Lead</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="active">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 rounded-full bg-orange-500" />
+                              <span>Active</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="finished">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 rounded-full bg-green-500" />
+                              <span>Finished</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="archive">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 rounded-full bg-gray-600" />
+                              <span>Archive</span>
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                       <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
                     </div>
                   </div>
