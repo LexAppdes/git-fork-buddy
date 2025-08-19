@@ -1349,18 +1349,26 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
 
                 {/* Progress bar and task numbers */}
                 <div className="flex items-center gap-2">
-                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full"
-                      style={{
-                        width: `${tasks.length > 0 ? (tasks.filter(t => t.completed !== null || t.cancelled !== null).length / tasks.length) * 100 : 0}%`,
-                        transition: 'width 0.3s ease-out'
-                      }}
-                    />
-                  </div>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    {tasks.filter(t => t.completed !== null || t.cancelled !== null).length} / {tasks.length}
-                  </span>
+                  {(() => {
+                    const displayedTasks = filterAndSortTasks(tasks);
+                    const completedCount = displayedTasks.filter(t => t.completed !== null || t.cancelled !== null).length;
+                    return (
+                      <>
+                        <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-primary rounded-full"
+                            style={{
+                              width: `${displayedTasks.length > 0 ? (completedCount / displayedTasks.length) * 100 : 0}%`,
+                              transition: 'width 0.3s ease-out'
+                            }}
+                          />
+                        </div>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                          {completedCount} / {displayedTasks.length}
+                        </span>
+                      </>
+                    );
+                  })()}
                 </div>
               </button>
 
