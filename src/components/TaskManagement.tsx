@@ -1157,7 +1157,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       </div>;
   };
   const renderInboxView = () => {
-    let inboxTasks = tasks.filter(task => !task.dueDate && !task.area);
+    let inboxTasks = tasks.filter(task => !task.dueDate && !task.project);
     const isTaskDone = (task: Task) => task.completed !== null || task.cancelled !== null;
 
     // Apply completion filter
@@ -1465,9 +1465,13 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       timeframe: "NOW"
     });
   };
-  const renderAreasView = () => <div className="h-full">
-      <KanbanBoard tasks={filterAndSortTasks(tasks)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} />
+  const renderAreasView = () => {
+    // Only show tasks that have a project assigned (which gives them an area)
+    const tasksWithProjects = tasks.filter(task => task.project);
+    return <div className="h-full">
+      <KanbanBoard tasks={filterAndSortTasks(tasksWithProjects)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} />
     </div>;
+  };
   const getFilteredTasks = () => {
     switch (activeView) {
       case "today":
