@@ -1339,6 +1339,15 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
 
       return false;
     });
+
+    // Debug logging
+    console.log('Today view render - showCompleted:', showCompleted);
+    console.log('Total todayTasks:', todayTasks.length);
+    console.log('TodayTasks by completion:', {
+      completed: todayTasks.filter(t => t.completed !== null).length,
+      cancelled: todayTasks.filter(t => t.cancelled !== null).length,
+      uncompleted: todayTasks.filter(t => t.completed === null && t.cancelled === null).length
+    });
     const tasksByArea = todayTasks.reduce((acc, task) => {
       const areaId = getAreaFromProject(task.project) || 'no-area';
       if (!acc[areaId]) {
