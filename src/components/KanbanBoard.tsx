@@ -449,6 +449,7 @@ export function KanbanBoard({
             projects={projects}
             onProjectAssignment={onProjectAssignment}
             selectedTask={selectedTask}
+            onAddTask={onAddTask}
           />
         ))}
       </div>
