@@ -449,73 +449,23 @@ export function GoalManagement({
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Goal Details */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Goal Details</h3>
-              <div className="space-y-3">
+          <div className="mb-6">
+            {(() => {
+              const progress = getGoalProgress(editingGoal);
+              return (
                 <div>
-                  <Label className="text-sm font-medium">Area</Label>
-                  <div className="mt-1">
-                    {(() => {
-                      const area = areas.find(a => a.id === editingGoal.area);
-                      return area ? (
-                        <Badge className={cn("text-xs text-white px-2 py-1", area.color)}>
-                          {area.name}
-                        </Badge>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">No area assigned</span>
-                      );
-                    })()}
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="font-medium">{progress.completed} / {progress.total}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div
+                      className="bg-primary h-3 rounded-full transition-all duration-300"
+                      style={{ width: `${progress.percentage}%` }}
+                    />
                   </div>
                 </div>
-
-                <div>
-                  <Label className="text-sm font-medium">Timeline</Label>
-                  <div className="mt-1 text-sm text-muted-foreground">
-                    {formatDateRange(editingGoal.startDate, editingGoal.endDate) || "No timeline set"}
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium">Status</Label>
-                  <div className="mt-1">
-                    <Badge className={cn("text-xs px-2 py-1", getStatusColor(editingGoal.status))}>
-                      {getStatusLabel(editingGoal.status)}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Progress Overview */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Progress Overview</h3>
-              <div className="space-y-4">
-                {(() => {
-                  const progress = getGoalProgress(editingGoal);
-                  return (
-                    <>
-                      <div>
-                        <div className="flex items-center justify-between text-sm mb-2">
-                          <span className="font-medium">Overall Progress</span>
-                          <span className="font-medium">{progress.completed} / {progress.total} projects</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-3">
-                          <div
-                            className="bg-primary h-3 rounded-full transition-all duration-300"
-                            style={{ width: `${progress.percentage}%` }}
-                          />
-                        </div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {Math.round(progress.percentage)}% complete
-                        </div>
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
+              );
+            })()}
           </div>
 
           {/* Attached Projects */}
