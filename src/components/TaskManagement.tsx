@@ -337,6 +337,12 @@ const mockAreas: Area[] = [{
 // Import the full project data from ProjectManagement
 const mockProjects: Project[] = [
   {
+    id: "misc",
+    title: "Misc",
+    area: "work", // Default area, will be dynamically updated
+    steps: []
+  },
+  {
     id: "1",
     title: "Website Redesign",
     area: "work",
