@@ -540,21 +540,19 @@ export function GoalManagement({
               return (
                 <div className="flex gap-4 overflow-x-auto">
                   {statuses.map(status => {
-                    const [isDragOver, setIsDragOver] = useState(false);
-
                     const handleDragOver = (e: React.DragEvent) => {
                       e.preventDefault();
-                      setIsDragOver(true);
+                      setDragOverColumn(status);
                     };
 
                     const handleDragLeave = (e: React.DragEvent) => {
                       e.preventDefault();
-                      setIsDragOver(false);
+                      setDragOverColumn(null);
                     };
 
                     const handleDrop = (e: React.DragEvent) => {
                       e.preventDefault();
-                      setIsDragOver(false);
+                      setDragOverColumn(null);
                       const projectId = e.dataTransfer.getData("text/plain");
                       updateProjectStatus(projectId, status);
                     };
@@ -565,7 +563,7 @@ export function GoalManagement({
                         className={cn(
                           "flex-1 min-w-64 bg-[#f3f3f3] rounded-lg transition-colors",
                           getColumnColor(status),
-                          isDragOver && "bg-muted/50"
+                          dragOverColumn === status && "bg-muted/50"
                         )}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
