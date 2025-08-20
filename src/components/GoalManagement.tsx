@@ -476,7 +476,7 @@ export function GoalManagement({
 
           {/* Attached Projects */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Attached Projects</h3>
+            <h3 className="text-lg font-semibold mb-4">Projects</h3>
             {(() => {
               const attachedProjects = availableProjects.filter(p => editingGoal.projectIds.includes(p.id));
 
