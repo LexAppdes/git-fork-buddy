@@ -178,6 +178,23 @@ const getStatusColor = (status: Goal["status"]) => {
   }
 };
 
+const getStatusCircleColor = (status: Goal["status"]) => {
+  switch (status) {
+    case "new":
+      return "bg-blue-500";
+    case "active":
+      return "bg-green-500";
+    case "paused":
+      return "bg-yellow-500";
+    case "achieved":
+      return "bg-purple-500";
+    case "archive":
+      return "bg-gray-500";
+    default:
+      return "bg-gray-400";
+  }
+};
+
 const getStatusLabel = (status: Goal["status"]) => {
   switch (status) {
     case "new":
