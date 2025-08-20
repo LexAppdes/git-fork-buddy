@@ -364,23 +364,19 @@ export function GoalManagement({
                     <div className={cn("w-3 h-3 rounded-full", getStatusCircleColor(goal.status))} />
                     <h3 className="font-semibold text-lg text-foreground">{goal.title}</h3>
                   </div>
+                  {/* Dates */}
+                  {(goal.startDate || goal.endDate) && (
+                    <div className="text-xs text-muted-foreground">
+                      {formatDateRange(goal.startDate, goal.endDate)}
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              {/* Area */}
-              <div className="flex items-center gap-2 mb-4">
-                {area && (
-                  <Badge className={cn("text-xs text-white px-2 py-1", area.color)}>
-                    {area.name}
-                  </Badge>
-                )}
               </div>
 
               {/* Progress */}
               <div className="mb-4">
                 <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Progress</span>
-                  <span className="font-medium">{progress.completed} / {progress.total} projects</span>
+                  <span className="font-medium">{progress.completed} / {progress.total}</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
@@ -390,12 +386,14 @@ export function GoalManagement({
                 </div>
               </div>
 
-              {/* Dates */}
-              {(goal.startDate || goal.endDate) && (
-                <div className="text-xs text-muted-foreground">
-                  {formatDateRange(goal.startDate, goal.endDate)}
-                </div>
-              )}
+              {/* Area */}
+              <div className="flex items-center gap-2">
+                {area && (
+                  <Badge className={cn("text-xs text-white px-2 py-1", area.color)}>
+                    {area.name}
+                  </Badge>
+                )}
+              </div>
             </div>
           );
         })}
