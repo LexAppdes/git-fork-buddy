@@ -1955,18 +1955,11 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
           </div>
         ) : activeView === "goals" ? (
           <div className="h-full -m-6">
-            <ProjectManagement
+            <GoalManagement
               selectedAreas={selectedProjectAreas}
               selectedStatuses={selectedProjectStatuses}
-              isNewProjectDialogOpen={isNewProjectDialogOpen}
-              onNewProjectDialogChange={setIsNewProjectDialogOpen}
-              tasks={tasks}
-              onTaskClick={handleTaskClick}
-              onToggleTask={toggleTask}
-              onAddTask={handleAddTask}
-              onAssignTaskToStep={handleAssignTaskToStep}
-              onUpdateTaskDueDate={updateTaskDueDate}
-              onUpdateTaskTitle={updateTaskTitle}
+              isNewGoalDialogOpen={isNewProjectDialogOpen}
+              onNewGoalDialogChange={setIsNewProjectDialogOpen}
             />
           </div>
         ) : activeView === "areas" ? (
