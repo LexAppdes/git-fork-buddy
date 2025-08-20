@@ -270,7 +270,8 @@ const KanbanColumn = ({
   areas,
   projects,
   onProjectAssignment,
-  selectedTask
+  selectedTask,
+  onAddTask
 }: {
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
   tasks: Task[];
@@ -286,6 +287,7 @@ const KanbanColumn = ({
   }>;
   onProjectAssignment?: (task: Task, projectId: string) => void;
   selectedTask?: Task | null;
+  onAddTask?: (timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => void;
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
