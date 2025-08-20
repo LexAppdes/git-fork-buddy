@@ -582,6 +582,28 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
   };
 
   const handleAddTaskByTimeframe = (timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => {
+    // Find a suitable project to assign
+    let assignedProjectId: string | undefined;
+
+    if (kanbanSelectedAreas.length > 0) {
+      // If areas are filtered, find an active project from those areas
+      const projectsInSelectedAreas = mockProjects.filter(p =>
+        kanbanSelectedAreas.includes(p.area) && p.status === "active"
+      );
+      assignedProjectId = projectsInSelectedAreas.length > 0 ? projectsInSelectedAreas[0].id : undefined;
+    }
+
+    if (!assignedProjectId) {
+      // If no areas selected or no active projects in selected areas, find any active project
+      const activeProjects = mockProjects.filter(p => p.status === "active");
+      assignedProjectId = activeProjects.length > 0 ? activeProjects[0].id : undefined;
+    }
+
+    if (!assignedProjectId) {
+      // If no active projects, just use the first available project
+      assignedProjectId = mockProjects.length > 0 ? mockProjects[0].id : undefined;
+    }
+
     const newTask: Task = {
       id: Date.now().toString(),
       title: "New Task",
@@ -591,8 +613,8 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       cancelled: null,
       dueDate: undefined,
       timeInterval: undefined,
-      area: undefined,
-      project: undefined,
+      area: assignedProjectId ? getAreaFromProject(assignedProjectId) : undefined,
+      project: assignedProjectId,
       step: undefined,
       created: new Date(),
       timeframe: timeframe
