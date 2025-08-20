@@ -1949,6 +1949,7 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
               onAddTask={handleAddTask}
               onAssignTaskToStep={handleAssignTaskToStep}
               onUpdateTaskDueDate={updateTaskDueDate}
+              onUpdateTaskTitle={updateTaskTitle}
             />
           </div>
         ) : activeView === "areas" ? (
