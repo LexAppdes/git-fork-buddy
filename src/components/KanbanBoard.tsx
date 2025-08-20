@@ -352,6 +352,20 @@ const KanbanColumn = ({
             />
           ))}
         </div>
+
+        {/* Add task button */}
+        {onAddTask && (
+          <div className="mt-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onAddTask(timeframe)}
+              className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto font-normal w-full justify-start"
+            >
+              + add task
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
