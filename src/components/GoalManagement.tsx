@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Calendar, Plus, MoreHorizontal, Filter, ArrowUpDown, Target, Folder } from "lucide-react";
+import { Calendar, Plus, MoreHorizontal, Filter, ArrowUpDown, Target, Folder, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
