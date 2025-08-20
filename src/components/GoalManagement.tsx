@@ -489,75 +489,120 @@ export function GoalManagement({
                 );
               }
 
+              // Group projects by status
+              const statuses = ["lead", "active", "finished", "archive"] as const;
+              const projectsByStatus = statuses.reduce((acc, status) => {
+                acc[status] = attachedProjects.filter(p => p.status === status);
+                return acc;
+              }, {} as Record<string, typeof attachedProjects>);
+
+              const getStatusLabel = (status: string) => {
+                switch (status) {
+                  case "lead": return "Lead";
+                  case "active": return "Active";
+                  case "finished": return "Finished";
+                  case "archive": return "Archive";
+                  default: return status;
+                }
+              };
+
+              const getColumnColor = (status: string) => {
+                switch (status) {
+                  case "lead": return "border-t-red-500";
+                  case "active": return "border-t-orange-500";
+                  case "finished": return "border-t-green-500";
+                  case "archive": return "border-t-gray-500";
+                  default: return "border-t-border";
+                }
+              };
+
+              const formatEndDate = (startDate?: Date, endDate?: Date) => {
+                if (endDate) {
+                  return format(endDate, "MMM d, yyyy");
+                }
+                if (startDate) {
+                  return `Starts ${format(startDate, "MMM d, yyyy")}`;
+                }
+                return "No end date";
+              };
+
               return (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {attachedProjects.map(project => {
-                    const area = areas.find(a => a.id === project.area);
-                    const formatEndDate = (startDate?: Date, endDate?: Date) => {
-                      if (endDate) {
-                        return format(endDate, "MMM d, yyyy");
-                      }
-                      if (startDate) {
-                        return `Starts ${format(startDate, "MMM d, yyyy")}`;
-                      }
-                      return "No end date";
-                    };
+                <div className="flex gap-4 overflow-x-auto">
+                  {statuses.map(status => (
+                    <div
+                      key={status}
+                      className={cn("flex-1 min-w-64 bg-[#f3f3f3] rounded-lg", getColumnColor(status))}
+                    >
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-lg font-semibold text-foreground">{getStatusLabel(status)}</h4>
+                          <span className="text-sm text-muted-foreground bg-background px-2 py-1 rounded">
+                            {projectsByStatus[status].length}
+                          </span>
+                        </div>
+                        <div className="space-y-2">
+                          {projectsByStatus[status].map(project => {
+                            const area = areas.find(a => a.id === project.area);
 
-                    return (
-                      <div
-                        key={project.id}
-                        className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
-                      >
-                        <div className="space-y-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-2 flex-1">
-                              <div className={cn(
-                                "w-3 h-3 rounded-full shrink-0",
-                                project.status === "finished" ? "bg-green-500" :
-                                project.status === "active" ? "bg-orange-500" :
-                                project.status === "lead" ? "bg-red-500" : "bg-gray-600"
-                              )} />
-                              <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
-                            </div>
-                          </div>
+                            return (
+                              <div
+                                key={project.id}
+                                className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
+                              >
+                                <div className="space-y-3">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div className="flex items-center gap-2 flex-1">
+                                      <div className={cn(
+                                        "w-3 h-3 rounded-full shrink-0",
+                                        project.status === "finished" ? "bg-green-500" :
+                                        project.status === "active" ? "bg-orange-500" :
+                                        project.status === "lead" ? "bg-red-500" : "bg-gray-600"
+                                      )} />
+                                      <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
+                                    </div>
+                                  </div>
 
-                          <div className="space-y-2 text-xs">
-                            <div className="text-muted-foreground truncate">
-                              {formatEndDate(project.startDate, project.endDate)}
-                            </div>
-                            <div className="flex items-center gap-1">
-                            </div>
-                          </div>
+                                  <div className="space-y-2 text-xs">
+                                    <div className="text-muted-foreground truncate">
+                                      {formatEndDate(project.startDate, project.endDate)}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                    </div>
+                                  </div>
 
-                          {/* Progress bar and area tag row */}
-                          <div className="flex items-center justify-between gap-2">
-                            {/* Progress bar on the left */}
-                            <div className="flex items-center gap-2">
-                              <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-primary rounded-full"
-                                  style={{
-                                    width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`,
-                                    transition: 'width 0.3s ease-out'
-                                  }}
-                                />
+                                  {/* Progress bar and area tag row */}
+                                  <div className="flex items-center justify-between gap-2">
+                                    {/* Progress bar on the left */}
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                                        <div
+                                          className="h-full bg-primary rounded-full"
+                                          style={{
+                                            width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`,
+                                            transition: 'width 0.3s ease-out'
+                                          }}
+                                        />
+                                      </div>
+                                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                        {project.steps.filter(s => s.completed).length} / {project.steps.length}
+                                      </span>
+                                    </div>
+
+                                    {/* Area tag on the right */}
+                                    {area && (
+                                      <span className={cn("text-xs text-white px-2 py-1 rounded", area.color)}>
+                                        {area.name}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
-                              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                {project.steps.filter(s => s.completed).length} / {project.steps.length}
-                              </span>
-                            </div>
-
-                            {/* Area tag on the right */}
-                            {area && (
-                              <span className={cn("text-xs text-white px-2 py-1 rounded", area.color)}>
-                                {area.name}
-                              </span>
-                            )}
-                          </div>
+                            );
+                          })}
                         </div>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               );
             })()}
