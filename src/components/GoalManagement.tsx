@@ -417,15 +417,29 @@ export function GoalManagement({
         <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className={cn("w-4 h-4 rounded-full", getStatusCircleColor(editingGoal.status))} />
               <h2 className="text-2xl font-bold text-foreground">{editingGoal.title}</h2>
               <Badge className={cn("text-xs px-2 py-1", getStatusColor(editingGoal.status))}>
                 {getStatusLabel(editingGoal.status)}
               </Badge>
             </div>
-            <Button variant="outline" size="sm" onClick={() => setSelectedGoal(null)}>
-              Close
-            </Button>
+            <div className="flex items-center gap-4">
+              {(() => {
+                const area = areas.find(a => a.id === editingGoal.area);
+                return area ? (
+                  <Badge className={cn("text-xs text-white px-2 py-1", area.color)}>
+                    {area.name}
+                  </Badge>
+                ) : null;
+              })()}
+              {formatDateRange(editingGoal.startDate, editingGoal.endDate) && (
+                <span className="text-sm text-muted-foreground">
+                  {formatDateRange(editingGoal.startDate, editingGoal.endDate)}
+                </span>
+              )}
+              <Button variant="outline" size="sm" onClick={() => setSelectedGoal(null)}>
+                Close
+              </Button>
+            </div>
           </div>
 
           {editingGoal.description && (
