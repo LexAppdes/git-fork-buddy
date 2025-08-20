@@ -586,21 +586,15 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     let assignedProjectId: string | undefined;
 
     if (kanbanSelectedAreas.length > 0) {
-      // If areas are filtered, find an active project from those areas
+      // If areas are filtered, find a project from those areas
       const projectsInSelectedAreas = mockProjects.filter(p =>
-        kanbanSelectedAreas.includes(p.area) && p.status === "active"
+        kanbanSelectedAreas.includes(p.area)
       );
       assignedProjectId = projectsInSelectedAreas.length > 0 ? projectsInSelectedAreas[0].id : undefined;
     }
 
     if (!assignedProjectId) {
-      // If no areas selected or no active projects in selected areas, find any active project
-      const activeProjects = mockProjects.filter(p => p.status === "active");
-      assignedProjectId = activeProjects.length > 0 ? activeProjects[0].id : undefined;
-    }
-
-    if (!assignedProjectId) {
-      // If no active projects, just use the first available project
+      // If no areas selected or no projects in selected areas, use the first available project
       assignedProjectId = mockProjects.length > 0 ? mockProjects[0].id : undefined;
     }
 
