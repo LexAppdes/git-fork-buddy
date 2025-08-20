@@ -358,11 +358,11 @@ export function GoalManagement({
               onClick={() => handleGoalClick(goal)}
             >
               {/* Header */}
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <div className={cn("w-3 h-3 rounded-full", getStatusCircleColor(goal.status))} />
-                    <h3 className="font-semibold text-lg text-foreground">{goal.title}</h3>
+                    <h3 className="font-semibold text-base text-foreground">{goal.title}</h3>
                   </div>
                   {/* Dates */}
                   {(goal.startDate || goal.endDate) && (
@@ -374,7 +374,7 @@ export function GoalManagement({
               </div>
 
               {/* Progress */}
-              <div className="mb-4">
+              <div className="mb-3">
                 <div className="flex items-center justify-between text-sm mb-2">
                   <span className="font-medium">{progress.completed} / {progress.total}</span>
                 </div>
