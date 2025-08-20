@@ -442,30 +442,36 @@ export function GoalManagement({
             </div>
           </div>
 
-          {editingGoal.description && (
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">Description</h3>
-              <p className="text-muted-foreground">{editingGoal.description}</p>
-            </div>
-          )}
-
-          <div className="mb-6">
+          <div className="flex items-center gap-3 mb-6">
             {(() => {
               const progress = getGoalProgress(editingGoal);
               return (
-                <div>
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="font-medium">{progress.completed} / {progress.total}</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
+                <>
+                  <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
                     <div
-                      className="bg-primary h-3 rounded-full transition-all duration-300"
-                      style={{ width: `${progress.percentage}%` }}
+                      className="h-full bg-primary rounded-full"
+                      style={{
+                        width: `${progress.percentage}%`,
+                        transition: 'width 0.3s ease-out'
+                      }}
                     />
                   </div>
-                </div>
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">
+                    {progress.completed} / {progress.total}
+                  </span>
+                </>
               );
             })()}
+          </div>
+
+          <div>
+            <Textarea
+              value={editingGoal.description || ""}
+              onChange={(e) => updateEditingGoal({ description: e.target.value })}
+              className="border-none bg-transparent p-0 resize-none focus-visible:ring-0"
+              placeholder="Enter goal description..."
+              rows={3}
+            />
           </div>
 
           {/* Attached Projects */}
