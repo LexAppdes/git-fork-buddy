@@ -148,7 +148,17 @@ const availableProjects: Project[] = [
 ];
 
 const formatSimpleDate = (date: Date) => {
-  return format(date, "dd.MM.yy");
+  return format(date, "dd.MM.yyyy");
+};
+
+const formatDateRange = (startDate?: Date, endDate?: Date) => {
+  if (!startDate && !endDate) return null;
+  if (startDate && endDate) {
+    return `${formatSimpleDate(startDate)}–${formatSimpleDate(endDate)}`;
+  }
+  if (startDate) return formatSimpleDate(startDate);
+  if (endDate) return formatSimpleDate(endDate);
+  return null;
 };
 
 const getStatusColor = (status: Goal["status"]) => {
