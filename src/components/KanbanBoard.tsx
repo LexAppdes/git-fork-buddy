@@ -47,6 +47,7 @@ interface KanbanBoardProps {
     area: string;
   }>;
   onProjectAssignment?: (task: Task, projectId: string) => void;
+  onAddTask?: (timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => void;
 }
 
 const getPriorityCheckboxColor = (priority: string, cancelled: boolean = false) => {
