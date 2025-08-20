@@ -239,6 +239,7 @@ interface ProjectManagementProps {
   onAddTask?: (project: string, step?: string) => void;
   onAssignTaskToStep?: (taskId: string, stepId: string) => void;
   onUpdateTaskDueDate?: (taskId: string, date: Date | undefined) => void;
+  onUpdateTaskTitle?: (taskId: string, title: string) => void;
 }
 
 export function ProjectManagement({
@@ -251,7 +252,8 @@ export function ProjectManagement({
   onToggleTask,
   onAddTask,
   onAssignTaskToStep,
-  onUpdateTaskDueDate
+  onUpdateTaskDueDate,
+  onUpdateTaskTitle
 }: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>([...mockProjects]);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
@@ -272,6 +274,8 @@ export function ProjectManagement({
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
   const [editingStepId, setEditingStepId] = useState<string | null>(null);
   const [editingStepTitle, setEditingStepTitle] = useState("");
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editingTaskTitle, setEditingTaskTitle] = useState("");
   const [newProject, setNewProject] = useState({
     title: "",
     description: "",
@@ -297,6 +301,24 @@ export function ProjectManagement({
     if (editingProject) {
       setEditingProject({...editingProject, ...updates});
     }
+  };
+
+  const startEditingTask = (task: Task) => {
+    setEditingTaskId(task.id);
+    setEditingTaskTitle(task.title);
+  };
+
+  const saveTaskTitle = (taskId: string) => {
+    if (onUpdateTaskTitle && editingTaskTitle.trim()) {
+      onUpdateTaskTitle(taskId, editingTaskTitle.trim());
+    }
+    setEditingTaskId(null);
+    setEditingTaskTitle("");
+  };
+
+  const cancelTaskEdit = () => {
+    setEditingTaskId(null);
+    setEditingTaskTitle("");
   };
 
   const saveProjectChanges = () => {
@@ -826,12 +848,39 @@ export function ProjectManagement({
                               />
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between">
-                                  <h5 className={cn(
-                                    "text-sm font-medium text-foreground truncate",
-                                    (task.completed !== null || task.cancelled !== null) && "line-through"
-                                  )}>
-                                    {task.title}
-                                  </h5>
+                                  {editingTaskId === task.id ? (
+                                    <Input
+                                      value={editingTaskTitle}
+                                      onChange={(e) => setEditingTaskTitle(e.target.value)}
+                                      onBlur={() => saveTaskTitle(task.id)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                          e.preventDefault();
+                                          saveTaskTitle(task.id);
+                                        } else if (e.key === 'Escape') {
+                                          e.preventDefault();
+                                          cancelTaskEdit();
+                                        }
+                                      }}
+                                      className="text-sm font-medium h-6 px-1 py-0 bg-transparent border-0 shadow-none focus-visible:ring-0 focus-visible:outline-none"
+                                      autoFocus
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                  ) : (
+                                    <h5
+                                      className={cn(
+                                        "text-sm font-medium text-foreground truncate cursor-pointer hover:bg-muted/50 px-2 py-1.5 rounded transition-colors",
+                                        (task.completed !== null || task.cancelled !== null) && "line-through"
+                                      )}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        startEditingTask(task);
+                                      }}
+                                      title="Click to edit task name"
+                                    >
+                                      {task.title}
+                                    </h5>
+                                  )}
                                    <div className="flex items-center gap-2 ml-2">
                                      {task.dueDate ? (
                                        <ClickableDueDate
@@ -957,12 +1006,39 @@ export function ProjectManagement({
                               />
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between">
-                                  <h5 className={cn(
-                                    "text-sm font-medium text-foreground truncate",
-                                    (task.completed !== null || task.cancelled !== null) && "line-through"
-                                  )}>
-                                    {task.title}
-                                  </h5>
+                                  {editingTaskId === task.id ? (
+                                    <Input
+                                      value={editingTaskTitle}
+                                      onChange={(e) => setEditingTaskTitle(e.target.value)}
+                                      onBlur={() => saveTaskTitle(task.id)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                          e.preventDefault();
+                                          saveTaskTitle(task.id);
+                                        } else if (e.key === 'Escape') {
+                                          e.preventDefault();
+                                          cancelTaskEdit();
+                                        }
+                                      }}
+                                      className="text-sm font-medium h-6 px-1 py-0 bg-transparent border-0 shadow-none focus-visible:ring-0 focus-visible:outline-none"
+                                      autoFocus
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                  ) : (
+                                    <h5
+                                      className={cn(
+                                        "text-sm font-medium text-foreground truncate cursor-pointer hover:bg-muted/50 px-2 py-1.5 rounded transition-colors",
+                                        (task.completed !== null || task.cancelled !== null) && "line-through"
+                                      )}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        startEditingTask(task);
+                                      }}
+                                      title="Click to edit task name"
+                                    >
+                                      {task.title}
+                                    </h5>
+                                  )}
                                   <div className="flex items-center gap-2 ml-2">
                                     {task.dueDate ? (
                                       <ClickableDueDate

@@ -17,6 +17,7 @@ import { format, isToday, isTomorrow, isAfter, startOfDay, endOfDay, isYesterday
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { Badge } from "@/components/ui/badge";
 import { ProjectManagement } from "@/components/ProjectManagement";
+import { GoalManagement } from "@/components/GoalManagement";
 interface Task {
   id: string;
   title: string;
@@ -739,6 +740,12 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       }
       return task;
     }));
+  }, []);
+
+  const updateTaskTitle = useCallback((taskId: string, title: string) => {
+    setTasks(prevTasks => prevTasks.map(task =>
+      task.id === taskId ? { ...task, title } : task
+    ));
   }, []);
 
   const handleNewTaskDateChange = useCallback((date: Date | undefined) => {
@@ -1943,6 +1950,16 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
               onAddTask={handleAddTask}
               onAssignTaskToStep={handleAssignTaskToStep}
               onUpdateTaskDueDate={updateTaskDueDate}
+              onUpdateTaskTitle={updateTaskTitle}
+            />
+          </div>
+        ) : activeView === "goals" ? (
+          <div className="h-full -m-6">
+            <GoalManagement
+              selectedAreas={selectedProjectAreas}
+              selectedStatuses={selectedProjectStatuses}
+              isNewGoalDialogOpen={isNewProjectDialogOpen}
+              onNewGoalDialogChange={setIsNewProjectDialogOpen}
             />
           </div>
         ) : activeView === "areas" ? (
