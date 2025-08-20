@@ -526,83 +526,133 @@ export function GoalManagement({
                 return "No end date";
               };
 
+              const updateProjectStatus = (projectId: string, newStatus: string) => {
+                // Update the project in availableProjects (this would normally be through a proper state update)
+                const projectIndex = availableProjects.findIndex(p => p.id === projectId);
+                if (projectIndex !== -1) {
+                  availableProjects[projectIndex].status = newStatus as any;
+                  // Force re-render by updating editingGoal
+                  setEditingGoal({...editingGoal});
+                }
+              };
+
               return (
                 <div className="flex gap-4 overflow-x-auto">
-                  {statuses.map(status => (
-                    <div
-                      key={status}
-                      className={cn("flex-1 min-w-64 bg-[#f3f3f3] rounded-lg", getColumnColor(status))}
-                    >
-                      <div className="p-4">
-                        <div className="flex items-center justify-between mb-4">
-                          <h4 className="text-lg font-semibold text-foreground">{getStatusLabel(status)}</h4>
-                          <span className="text-sm text-muted-foreground bg-background px-2 py-1 rounded">
-                            {projectsByStatus[status].length}
-                          </span>
-                        </div>
-                        <div className="space-y-2">
-                          {projectsByStatus[status].map(project => {
-                            const area = areas.find(a => a.id === project.area);
+                  {statuses.map(status => {
+                    const [isDragOver, setIsDragOver] = useState(false);
 
-                            return (
-                              <div
-                                key={project.id}
-                                className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
-                              >
-                                <div className="space-y-3">
-                                  <div className="flex items-start justify-between gap-2">
-                                    <div className="flex items-center gap-2 flex-1">
-                                      <div className={cn(
-                                        "w-3 h-3 rounded-full shrink-0",
-                                        project.status === "finished" ? "bg-green-500" :
-                                        project.status === "active" ? "bg-orange-500" :
-                                        project.status === "lead" ? "bg-red-500" : "bg-gray-600"
-                                      )} />
-                                      <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
-                                    </div>
-                                  </div>
+                    const handleDragOver = (e: React.DragEvent) => {
+                      e.preventDefault();
+                      setIsDragOver(true);
+                    };
 
-                                  <div className="space-y-2 text-xs">
-                                    <div className="text-muted-foreground truncate">
-                                      {formatEndDate(project.startDate, project.endDate)}
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                    </div>
-                                  </div>
+                    const handleDragLeave = (e: React.DragEvent) => {
+                      e.preventDefault();
+                      setIsDragOver(false);
+                    };
 
-                                  {/* Progress bar and area tag row */}
-                                  <div className="flex items-center justify-between gap-2">
-                                    {/* Progress bar on the left */}
-                                    <div className="flex items-center gap-2">
-                                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                                        <div
-                                          className="h-full bg-primary rounded-full"
-                                          style={{
-                                            width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`,
-                                            transition: 'width 0.3s ease-out'
-                                          }}
-                                        />
+                    const handleDrop = (e: React.DragEvent) => {
+                      e.preventDefault();
+                      setIsDragOver(false);
+                      const projectId = e.dataTransfer.getData("text/plain");
+                      updateProjectStatus(projectId, status);
+                    };
+
+                    return (
+                      <div
+                        key={status}
+                        className={cn(
+                          "flex-1 min-w-64 bg-[#f3f3f3] rounded-lg transition-colors",
+                          getColumnColor(status),
+                          isDragOver && "bg-muted/50"
+                        )}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                      >
+                        <div className="p-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-lg font-semibold text-foreground">{getStatusLabel(status)}</h4>
+                            <span className="text-sm text-muted-foreground bg-background px-2 py-1 rounded">
+                              {projectsByStatus[status].length}
+                            </span>
+                          </div>
+                          <div className="space-y-2">
+                            {projectsByStatus[status].map(project => {
+                              const area = areas.find(a => a.id === project.area);
+
+                              const handleDragStart = (e: React.DragEvent) => {
+                                e.dataTransfer.setData("text/plain", project.id);
+                                e.currentTarget.style.opacity = '0.5';
+                              };
+
+                              const handleDragEnd = (e: React.DragEvent) => {
+                                e.currentTarget.style.opacity = '1';
+                              };
+
+                              return (
+                                <div
+                                  key={project.id}
+                                  className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
+                                  draggable
+                                  onDragStart={handleDragStart}
+                                  onDragEnd={handleDragEnd}
+                                >
+                                  <div className="space-y-3">
+                                    <div className="flex items-start justify-between gap-2">
+                                      <div className="flex items-center gap-2 flex-1">
+                                        <div className={cn(
+                                          "w-3 h-3 rounded-full shrink-0",
+                                          project.status === "finished" ? "bg-green-500" :
+                                          project.status === "active" ? "bg-orange-500" :
+                                          project.status === "lead" ? "bg-red-500" : "bg-gray-600"
+                                        )} />
+                                        <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
                                       </div>
-                                      <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                        {project.steps.filter(s => s.completed).length} / {project.steps.length}
-                                      </span>
                                     </div>
 
-                                    {/* Area tag on the right */}
-                                    {area && (
-                                      <span className={cn("text-xs text-white px-2 py-1 rounded", area.color)}>
-                                        {area.name}
-                                      </span>
-                                    )}
+                                    <div className="space-y-2 text-xs">
+                                      <div className="text-muted-foreground truncate">
+                                        {formatEndDate(project.startDate, project.endDate)}
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                      </div>
+                                    </div>
+
+                                    {/* Progress bar and area tag row */}
+                                    <div className="flex items-center justify-between gap-2">
+                                      {/* Progress bar on the left */}
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                                          <div
+                                            className="h-full bg-primary rounded-full"
+                                            style={{
+                                              width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`,
+                                              transition: 'width 0.3s ease-out'
+                                            }}
+                                          />
+                                        </div>
+                                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                          {project.steps.filter(s => s.completed).length} / {project.steps.length}
+                                        </span>
+                                      </div>
+
+                                      {/* Area tag on the right */}
+                                      {area && (
+                                        <span className={cn("text-xs text-white px-2 py-1 rounded", area.color)}>
+                                          {area.name}
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               );
             })()}
