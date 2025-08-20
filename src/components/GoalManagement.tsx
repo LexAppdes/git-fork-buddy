@@ -390,43 +390,10 @@ export function GoalManagement({
                 </div>
               </div>
 
-              {/* Projects */}
-              <div className="mb-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Folder className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Projects ({attachedProjects.length})</span>
-                </div>
-                {attachedProjects.length > 0 ? (
-                  <div className="space-y-1">
-                    {attachedProjects.slice(0, 2).map(project => (
-                      <div key={project.id} className="text-xs text-muted-foreground flex items-center gap-2">
-                        <div className={cn(
-                          "w-2 h-2 rounded-full",
-                          project.status === "finished" ? "bg-green-500" : "bg-gray-300"
-                        )} />
-                        {project.title}
-                      </div>
-                    ))}
-                    {attachedProjects.length > 2 && (
-                      <div className="text-xs text-muted-foreground">
-                        +{attachedProjects.length - 2} more
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-xs text-muted-foreground">No projects attached</p>
-                )}
-              </div>
-
               {/* Dates */}
               {(goal.startDate || goal.endDate) && (
-                <div className="text-xs text-muted-foreground flex items-center gap-4">
-                  {goal.startDate && (
-                    <span>Start: {formatSimpleDate(goal.startDate)}</span>
-                  )}
-                  {goal.endDate && (
-                    <span>End: {formatSimpleDate(goal.endDate)}</span>
-                  )}
+                <div className="text-xs text-muted-foreground">
+                  {formatDateRange(goal.startDate, goal.endDate)}
                 </div>
               )}
             </div>
