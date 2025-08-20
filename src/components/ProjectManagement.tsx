@@ -239,6 +239,7 @@ interface ProjectManagementProps {
   onAddTask?: (project: string, step?: string) => void;
   onAssignTaskToStep?: (taskId: string, stepId: string) => void;
   onUpdateTaskDueDate?: (taskId: string, date: Date | undefined) => void;
+  onUpdateTaskTitle?: (taskId: string, title: string) => void;
 }
 
 export function ProjectManagement({
@@ -251,7 +252,8 @@ export function ProjectManagement({
   onToggleTask,
   onAddTask,
   onAssignTaskToStep,
-  onUpdateTaskDueDate
+  onUpdateTaskDueDate,
+  onUpdateTaskTitle
 }: ProjectManagementProps) {
   const [projects, setProjects] = useState<Project[]>([...mockProjects]);
   const [isNewProjectDialogOpen, setIsNewProjectDialogOpen] = useState(false);
@@ -272,6 +274,8 @@ export function ProjectManagement({
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
   const [editingStepId, setEditingStepId] = useState<string | null>(null);
   const [editingStepTitle, setEditingStepTitle] = useState("");
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editingTaskTitle, setEditingTaskTitle] = useState("");
   const [newProject, setNewProject] = useState({
     title: "",
     description: "",
@@ -297,6 +301,24 @@ export function ProjectManagement({
     if (editingProject) {
       setEditingProject({...editingProject, ...updates});
     }
+  };
+
+  const startEditingTask = (task: Task) => {
+    setEditingTaskId(task.id);
+    setEditingTaskTitle(task.title);
+  };
+
+  const saveTaskTitle = (taskId: string) => {
+    if (onUpdateTaskTitle && editingTaskTitle.trim()) {
+      onUpdateTaskTitle(taskId, editingTaskTitle.trim());
+    }
+    setEditingTaskId(null);
+    setEditingTaskTitle("");
+  };
+
+  const cancelTaskEdit = () => {
+    setEditingTaskId(null);
+    setEditingTaskTitle("");
   };
 
   const saveProjectChanges = () => {
