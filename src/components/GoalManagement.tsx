@@ -342,17 +342,17 @@ export function GoalManagement({
   return (
     <div className="h-full p-6 bg-[#fafafa]">
       {/* Goals Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {sortedGoals.map(goal => {
           const progress = getGoalProgress(goal);
           const area = areas.find(a => a.id === goal.area);
           const attachedProjects = availableProjects.filter(p => goal.projectIds.includes(p.id));
-          
+
           return (
             <div
               key={goal.id}
               className={cn(
-                "bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer",
+                "bg-white rounded-lg p-4 border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer",
                 selectedGoal?.id === goal.id && "ring-2 ring-primary"
               )}
               onClick={() => handleGoalClick(goal)}
