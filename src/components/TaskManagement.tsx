@@ -588,20 +588,18 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
   };
 
   const handleAddTaskByTimeframe = (timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => {
-    // Find a suitable project to assign
-    let assignedProjectId: string | undefined;
+    // Always use the misc project, but set its area based on current filter
+    let miscProjectArea = "work"; // Default area
 
     if (kanbanSelectedAreas.length > 0) {
-      // If areas are filtered, find a project from those areas
-      const projectsInSelectedAreas = mockProjects.filter(p =>
-        kanbanSelectedAreas.includes(p.area)
-      );
-      assignedProjectId = projectsInSelectedAreas.length > 0 ? projectsInSelectedAreas[0].id : undefined;
+      // If areas are filtered, use the first selected area
+      miscProjectArea = kanbanSelectedAreas[0];
     }
 
-    if (!assignedProjectId) {
-      // If no areas selected or no projects in selected areas, use the first available project
-      assignedProjectId = mockProjects.length > 0 ? mockProjects[0].id : undefined;
+    // Update the misc project's area dynamically (for getAreaFromProject function)
+    const miscProject = mockProjects.find(p => p.id === "misc");
+    if (miscProject) {
+      miscProject.area = miscProjectArea;
     }
 
     const newTask: Task = {
@@ -613,8 +611,8 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       cancelled: null,
       dueDate: undefined,
       timeInterval: undefined,
-      area: assignedProjectId ? getAreaFromProject(assignedProjectId) : undefined,
-      project: assignedProjectId,
+      area: miscProjectArea,
+      project: "misc",
       step: undefined,
       created: new Date(),
       timeframe: timeframe
