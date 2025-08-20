@@ -1020,14 +1020,14 @@ export function ProjectManagement({
                                           cancelTaskEdit();
                                         }
                                       }}
-                                      className="text-sm font-medium h-6 px-1 py-0 border-none shadow-none focus-visible:ring-1 focus-visible:ring-primary"
+                                      className="text-sm font-medium h-6 px-1 py-0 bg-transparent border-0 shadow-none focus-visible:ring-0 focus-visible:outline-none"
                                       autoFocus
                                       onClick={(e) => e.stopPropagation()}
                                     />
                                   ) : (
                                     <h5
                                       className={cn(
-                                        "text-sm font-medium text-foreground truncate cursor-pointer hover:bg-muted/50 px-1 py-0.5 rounded transition-colors",
+                                        "text-sm font-medium text-foreground truncate cursor-pointer hover:bg-muted/50 px-2 py-1.5 rounded transition-colors",
                                         (task.completed !== null || task.cancelled !== null) && "line-through"
                                       )}
                                       onClick={(e) => {
