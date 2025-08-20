@@ -1547,9 +1547,10 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     });
   };
   const renderAreasView = () => {
-    // Show all tasks in kanban view - both with and without projects
+    // Only show tasks that have a project assigned (which gives them an area) OR have a due date
+    const tasksWithProjectsOrDueDates = tasks.filter(task => task.project || task.dueDate);
     return <div className="h-full">
-      <KanbanBoard tasks={filterAndSortTasks(tasks)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} onAddTask={handleAddTaskByTimeframe} />
+      <KanbanBoard tasks={filterAndSortTasks(tasksWithProjectsOrDueDates)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} onAddTask={handleAddTaskByTimeframe} />
     </div>;
   };
   const getFilteredTasks = () => {
