@@ -741,6 +741,12 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     }));
   }, []);
 
+  const updateTaskTitle = useCallback((taskId: string, title: string) => {
+    setTasks(prevTasks => prevTasks.map(task =>
+      task.id === taskId ? { ...task, title } : task
+    ));
+  }, []);
+
   const handleNewTaskDateChange = useCallback((date: Date | undefined) => {
     setNewTask((prev) => ({
       ...prev,
