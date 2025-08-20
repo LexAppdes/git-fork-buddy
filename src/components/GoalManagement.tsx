@@ -411,6 +411,143 @@ export function GoalManagement({
           </Button>
         </div>
       )}
+
+      {/* Detailed Goal View */}
+      {selectedGoal && editingGoal && (
+        <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className={cn("w-4 h-4 rounded-full", getStatusCircleColor(editingGoal.status))} />
+              <h2 className="text-2xl font-bold text-foreground">{editingGoal.title}</h2>
+              <Badge className={cn("text-xs px-2 py-1", getStatusColor(editingGoal.status))}>
+                {getStatusLabel(editingGoal.status)}
+              </Badge>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => setSelectedGoal(null)}>
+              Close
+            </Button>
+          </div>
+
+          {editingGoal.description && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-2">Description</h3>
+              <p className="text-muted-foreground">{editingGoal.description}</p>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Goal Details */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Goal Details</h3>
+              <div className="space-y-3">
+                <div>
+                  <Label className="text-sm font-medium">Area</Label>
+                  <div className="mt-1">
+                    {(() => {
+                      const area = areas.find(a => a.id === editingGoal.area);
+                      return area ? (
+                        <Badge className={cn("text-xs text-white px-2 py-1", area.color)}>
+                          {area.name}
+                        </Badge>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">No area assigned</span>
+                      );
+                    })()}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Timeline</Label>
+                  <div className="mt-1 text-sm text-muted-foreground">
+                    {formatDateRange(editingGoal.startDate, editingGoal.endDate) || "No timeline set"}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Status</Label>
+                  <div className="mt-1">
+                    <Badge className={cn("text-xs px-2 py-1", getStatusColor(editingGoal.status))}>
+                      {getStatusLabel(editingGoal.status)}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Progress Overview */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Progress Overview</h3>
+              <div className="space-y-4">
+                {(() => {
+                  const progress = getGoalProgress(editingGoal);
+                  return (
+                    <>
+                      <div>
+                        <div className="flex items-center justify-between text-sm mb-2">
+                          <span className="font-medium">Overall Progress</span>
+                          <span className="font-medium">{progress.completed} / {progress.total} projects</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                          <div
+                            className="bg-primary h-3 rounded-full transition-all duration-300"
+                            style={{ width: `${progress.percentage}%` }}
+                          />
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {Math.round(progress.percentage)}% complete
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
+
+          {/* Attached Projects */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Attached Projects</h3>
+            {(() => {
+              const attachedProjects = availableProjects.filter(p => editingGoal.projectIds.includes(p.id));
+
+              if (attachedProjects.length === 0) {
+                return (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Folder className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p>No projects attached to this goal</p>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {attachedProjects.map(project => (
+                    <div key={project.id} className="bg-gray-50 rounded-lg p-4 border">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className={cn(
+                          "w-3 h-3 rounded-full",
+                          project.status === "finished" ? "bg-green-500" :
+                          project.status === "active" ? "bg-blue-500" :
+                          project.status === "lead" ? "bg-yellow-500" : "bg-gray-500"
+                        )} />
+                        <h4 className="font-medium text-sm">{project.title}</h4>
+                      </div>
+                      <div className="text-xs text-muted-foreground mb-2">
+                        Status: <span className="capitalize">{project.status}</span>
+                      </div>
+                      {project.steps && (
+                        <div className="text-xs text-muted-foreground">
+                          Steps: {project.steps.filter(s => s.completed).length} / {project.steps.length} completed
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
