@@ -581,6 +581,26 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     setTasks(prev => [...prev, newTask]);
   };
 
+  const handleAddTaskByTimeframe = (timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => {
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title: "New Task",
+      description: "",
+      priority: "medium",
+      completed: null,
+      cancelled: null,
+      dueDate: undefined,
+      timeInterval: undefined,
+      area: undefined,
+      project: undefined,
+      step: undefined,
+      created: new Date(),
+      timeframe: timeframe
+    };
+
+    setTasks(prev => [...prev, newTask]);
+  };
+
   const handleAssignTaskToStep = (taskId: string, stepId: string) => {
     setTasks(prevTasks => prevTasks.map(task =>
       task.id === taskId ? { ...task, step: stepId } : task
