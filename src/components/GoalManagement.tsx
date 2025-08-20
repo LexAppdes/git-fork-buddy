@@ -243,6 +243,7 @@ export function GoalManagement({
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
+  const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
   
   const [newGoal, setNewGoal] = useState({
     title: "",
