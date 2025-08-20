@@ -47,6 +47,7 @@ interface KanbanBoardProps {
     area: string;
   }>;
   onProjectAssignment?: (task: Task, projectId: string) => void;
+  onAddTask?: (timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => void;
 }
 
 const getPriorityCheckboxColor = (priority: string, cancelled: boolean = false) => {
@@ -269,7 +270,8 @@ const KanbanColumn = ({
   areas,
   projects,
   onProjectAssignment,
-  selectedTask
+  selectedTask,
+  onAddTask
 }: {
   timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY";
   tasks: Task[];
@@ -285,6 +287,7 @@ const KanbanColumn = ({
   }>;
   onProjectAssignment?: (task: Task, projectId: string) => void;
   selectedTask?: Task | null;
+  onAddTask?: (timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => void;
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -349,6 +352,20 @@ const KanbanColumn = ({
             />
           ))}
         </div>
+
+        {/* Add task button */}
+        {onAddTask && (
+          <div className="mt-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onAddTask(timeframe)}
+              className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto font-normal w-full justify-start"
+            >
+              + add task
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -365,6 +382,7 @@ export function KanbanBoard({
   projects,
   onProjectAssignment,
   selectedTask,
+  onAddTask,
 }: KanbanBoardProps) {
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const timeframes = ["NOW", "NEXT", "LATER", "SOMEDAY"] as const;
@@ -431,6 +449,7 @@ export function KanbanBoard({
             projects={projects}
             onProjectAssignment={onProjectAssignment}
             selectedTask={selectedTask}
+            onAddTask={onAddTask}
           />
         ))}
       </div>

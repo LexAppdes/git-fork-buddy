@@ -337,6 +337,12 @@ const mockAreas: Area[] = [{
 // Import the full project data from ProjectManagement
 const mockProjects: Project[] = [
   {
+    id: "misc",
+    title: "Misc",
+    area: "work", // Default area, will be dynamically updated
+    steps: []
+  },
+  {
     id: "1",
     title: "Website Redesign",
     area: "work",
@@ -576,6 +582,40 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
       step: stepId,
       created: new Date(),
       timeframe: "NOW"
+    };
+
+    setTasks(prev => [...prev, newTask]);
+  };
+
+  const handleAddTaskByTimeframe = (timeframe: "NOW" | "NEXT" | "LATER" | "SOMEDAY") => {
+    // Always use the misc project, but set its area based on current filter
+    let miscProjectArea = "work"; // Default area
+
+    if (kanbanSelectedAreas.length > 0) {
+      // If areas are filtered, use the first selected area
+      miscProjectArea = kanbanSelectedAreas[0];
+    }
+
+    // Update the misc project's area dynamically (for getAreaFromProject function)
+    const miscProject = mockProjects.find(p => p.id === "misc");
+    if (miscProject) {
+      miscProject.area = miscProjectArea;
+    }
+
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title: "New Task",
+      description: "",
+      priority: "medium",
+      completed: null,
+      cancelled: null,
+      dueDate: undefined,
+      timeInterval: undefined,
+      area: miscProjectArea,
+      project: "misc",
+      step: undefined,
+      created: new Date(),
+      timeframe: timeframe
     };
 
     setTasks(prev => [...prev, newTask]);
@@ -1527,10 +1567,10 @@ export function TaskManagement({ onTaskSidebarChange }: TaskManagementProps = {}
     });
   };
   const renderAreasView = () => {
-    // Only show tasks that have a project assigned (which gives them an area)
-    const tasksWithProjects = tasks.filter(task => task.project);
+    // Only show tasks that have a project assigned (which gives them an area) OR have a due date
+    const tasksWithProjectsOrDueDates = tasks.filter(task => task.project || task.dueDate);
     return <div className="h-full">
-      <KanbanBoard tasks={filterAndSortTasks(tasksWithProjects)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} />
+      <KanbanBoard tasks={filterAndSortTasks(tasksWithProjectsOrDueDates)} onTaskClick={handleTaskClick} onToggleTask={toggleTask} onUpdateTaskTimeframe={updateTaskTimeframe} onUpdateTaskDueDate={updateTaskDueDate} areas={mockAreas} selectedAreas={kanbanSelectedAreas} projects={mockProjects} onProjectAssignment={handleProjectAssignment} selectedTask={selectedTask} onAddTask={handleAddTaskByTimeframe} />
     </div>;
   };
   const getFilteredTasks = () => {

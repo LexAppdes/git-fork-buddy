@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Calendar, Plus, MoreHorizontal, Filter, ArrowUpDown, Target, Folder } from "lucide-react";
+import { Calendar, Plus, MoreHorizontal, Filter, ArrowUpDown, Target, Folder, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -243,6 +243,7 @@ export function GoalManagement({
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState<"status" | "date" | "area" | "none">("none");
+  const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
   
   const [newGoal, setNewGoal] = useState({
     title: "",
@@ -417,96 +418,66 @@ export function GoalManagement({
         <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className={cn("w-4 h-4 rounded-full", getStatusCircleColor(editingGoal.status))} />
               <h2 className="text-2xl font-bold text-foreground">{editingGoal.title}</h2>
               <Badge className={cn("text-xs px-2 py-1", getStatusColor(editingGoal.status))}>
                 {getStatusLabel(editingGoal.status)}
               </Badge>
             </div>
-            <Button variant="outline" size="sm" onClick={() => setSelectedGoal(null)}>
-              Close
-            </Button>
+            <div className="flex items-center gap-4">
+              {(() => {
+                const area = areas.find(a => a.id === editingGoal.area);
+                return area ? (
+                  <Badge className={cn("text-xs text-white px-2 py-1", area.color)}>
+                    {area.name}
+                  </Badge>
+                ) : null;
+              })()}
+              {formatDateRange(editingGoal.startDate, editingGoal.endDate) && (
+                <span className="text-sm text-muted-foreground">
+                  {formatDateRange(editingGoal.startDate, editingGoal.endDate)}
+                </span>
+              )}
+              <Button variant="outline" size="sm" onClick={() => setSelectedGoal(null)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
-          {editingGoal.description && (
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">Description</h3>
-              <p className="text-muted-foreground">{editingGoal.description}</p>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Goal Details */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Goal Details</h3>
-              <div className="space-y-3">
-                <div>
-                  <Label className="text-sm font-medium">Area</Label>
-                  <div className="mt-1">
-                    {(() => {
-                      const area = areas.find(a => a.id === editingGoal.area);
-                      return area ? (
-                        <Badge className={cn("text-xs text-white px-2 py-1", area.color)}>
-                          {area.name}
-                        </Badge>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">No area assigned</span>
-                      );
-                    })()}
+          <div className="flex items-center gap-3 mb-6">
+            {(() => {
+              const progress = getGoalProgress(editingGoal);
+              return (
+                <>
+                  <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary rounded-full"
+                      style={{
+                        width: `${progress.percentage}%`,
+                        transition: 'width 0.3s ease-out'
+                      }}
+                    />
                   </div>
-                </div>
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">
+                    {progress.completed} / {progress.total}
+                  </span>
+                </>
+              );
+            })()}
+          </div>
 
-                <div>
-                  <Label className="text-sm font-medium">Timeline</Label>
-                  <div className="mt-1 text-sm text-muted-foreground">
-                    {formatDateRange(editingGoal.startDate, editingGoal.endDate) || "No timeline set"}
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium">Status</Label>
-                  <div className="mt-1">
-                    <Badge className={cn("text-xs px-2 py-1", getStatusColor(editingGoal.status))}>
-                      {getStatusLabel(editingGoal.status)}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Progress Overview */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Progress Overview</h3>
-              <div className="space-y-4">
-                {(() => {
-                  const progress = getGoalProgress(editingGoal);
-                  return (
-                    <>
-                      <div>
-                        <div className="flex items-center justify-between text-sm mb-2">
-                          <span className="font-medium">Overall Progress</span>
-                          <span className="font-medium">{progress.completed} / {progress.total} projects</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-3">
-                          <div
-                            className="bg-primary h-3 rounded-full transition-all duration-300"
-                            style={{ width: `${progress.percentage}%` }}
-                          />
-                        </div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {Math.round(progress.percentage)}% complete
-                        </div>
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
+          <div>
+            <Textarea
+              value={editingGoal.description || ""}
+              onChange={(e) => updateEditingGoal({ description: e.target.value })}
+              className="border-none bg-transparent p-0 resize-none focus-visible:ring-0"
+              placeholder="Enter goal description..."
+              rows={3}
+            />
           </div>
 
           {/* Attached Projects */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Attached Projects</h3>
+            <h3 className="text-lg font-semibold mb-4">Projects</h3>
             {(() => {
               const attachedProjects = availableProjects.filter(p => editingGoal.projectIds.includes(p.id));
 
@@ -519,29 +490,168 @@ export function GoalManagement({
                 );
               }
 
+              // Group projects by status
+              const statuses = ["lead", "active", "finished", "archive"] as const;
+              const projectsByStatus = statuses.reduce((acc, status) => {
+                acc[status] = attachedProjects.filter(p => p.status === status);
+                return acc;
+              }, {} as Record<string, typeof attachedProjects>);
+
+              const getStatusLabel = (status: string) => {
+                switch (status) {
+                  case "lead": return "Lead";
+                  case "active": return "Active";
+                  case "finished": return "Finished";
+                  case "archive": return "Archive";
+                  default: return status;
+                }
+              };
+
+              const getColumnColor = (status: string) => {
+                switch (status) {
+                  case "lead": return "border-t-red-500";
+                  case "active": return "border-t-orange-500";
+                  case "finished": return "border-t-green-500";
+                  case "archive": return "border-t-gray-500";
+                  default: return "border-t-border";
+                }
+              };
+
+              const formatEndDate = (startDate?: Date, endDate?: Date) => {
+                if (endDate) {
+                  return format(endDate, "MMM d, yyyy");
+                }
+                if (startDate) {
+                  return `Starts ${format(startDate, "MMM d, yyyy")}`;
+                }
+                return "No end date";
+              };
+
+              const updateProjectStatus = (projectId: string, newStatus: string) => {
+                // Update the project in availableProjects (this would normally be through a proper state update)
+                const projectIndex = availableProjects.findIndex(p => p.id === projectId);
+                if (projectIndex !== -1) {
+                  availableProjects[projectIndex].status = newStatus as any;
+                  // Force re-render by updating editingGoal
+                  setEditingGoal({...editingGoal});
+                }
+              };
+
               return (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {attachedProjects.map(project => (
-                    <div key={project.id} className="bg-gray-50 rounded-lg p-4 border">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className={cn(
-                          "w-3 h-3 rounded-full",
-                          project.status === "finished" ? "bg-green-500" :
-                          project.status === "active" ? "bg-blue-500" :
-                          project.status === "lead" ? "bg-yellow-500" : "bg-gray-500"
-                        )} />
-                        <h4 className="font-medium text-sm">{project.title}</h4>
-                      </div>
-                      <div className="text-xs text-muted-foreground mb-2">
-                        Status: <span className="capitalize">{project.status}</span>
-                      </div>
-                      {project.steps && (
-                        <div className="text-xs text-muted-foreground">
-                          Steps: {project.steps.filter(s => s.completed).length} / {project.steps.length} completed
+                <div className="flex gap-4 overflow-x-auto">
+                  {statuses.map(status => {
+                    const handleDragOver = (e: React.DragEvent) => {
+                      e.preventDefault();
+                      setDragOverColumn(status);
+                    };
+
+                    const handleDragLeave = (e: React.DragEvent) => {
+                      e.preventDefault();
+                      setDragOverColumn(null);
+                    };
+
+                    const handleDrop = (e: React.DragEvent) => {
+                      e.preventDefault();
+                      setDragOverColumn(null);
+                      const projectId = e.dataTransfer.getData("text/plain");
+                      updateProjectStatus(projectId, status);
+                    };
+
+                    return (
+                      <div
+                        key={status}
+                        className={cn(
+                          "flex-1 min-w-64 bg-[#f3f3f3] rounded-lg transition-colors",
+                          getColumnColor(status),
+                          dragOverColumn === status && "bg-muted/50"
+                        )}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                      >
+                        <div className="p-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-lg font-semibold text-foreground">{getStatusLabel(status)}</h4>
+                            <span className="text-sm text-muted-foreground bg-background px-2 py-1 rounded">
+                              {projectsByStatus[status].length}
+                            </span>
+                          </div>
+                          <div className="space-y-2">
+                            {projectsByStatus[status].map(project => {
+                              const area = areas.find(a => a.id === project.area);
+
+                              const handleDragStart = (e: React.DragEvent) => {
+                                e.dataTransfer.setData("text/plain", project.id);
+                                e.currentTarget.style.opacity = '0.5';
+                              };
+
+                              const handleDragEnd = (e: React.DragEvent) => {
+                                e.currentTarget.style.opacity = '1';
+                              };
+
+                              return (
+                                <div
+                                  key={project.id}
+                                  className="bg-card border border-border rounded-lg p-4 shadow-soft hover:shadow-medium transition-all duration-200 cursor-pointer"
+                                  draggable
+                                  onDragStart={handleDragStart}
+                                  onDragEnd={handleDragEnd}
+                                >
+                                  <div className="space-y-3">
+                                    <div className="flex items-start justify-between gap-2">
+                                      <div className="flex items-center gap-2 flex-1">
+                                        <div className={cn(
+                                          "w-3 h-3 rounded-full shrink-0",
+                                          project.status === "finished" ? "bg-green-500" :
+                                          project.status === "active" ? "bg-orange-500" :
+                                          project.status === "lead" ? "bg-red-500" : "bg-gray-600"
+                                        )} />
+                                        <h3 className="font-semibold text-card-foreground text-base line-clamp-2 flex-1">{project.title}</h3>
+                                      </div>
+                                    </div>
+
+                                    <div className="space-y-2 text-xs">
+                                      <div className="text-muted-foreground truncate">
+                                        {formatEndDate(project.startDate, project.endDate)}
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                      </div>
+                                    </div>
+
+                                    {/* Progress bar and area tag row */}
+                                    <div className="flex items-center justify-between gap-2">
+                                      {/* Progress bar on the left */}
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                                          <div
+                                            className="h-full bg-primary rounded-full"
+                                            style={{
+                                              width: `${project.steps.length > 0 ? (project.steps.filter(s => s.completed).length / project.steps.length) * 100 : 0}%`,
+                                              transition: 'width 0.3s ease-out'
+                                            }}
+                                          />
+                                        </div>
+                                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                          {project.steps.filter(s => s.completed).length} / {project.steps.length}
+                                        </span>
+                                      </div>
+
+                                      {/* Area tag on the right */}
+                                      {area && (
+                                        <span className={cn("text-xs text-white px-2 py-1 rounded", area.color)}>
+                                          {area.name}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    );
+                  })}
                 </div>
               );
             })()}
