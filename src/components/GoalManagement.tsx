@@ -360,19 +360,15 @@ export function GoalManagement({
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg text-foreground mb-1">{goal.title}</h3>
-                  {goal.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">{goal.description}</p>
-                  )}
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className={cn("w-3 h-3 rounded-full", getStatusCircleColor(goal.status))} />
+                    <h3 className="font-semibold text-lg text-foreground">{goal.title}</h3>
+                  </div>
                 </div>
-                <Target className="w-5 h-5 text-muted-foreground ml-2 flex-shrink-0" />
               </div>
 
-              {/* Status and Area */}
+              {/* Area */}
               <div className="flex items-center gap-2 mb-4">
-                <Badge className={cn("text-xs px-2 py-1", getStatusColor(goal.status))}>
-                  {getStatusLabel(goal.status)}
-                </Badge>
                 {area && (
                   <Badge className={cn("text-xs text-white px-2 py-1", area.color)}>
                     {area.name}
